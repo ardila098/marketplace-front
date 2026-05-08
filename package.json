@@ -1,0 +1,31 @@
+{
+  "name": "marketplace-multi-vertical-front-complete",
+  "private": true,
+  "version": "0.3.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "latest",
+    "@vitejs/plugin-react": "latest",
+    "antd": "latest",
+    "axios": "latest",
+    "dayjs": "latest",
+    "lucide-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-redux": "latest",
+    "react-router-dom": "latest",
+    "styled-components": "latest"
+  },
+  "devDependencies": {
+    "eslint": "latest",
+    "eslint-plugin-react-hooks": "latest",
+    "eslint-plugin-react-refresh": "latest",
+    "vite": "latest"
+  }
+}
