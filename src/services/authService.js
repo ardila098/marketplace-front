@@ -5,10 +5,6 @@ import { normalizeAuthResponse, normalizeItemResponse } from '../utils/responseN
 export const authService = {
   login: async payload => {
     const response = await DataService.post(API_ROUTES.auth.login, payload)
-
-    return {
-      data: response.data
-    }
     return normalizeAuthResponse(response, 'Inicio de sesión correcto')
   },
 

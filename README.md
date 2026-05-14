@@ -27,7 +27,7 @@ Frontend React + Vite para marketplace multi-vertical.
 
 ```bash
 cd marketplace-front-complete
-cp .env.example .env
+cp .env
 npm install
 npm run dev
 ```
@@ -35,7 +35,7 @@ npm run dev
 En Windows:
 
 ```bash
-copy .env.example .env
+copy .env
 npm install
 npm run dev
 ```

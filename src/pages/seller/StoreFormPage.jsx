@@ -2,6 +2,7 @@ import { Button, Card, Form, Input, Select, message } from 'antd'
 
 const StoreFormPage = () => {
   const handleSubmit = values => {
+    console.log(values)
     message.success('Tienda guardada localmente. Conecta este submit a /seller/store.')
   }
 

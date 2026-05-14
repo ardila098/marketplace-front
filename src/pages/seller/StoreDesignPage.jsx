@@ -1,5 +1,5 @@
-import { Button, Card, Col, Form, Input, InputNumber, Row, Space, Typography, message } from 'antd'
-import { useMemo, useState } from 'react'
+import { Button, Card, Col, Form, Input, InputNumber, Row, Typography, message } from 'antd'
+import { useState } from 'react'
 import StoreThemePreview from '../../components/storefront/StoreThemePreview'
 import { neutralTheme } from '../../styles/themePresets'
 
@@ -10,8 +10,9 @@ const StoreDesignPage = () => {
 
   const handleValuesChange = (_, values) => setTheme({ ...neutralTheme, ...values })
   const handleSubmit = async values => {
+    console.log(values)
     setSaving(true)
-    message.success('Diseño guardado localmente. Conecta este submit a /seller/store/theme.')
+    message.success('')
     setSaving(false)
   }
 

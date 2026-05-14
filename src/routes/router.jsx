@@ -1,6 +1,4 @@
-import { lazy, Suspense } from 'react'
 import { createBrowserRouter } from 'react-router-dom'
-import { Spin } from 'antd'
 import { ROLES } from '../constants/roles'
 import { ROUTES } from '../constants/routes'
 import ProtectedRoute from './ProtectedRoute'
@@ -8,38 +6,35 @@ import StorefrontRoute from './StorefrontRoute'
 import PublicLayout from '../layouts/PublicLayout'
 import DashboardLayout from '../layouts/DashboardLayout'
 import StorefrontLayout from '../layouts/StorefrontLayout'
+import { createLazyPage } from './lazyPage'
 
-const lazyPage = importer => {
-  const Component = lazy(importer)
-  return (
-    <Suspense fallback={<Spin fullscreen />}>
-      <Component />
-    </Suspense>
-  )
-}
+const HomePage = createLazyPage(() => import('../pages/public/HomePage'))
+const ProductListPage = createLazyPage(() => import('../pages/public/ProductListPage'))
+const ProductDetailPage = createLazyPage(() => import('../pages/public/ProductDetailPage'))
+const StoresPage = createLazyPage(() => import('../pages/public/StoresPage'))
+const LoginPage = createLazyPage(() => import('../pages/public/LoginPage'))
+const RegisterPage = createLazyPage(() => import('../pages/public/RegisterPage'))
 
-const HomePage = () => lazyPage(() => import('../pages/public/HomePage'))
-const ProductListPage = () => lazyPage(() => import('../pages/public/ProductListPage'))
-const ProductDetailPage = () => lazyPage(() => import('../pages/public/ProductDetailPage'))
-const StoresPage = () => lazyPage(() => import('../pages/public/StoresPage'))
-const LoginPage = () => lazyPage(() => import('../pages/public/LoginPage'))
-const RegisterPage = () => lazyPage(() => import('../pages/public/RegisterPage'))
-const StorefrontHomePage = () => lazyPage(() => import('../pages/storefront/StorefrontHomePage'))
-const StorefrontProductsPage = () => lazyPage(() => import('../pages/storefront/StorefrontProductsPage'))
-const StorefrontProductDetailPage = () => lazyPage(() => import('../pages/storefront/StorefrontProductDetailPage'))
-const CartPage = () => lazyPage(() => import('../pages/customer/CartPage'))
-const OrdersPage = () => lazyPage(() => import('../pages/customer/OrdersPage'))
-const SellerDashboardPage = () => lazyPage(() => import('../pages/seller/SellerDashboardPage'))
-const StoreFormPage = () => lazyPage(() => import('../pages/seller/StoreFormPage'))
-const StoreDesignPage = () => lazyPage(() => import('../pages/seller/StoreDesignPage'))
-const SellerProductsPage = () => lazyPage(() => import('../pages/seller/SellerProductsPage'))
-const SellerOrdersPage = () => lazyPage(() => import('../pages/seller/SellerOrdersPage'))
-const AdminDashboardPage = () => lazyPage(() => import('../pages/admin/AdminDashboardPage'))
-const AdminStoresPage = () => lazyPage(() => import('../pages/admin/AdminStoresPage'))
-const AdminProductsPage = () => lazyPage(() => import('../pages/admin/AdminProductsPage'))
-const AdminUsersPage = () => lazyPage(() => import('../pages/admin/AdminUsersPage'))
-const AdminSettingsPage = () => lazyPage(() => import('../pages/admin/AdminSettingsPage'))
-const UnauthorizedPage = () => lazyPage(() => import('../pages/system/UnauthorizedPage'))
+const StorefrontHomePage = createLazyPage(() => import('../pages/storefront/StorefrontHomePage'))
+const StorefrontProductsPage = createLazyPage(() => import('../pages/storefront/StorefrontProductsPage'))
+const StorefrontProductDetailPage = createLazyPage(() => import('../pages/storefront/StorefrontProductDetailPage'))
+
+const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
+const OrdersPage = createLazyPage(() => import('../pages/customer/OrdersPage'))
+
+const SellerDashboardPage = createLazyPage(() => import('../pages/seller/SellerDashboardPage'))
+const StoreFormPage = createLazyPage(() => import('../pages/seller/StoreFormPage'))
+const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesignPage'))
+const SellerProductsPage = createLazyPage(() => import('../pages/seller/SellerProductsPage'))
+const SellerOrdersPage = createLazyPage(() => import('../pages/seller/SellerOrdersPage'))
+
+const AdminDashboardPage = createLazyPage(() => import('../pages/admin/AdminDashboardPage'))
+const AdminStoresPage = createLazyPage(() => import('../pages/admin/AdminStoresPage'))
+const AdminProductsPage = createLazyPage(() => import('../pages/admin/AdminProductsPage'))
+const AdminUsersPage = createLazyPage(() => import('../pages/admin/AdminUsersPage'))
+const AdminSettingsPage = createLazyPage(() => import('../pages/admin/AdminSettingsPage'))
+
+const UnauthorizedPage = createLazyPage(() => import('../pages/system/UnauthorizedPage'))
 
 export const router = createBrowserRouter([
   {
@@ -51,8 +46,8 @@ export const router = createBrowserRouter([
       { path: ROUTES.PRODUCT_DETAIL, element: <ProductDetailPage /> },
       { path: ROUTES.LOGIN, element: <LoginPage /> },
       { path: ROUTES.REGISTER, element: <RegisterPage /> },
-      { path: ROUTES.UNAUTHORIZED, element: <UnauthorizedPage /> }
-    ]
+      { path: ROUTES.UNAUTHORIZED, element: <UnauthorizedPage /> },
+    ],
   },
   {
     element: <StorefrontRoute />,
@@ -62,10 +57,10 @@ export const router = createBrowserRouter([
         children: [
           { path: ROUTES.STOREFRONT_HOME, element: <StorefrontHomePage /> },
           { path: ROUTES.STOREFRONT_PRODUCTS, element: <StorefrontProductsPage /> },
-          { path: ROUTES.STOREFRONT_PRODUCT_DETAIL, element: <StorefrontProductDetailPage /> }
-        ]
-      }
-    ]
+          { path: ROUTES.STOREFRONT_PRODUCT_DETAIL, element: <StorefrontProductDetailPage /> },
+        ],
+      },
+    ],
   },
   {
     element: <ProtectedRoute roles={[ROLES.CUSTOMER]} />,
@@ -74,10 +69,10 @@ export const router = createBrowserRouter([
         element: <DashboardLayout area="customer" />,
         children: [
           { path: ROUTES.CUSTOMER_CART, element: <CartPage /> },
-          { path: ROUTES.CUSTOMER_ORDERS, element: <OrdersPage /> }
-        ]
-      }
-    ]
+          { path: ROUTES.CUSTOMER_ORDERS, element: <OrdersPage /> },
+        ],
+      },
+    ],
   },
   {
     element: <ProtectedRoute roles={[ROLES.SELLER]} />,
@@ -89,10 +84,10 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_STORE, element: <StoreFormPage /> },
           { path: ROUTES.SELLER_DESIGN, element: <StoreDesignPage /> },
           { path: ROUTES.SELLER_PRODUCTS, element: <SellerProductsPage /> },
-          { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> }
-        ]
-      }
-    ]
+          { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> },
+        ],
+      },
+    ],
   },
   {
     element: <ProtectedRoute roles={[ROLES.ADMIN]} />,
@@ -104,9 +99,9 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_STORES, element: <AdminStoresPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },
           { path: ROUTES.ADMIN_USERS, element: <AdminUsersPage /> },
-          { path: ROUTES.ADMIN_SETTINGS, element: <AdminSettingsPage /> }
-        ]
-      }
-    ]
-  }
+          { path: ROUTES.ADMIN_SETTINGS, element: <AdminSettingsPage /> },
+        ],
+      },
+    ],
+  },
 ])

@@ -3,6 +3,7 @@ import { PageShell } from '../../styles/layoutStyles'
 
 const RegisterPage = () => {
   const handleSubmit = values => {
+    console.log(values)
     message.success('Registro listo para conectar con /auth/register')
   }
 

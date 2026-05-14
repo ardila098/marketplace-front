@@ -1,4 +1,4 @@
-import { Button, Space, Typography } from 'antd'
+import { Space, Typography } from 'antd'
 import styled from 'styled-components'
 import { currency } from '../../utils/formatters'
 
