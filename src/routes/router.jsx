@@ -7,6 +7,7 @@ import PublicLayout from '../layouts/PublicLayout'
 import DashboardLayout from '../layouts/DashboardLayout'
 import StorefrontLayout from '../layouts/StorefrontLayout'
 import { createLazyPage } from './lazyPage'
+import VerticalPage from '../pages/verticals/VerticalPage'
 
 const HomePage = createLazyPage(() => import('../pages/public/HomePage'))
 const ProductListPage = createLazyPage(() => import('../pages/public/ProductListPage'))
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { path: ROUTES.HOME, element: <HomePage /> },
+      { path: ROUTES.VERTICAL_DETAILS, element: <VerticalPage /> },
       { path: ROUTES.MARKETPLACE, element: <ProductListPage /> },
       { path: ROUTES.STORES, element: <StoresPage /> },
       { path: ROUTES.PRODUCT_DETAIL, element: <ProductDetailPage /> },

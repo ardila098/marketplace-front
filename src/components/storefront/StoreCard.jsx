@@ -8,6 +8,8 @@ import { VERTICALS } from '../../constants/verticals'
 
 
 const StoreCard = ({ store }) => (
+
+  
   <Card bordered={false} style={{ borderRadius: 22, boxShadow: '0 20px 60px rgba(0,0,0,.06)' }}>
     <Cover $image={`${UPLOAD_ROUTES.stores.banners}${store?.banner}`} />
     <Space direction="vertical" size={12} style={{ width: '100%' }}>

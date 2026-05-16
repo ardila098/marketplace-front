@@ -45,4 +45,10 @@ export const API_ROUTES = {
     storeLogo: '/uploads/stores/logo',
     storeBanner: '/uploads/stores/banner',
   },
+
+  verticals: {
+    base: '/verticals',
+    byId: id => `/verticals/${id}`,
+    updateItem: itemId => `/verticals/${itemId}`,
+  },
 }

@@ -1,10 +1,8 @@
-import { Button, Card, Col, Row, Space, Typography } from 'antd'
+import { Button, Col, Row, Space, Typography } from 'antd'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import StoreCard from '../../components/storefront/StoreCard'
 import { ROUTES } from '../../constants/routes'
-import { mockStores } from '../../data/mockData'
-import { PageShell } from '../../styles/layoutStyles'
+import VerticalsCarousel from '../verticals/components/VerticalsCarousel'
 
 const Hero = styled.section`
   padding: 84px max(20px, calc((100vw - 1180px) / 2));
@@ -30,26 +28,19 @@ const HomePage = () => (
             </Space>
           </Space>
         </Col>
-        <Col xs={24} lg={11}>
-          <Card bordered={false} style={{ borderRadius: 28, boxShadow: '0 30px 100px rgba(0,0,0,.08)' }}>
-            <Typography.Title level={4}>Módulos listos</Typography.Title>
-            <Space direction="vertical">
-              <Typography.Text>✓ Marketplace global</Typography.Text>
-              <Typography.Text>✓ Storefront por tienda</Typography.Text>
-              <Typography.Text>✓ Panel seller</Typography.Text>
-              <Typography.Text>✓ Panel admin</Typography.Text>
-              <Typography.Text>✓ Carrito tipo drawer</Typography.Text>
-            </Space>
-          </Card>
-        </Col>
+
       </Row>
     </Hero>
-    <PageShell>
-      <Typography.Title level={2} style={{ letterSpacing: '-.05em' }}>Tiendas destacadas</Typography.Title>
-      <Row gutter={[24, 24]}>
-        {mockStores.map(store => <Col xs={24} md={12} key={store._id}><StoreCard store={store} /></Col>)}
+
+
+    <Col md={24}>
+      <Row justify={'center'}>
+        <Col md={20}>
+          <VerticalsCarousel />
+        </Col>
       </Row>
-    </PageShell>
+    </Col>
+
   </>
 )
 
