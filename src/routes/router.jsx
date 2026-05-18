@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <ProtectedRoute roles={[ROLES.CUSTOMER]} />,
+    element: <ProtectedRoute roles={[ROLES.CUSTOMER.value]} />,
     children: [
       {
         element: <DashboardLayout area="customer" />,
@@ -77,7 +77,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <ProtectedRoute roles={[ROLES.SELLER]} />,
+    element: <ProtectedRoute roles={[ROLES.SELLER.value]} />,
     children: [
       {
         element: <DashboardLayout area="seller" />,
@@ -92,7 +92,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <ProtectedRoute roles={[ROLES.ADMIN]} />,
+    element: <ProtectedRoute roles={[ROLES.ADMIN.value]} />,
     children: [
       {
         element: <DashboardLayout area="admin" />,
