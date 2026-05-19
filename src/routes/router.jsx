@@ -23,6 +23,8 @@ const StorefrontProductDetailPage = createLazyPage(() => import('../pages/storef
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const OrdersPage = createLazyPage(() => import('../pages/customer/OrdersPage'))
 
+const VerticalsPage = createLazyPage(() => import('../pages/verticals/VerticalsPage'))
+
 const SellerDashboardPage = createLazyPage(() => import('../pages/seller/SellerDashboardPage'))
 const StoreFormPage = createLazyPage(() => import('../pages/seller/StoreFormPage'))
 const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesignPage'))
@@ -43,6 +45,7 @@ export const router = createBrowserRouter([
     children: [
       { path: ROUTES.HOME, element: <HomePage /> },
       { path: ROUTES.VERTICAL_DETAILS, element: <VerticalPage /> },
+      { path: ROUTES.VERTICALS, element: <VerticalsPage /> },
       { path: ROUTES.MARKETPLACE, element: <ProductListPage /> },
       { path: ROUTES.STORES, element: <StoresPage /> },
       { path: ROUTES.PRODUCT_DETAIL, element: <ProductDetailPage /> },
