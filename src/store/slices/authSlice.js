@@ -5,6 +5,7 @@ const initialState = {
   user: null,
   token: localStorage.getItem('accessToken'),
   loading: false,
+  initialized: false,
   error: null,
 }
 
@@ -29,6 +30,7 @@ const authSlice = createSlice({
       state.user = null
       state.token = null
       state.error = null
+      state.initialized = true
 
       localStorage.removeItem('accessToken')
     },
@@ -43,6 +45,7 @@ const authSlice = createSlice({
 
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false
+        state.initialized = true
         state.user = action.payload.user
         state.token = action.payload.token
       })
@@ -52,15 +55,22 @@ const authSlice = createSlice({
         state.error = action.error.message
       })
 
+      .addCase(loadSession.pending, state => {
+        state.loading = true
+      })
+
       .addCase(loadSession.fulfilled, (state, action) => {
+        state.loading = false
+        state.initialized = true
         state.user = action.payload.user
       })
 
       .addCase(loadSession.rejected, state => {
+        state.loading = false
+        state.initialized = true
         state.user = null
-        state.token = null
 
-        localStorage.removeItem('accessToken')
+      
       })
   },
 })

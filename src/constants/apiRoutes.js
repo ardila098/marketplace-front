@@ -17,6 +17,7 @@ export const API_ROUTES = {
 
   products: {
     base: '/products',
+    myStoreProducts: '/products/my-store-products',
     byId: id => `/products/${id}`,
     bySlug: slug => `/products/slug/${slug}`,
     byStore: storeSlug => `/stores/${storeSlug}/products`,
@@ -38,6 +39,11 @@ export const API_ROUTES = {
     myOrders: '/orders/me',
     sellerOrders: '/orders/seller',
     adminOrders: '/orders/admin',
+  },
+
+  categories: {
+    base: '/categories',
+    byId: id => `/categories/${id}`,
   },
 
   uploads: {

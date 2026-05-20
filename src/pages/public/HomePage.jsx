@@ -33,7 +33,7 @@ const HomePage = () => (
     </Hero>
 
 
-    <Col md={24}>
+    <Col md={24} xs={24} lg={24}>
       <Row justify={'center'}>
         <Col md={20}>
           <VerticalsCarousel />

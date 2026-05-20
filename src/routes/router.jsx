@@ -23,10 +23,10 @@ const StorefrontProductDetailPage = createLazyPage(() => import('../pages/storef
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const OrdersPage = createLazyPage(() => import('../pages/customer/OrdersPage'))
 
-const SellerDashboardPage = createLazyPage(() => import('../pages/seller/SellerDashboardPage'))
+const SellerDashboardPage = createLazyPage(() => import('../pages/seller/components/SellerDashboardPage/SellerDashboardPage'))
 const StoreFormPage = createLazyPage(() => import('../pages/seller/StoreFormPage'))
 const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesignPage'))
-const SellerProductsPage = createLazyPage(() => import('../pages/seller/SellerProductsPage'))
+const SellerProductsPage = createLazyPage(() => import('../pages/seller/components/SellerProducts/SellerProductsPage'))
 const SellerOrdersPage = createLazyPage(() => import('../pages/seller/SellerOrdersPage'))
 
 const AdminDashboardPage = createLazyPage(() => import('../pages/admin/AdminDashboardPage'))

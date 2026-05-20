@@ -1,6 +1,9 @@
 import { API_ROUTES } from '../constants/apiRoutes'
 import { DataService } from './dataService'
-import { normalizeAuthResponse, normalizeItemResponse } from '../utils/responseNormalizer'
+import {
+  normalizeAuthResponse,
+  normalizeItemResponse,
+} from '../utils/responseNormalizer'
 
 export const authService = {
   login: async payload => {

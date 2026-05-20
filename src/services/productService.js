@@ -32,4 +32,9 @@ export const productService = {
     const response = await DataService.delete(API_ROUTES.products.byId(id))
     return normalizeItemResponse(response, 'Producto eliminado correctamente')
   },
+
+  getMyStoreProducts: async params => {
+    const response = await DataService.get(API_ROUTES.products.myStoreProducts, params)
+    return normalizeListResponse(response)
+  },
 }
