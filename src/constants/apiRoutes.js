@@ -23,6 +23,7 @@ export const API_ROUTES = {
     byStore: storeSlug => `/stores/${storeSlug}/products`,
     approve: id => `/products/${id}/approve`,
     reject: id => `/products/${id}/reject`,
+    sellerById: id => `/products/seller/${id}`
   },
 
   cart: {

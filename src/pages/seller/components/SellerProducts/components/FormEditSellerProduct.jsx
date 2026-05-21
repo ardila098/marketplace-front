@@ -1,18 +1,11 @@
 import { useEffect } from 'react'
 import {
-  Button,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Space,
+  Button, Col, Form, Input, InputNumber, Row, Space,
 } from 'antd'
 
 import SelectProductType from '../../../../../components/selects/selectProductType/SelectProductType'
 import SelectCategory from '../../../../../components/selects/selectCategory/SelectCategory'
 import ImageUploadField from '../../../../../components/uploads/ImageUploadField/ImageUploadField'
-import { PRODUCT_TYPES } from '../../../../../constants/productTypeConstants'
 import {
   UPLOAD_FOLDERS,
   UPLOAD_ROUTES,
@@ -26,13 +19,12 @@ const FormEditSellerProduct = ({
 }) => {
   const [form] = Form.useForm()
 
+
+
   useEffect(() => {
     form.setFieldsValue({
-      productType: PRODUCT_TYPES.VARIANT.value,
-      price: 0,
-      compareAtPrice: 0,
-      images: [],
       ...data,
+      category: data?.category?._id
     })
   }, [form, data])
 

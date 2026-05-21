@@ -1,12 +1,12 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 const initialModalData = {
   open: false,
-  id: null,
   data: null,
 }
 
-const useItemsTableActions = ({ onDelete } = {}) => {
+const useItemsTableActions = ({ onDelete, onGetItem }) => {
   const [dataItem, setDataItem] = useState(initialModalData)
   const [itemExternalData, setModalExternalData] = useState(initialModalData)
 
@@ -14,24 +14,20 @@ const useItemsTableActions = ({ onDelete } = {}) => {
   const handleCreate = () => {
     setDataItem({
       open: true,
-      id: null,
-      data: null,
     })
   }
 
   const handleCreateExternal = () => {
     setModalExternalData({
       open: true,
-      id: null,
-      data: null,
     })
   }
 
-  const handleEdit = data => {
+  const handleEdit = async (id) => {
+    const data = await onGetItem(id)
     setDataItem({
       open: true,
-      id: data._id || data.id,
-      data,
+      data
     })
   }
 
@@ -55,3 +51,9 @@ const useItemsTableActions = ({ onDelete } = {}) => {
 }
 
 export default useItemsTableActions
+
+useItemsTableActions.propTypes = {
+  onDelete: PropTypes.func,
+  onGetItem: PropTypes.func,
+
+}

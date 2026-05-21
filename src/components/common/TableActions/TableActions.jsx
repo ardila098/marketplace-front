@@ -20,7 +20,7 @@ const TableActions = ({
         <Button
           size="small"
           icon={<EditOutlined />}
-          onClick={() => onEdit?.(record)}
+          onClick={() => onEdit?.(record._id || record.id)}
         />
       </Tooltip>
 

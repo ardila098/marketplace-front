@@ -8,8 +8,9 @@ import ModalEditSellerProduct from './components/ModalEditSellerProduct'
 
 const SellerProductsPage = () => {
 
-    const { tableData, saveProduct, getProducts, } = useSellerProducts()
-    const { handleCreate, handleEdit, handleCreateExternal, dataItem, handleClose } = useItemsTableActions()
+    const { tableData, saveProduct, getProducts, getProduct } = useSellerProducts()
+    const { handleCreate, handleEdit, handleCreateExternal, dataItem, handleClose } = useItemsTableActions({ onGetItem: getProduct })
+
 
     const columns = [
         {

@@ -32,6 +32,21 @@ export const useSellerProducts = () => {
         }
     }, [setTableData])
 
+
+    const getProduct = useCallback(async (id) => {
+        setLoading(true)
+
+        try {
+            const response = await productService.getSellerProductByid(id)
+            return response.data
+        } catch (error) {
+            message.error(error.message || 'No se pudieron cargar El producto')
+        } finally {
+            setLoading(false)
+        }
+    }, [])
+
+
     const saveProduct = async ({ id, payload }) => {
         setSaving(true)
 
@@ -77,11 +92,15 @@ export const useSellerProducts = () => {
         getProducts()
     }, [getProducts])
 
+
+  
+
     return {
         getProducts,
         saveProduct,
         removeProduct,
         saving,
+        getProduct,
 
         tableData: {
             ...tableData,

@@ -17,9 +17,9 @@ const buildFileList = (images = [], uploadRoute) => {
 
 const getFileNameFromResponse = response => {
   return (
-    response?.data?.data?.fileName ||
     response?.data?.fileName ||
-    response?.fileName
+    response?.fileName ||
+    response?.data?.data?.fileName
   )
 }
 
@@ -39,6 +39,10 @@ const ImageUploadInput = ({
   }, [value, uploadRoute])
 
   const syncImages = nextFileList => {
+    const hasUploading = nextFileList.some(file => file.status === 'uploading')
+
+    if (hasUploading) return
+
     const images = nextFileList
       .filter(file => file.status === 'done')
       .map(file => file.fileName)

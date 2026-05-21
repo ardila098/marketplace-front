@@ -22,7 +22,7 @@ const useCategorys = (params) => {
 
   useEffect(() => {
     getCategorys()
-  }, [getCategorys])
+  }, [])
 
   return {
     categorys,

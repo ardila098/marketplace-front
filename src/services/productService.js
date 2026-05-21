@@ -24,7 +24,7 @@ export const productService = {
   },
 
   update: async (id, payload) => {
-    const response = await DataService.put(API_ROUTES.products.byId(id), payload)
+    const response = await DataService.patch(API_ROUTES.products.byId(id), payload)
     return normalizeItemResponse(response, 'Producto actualizado correctamente')
   },
 
@@ -36,5 +36,10 @@ export const productService = {
   getMyStoreProducts: async params => {
     const response = await DataService.get(API_ROUTES.products.myStoreProducts, params)
     return normalizeListResponse(response)
+  },
+
+  getSellerProductByid: async id => {
+    const response = await DataService.get(API_ROUTES.products.sellerById(id))
+    return normalizeItemResponse(response)
   },
 }
