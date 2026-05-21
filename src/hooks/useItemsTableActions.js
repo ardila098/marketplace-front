@@ -14,6 +14,7 @@ const useItemsTableActions = ({ onDelete, onGetItem }) => {
   const handleCreate = () => {
     setDataItem({
       open: true,
+      data:null
     })
   }
 

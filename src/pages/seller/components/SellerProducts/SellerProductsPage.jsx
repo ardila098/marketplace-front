@@ -45,6 +45,7 @@ const SellerProductsPage = () => {
         },
     ]
 
+
     return (
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
 
@@ -56,7 +57,7 @@ const SellerProductsPage = () => {
                 handleCreate={handleCreate}
                 onChange={getProducts}
             />
-            <ModalEditSellerProduct open={dataItem.open} onCancel={handleClose} onSubmit={saveProduct} data={dataItem.data} />
+            <ModalEditSellerProduct open={dataItem.open} onCancel={handleClose} onSubmit={saveProduct} data={dataItem?.data} />
         </Space>
     )
 }

@@ -19,12 +19,13 @@ const FormEditSellerProduct = ({
 }) => {
   const [form] = Form.useForm()
 
-
-
   useEffect(() => {
+    form.resetFields()
+    if (!data?._id) return
     form.setFieldsValue({
       ...data,
-      category: data?.category?._id
+      category: data.category?._id ,
+      images: data.images || [],
     })
   }, [form, data])
 

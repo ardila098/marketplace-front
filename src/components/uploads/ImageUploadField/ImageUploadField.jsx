@@ -23,8 +23,13 @@ const getFileNameFromResponse = response => {
   )
 }
 
+const getImagesKey = images => {
+  if (!Array.isArray(images)) return ''
+  return images.join('|')
+}
+
 const ImageUploadInput = ({
-  value = [],
+  value,
   onChange,
   folder,
   uploadRoute,
@@ -35,8 +40,15 @@ const ImageUploadInput = ({
   const [fileList, setFileList] = useState([])
 
   useEffect(() => {
-    setFileList(buildFileList(value, uploadRoute))
-  }, [value, uploadRoute])
+    const images = Array.isArray(value) ? value : []
+    const currentImages = fileList
+      .map(file => file.fileName)
+      .filter(Boolean)
+
+    if (getImagesKey(images) === getImagesKey(currentImages)) return
+
+    setFileList(buildFileList(images, uploadRoute))
+  }, [value, uploadRoute, fileList])
 
   const syncImages = nextFileList => {
     const hasUploading = nextFileList.some(file => file.status === 'uploading')
