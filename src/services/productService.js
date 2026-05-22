@@ -33,6 +33,43 @@ export const productService = {
     return normalizeItemResponse(response, 'Producto eliminado correctamente')
   },
 
+  addVariant: async (productId, payload) => {
+    const response = await DataService.post(
+      API_ROUTES.products.addVariant(productId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Variante creada correctamente')
+  },
+
+  addPiece: async (productId, payload) => {
+    const response = await DataService.post(
+      API_ROUTES.products.addPiece(productId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Pieza creada correctamente')
+  },
+
+  addInventoryItem: async (productId, payload) => {
+    const response = await DataService.post(
+      API_ROUTES.products.addInventoryItem(productId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Opción creada correctamente')
+  },
+
+
+  addReference: async (productId, payload) => {
+    const response = await DataService.post(
+      API_ROUTES.products.addReference(productId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Referencia creada correctamente')
+  },
+
   getMyStoreProducts: async params => {
     const response = await DataService.get(API_ROUTES.products.myStoreProducts, params)
     return normalizeListResponse(response)
@@ -42,4 +79,17 @@ export const productService = {
     const response = await DataService.get(API_ROUTES.products.sellerById(id))
     return normalizeItemResponse(response)
   },
+
+
+  getSellerProductDetail: async id => {
+    const response = await DataService.get(
+      API_ROUTES.products.sellerDetail(id)
+    )
+
+    return normalizeItemResponse(response)
+  },
+
 }
+
+
+

@@ -88,12 +88,78 @@ export const useSellerProducts = () => {
         }
     }
 
+
+    const addVariant = async ({ productId, payload }) => {
+        setSaving(true)
+
+        try {
+            await productService.addVariant(productId, payload)
+            await getProducts()
+
+            return true
+        } catch (error) {
+            message.error(error.message || 'No se pudo crear la variante')
+            return false
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    const addPiece = async ({ productId, payload }) => {
+        setSaving(true)
+
+        try {
+            await productService.addPiece(productId, payload)
+            await getProducts()
+
+            return true
+        } catch (error) {
+            message.error(error.message || 'No se pudo crear la pieza')
+            return false
+        } finally {
+            setSaving(false)
+        }
+    }
+
+
+    const addReference = async ({ productId, payload }) => {
+        setSaving(true)
+
+        try {
+            await productService.addReference(productId, payload)
+            await getProducts()
+
+            return true
+        } catch (error) {
+            message.error(error.message || 'No se pudo crear la referencia')
+            return false
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    const addInventoryItem = async ({ productId, payload }) => {
+        setSaving(true)
+
+        try {
+            await productService.addInventoryItem(productId, payload)
+            await getProducts()
+
+            return true
+        } catch (error) {
+            message.error(error.message || 'No se pudo crear la opción')
+            return false
+        } finally {
+            setSaving(false)
+        }
+    }
+
     useEffect(() => {
         getProducts()
     }, [getProducts])
 
 
-  
+
 
     return {
         getProducts,
@@ -101,7 +167,10 @@ export const useSellerProducts = () => {
         removeProduct,
         saving,
         getProduct,
-
+        addVariant,
+        addPiece,
+        addInventoryItem,
+        addReference,
         tableData: {
             ...tableData,
             loading,

@@ -1,15 +1,17 @@
 import { useEffect } from 'react'
 import {
-  Button, Col, Form, Input, InputNumber, Row, Space,
+  Button, Col, Form, Input, Row, Space,
 } from 'antd'
 
-import SelectProductType from '../../../../../components/selects/selectProductType/SelectProductType'
-import SelectCategory from '../../../../../components/selects/selectCategory/SelectCategory'
-import ImageUploadField from '../../../../../components/uploads/ImageUploadField/ImageUploadField'
-import {
-  UPLOAD_FOLDERS,
-  UPLOAD_ROUTES,
-} from '../../../../../constants/uploadRoutes'
+
+
+import ProductVariantFields from './ProductVariantFields'
+import ProductConfigurableSetFields from './ProductConfigurableSetFields'
+import { PRODUCT_TYPES } from '../../../../../../constants/productTypeConstants'
+import ImageUploadField from '../../../../../../components/uploads/ImageUploadField/ImageUploadField'
+import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../../../../../constants/uploadRoutes'
+import SelectCategory from '../../../../../../components/selects/selectCategory/SelectCategory'
+import SelectProductType from '../../../../../../components/selects/selectProductType/SelectProductType'
 
 const FormEditSellerProduct = ({
   loading = false,
@@ -18,16 +20,33 @@ const FormEditSellerProduct = ({
   onCancel,
 }) => {
   const [form] = Form.useForm()
+  const productType = Form.useWatch('productType', form)
 
   useEffect(() => {
     form.resetFields()
-    if (!data?._id) return
+
     form.setFieldsValue({
+      productType: PRODUCT_TYPES.VARIANT.value,
+      price: 0,
+      compareAtPrice: 0,
+      images: [],
+      parts: [],
+      specs: {},
       ...data,
-      category: data.category?._id ,
-      images: data.images || [],
+      category: data?.category?._id || data?.category,
+
     })
   }, [form, data])
+
+  const renderProductTypeFields = () => {
+
+
+    if (productType === PRODUCT_TYPES.CONFIGURABLE_SET.value) {
+      return <ProductConfigurableSetFields />
+    }
+
+    return <ProductVariantFields />
+  }
 
   const handleFinish = values => {
     onSubmit?.(values)
@@ -58,13 +77,13 @@ const FormEditSellerProduct = ({
             name="name"
             rules={[{ required: true, message: 'El nombre es obligatorio' }]}
           >
-            <Input placeholder="Ej: Camiseta oversize" />
+            <Input placeholder="Ej: Smartwatch 3" />
           </Form.Item>
         </Col>
 
         <Col xs={24} md={12}>
           <Form.Item label="Slug" name="slug">
-            <Input placeholder="camiseta-oversize" />
+            <Input placeholder="smartwatch-3" />
           </Form.Item>
         </Col>
 
@@ -90,22 +109,14 @@ const FormEditSellerProduct = ({
           </Form.Item>
         </Col>
 
-        <Col xs={24} md={6}>
-          <Form.Item label="Precio base" name="price">
-            <InputNumber min={0} style={{ width: '100%' }} />
-          </Form.Item>
-        </Col>
-
-        <Col xs={24} md={6}>
-          <Form.Item label="Precio anterior" name="compareAtPrice">
-            <InputNumber min={0} style={{ width: '100%' }} />
-          </Form.Item>
-        </Col>
-
         <Col xs={24}>
           <Form.Item label="Descripción" name="description">
             <Input.TextArea rows={4} placeholder="Describe el producto" />
           </Form.Item>
+        </Col>
+
+        <Col xs={24}>
+          {renderProductTypeFields()}
         </Col>
       </Row>
 

@@ -1,63 +1,34 @@
-import AppTable from '../../../../components/common/AppTable'
-import { useSellerProducts } from './hooks/useSellerProducts'
-import TableActions from '../../../../components/common/TableActions/TableActions'
-import useItemsTableActions from '../../../../hooks/useItemsTableActions'
 import { Space } from 'antd'
-import HeaderTable from '../../../../components/common/TableActions/HeaderTable'
-import ModalEditSellerProduct from './components/ModalEditSellerProduct'
+import useItemsTableActions from '../../../../hooks/useItemsTableActions'
+import { useSellerProducts } from './hooks/useSellerProducts'
+import { useSellerProductModals } from './hooks/useSellerProductModals'
+import SellerProductModals from './modals/SellerProductModals'
+import ModalEditSellerProduct from './modals/ModalEditSellerProduct'
+import ProductsTable from '../../../../components/products/productsTable/ProductsTable'
 
 const SellerProductsPage = () => {
-
-    const { tableData, saveProduct, getProducts, getProduct } = useSellerProducts()
-    const { handleCreate, handleEdit, handleCreateExternal, dataItem, handleClose } = useItemsTableActions({ onGetItem: getProduct })
-
-
-    const columns = [
-        {
-            title: 'Producto',
-            dataIndex: 'name',
-            key: 'name',
-        },
-        {
-            title: 'Estado',
-            dataIndex: 'status',
-            key: 'status',
-        },
-        {
-            title: 'Tienda',
-            dataIndex: ['store', 'name'],
-            key: 'store',
-        },
-        {
-            title: 'Acciones',
-            key: 'actions',
-            align: 'right',
-            render: (_, record) => (
-                <TableActions
-                    record={record}
-                    showVariant
-                    onEdit={handleEdit}
-                    onAddVariant={handleCreateExternal}
-                    deleteTitle="Eliminar producto"
-                    deleteDescription="¿Seguro que deseas eliminar este producto?"
-                />
-            ),
-        },
-    ]
+    const { tableData, saveProduct, getProducts, getProduct, addVariant, addPiece, addInventoryItem, saving, addReference } = useSellerProducts()
+    const { handleCreate, handleEdit, dataItem, handleClose, } = useItemsTableActions({ onGetItem: getProduct, })
+    const productModals = useSellerProductModals({ addVariant, addPiece, addInventoryItem, addReference })
 
 
     return (
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
 
-            <HeaderTable />
-            <AppTable
-                columns={columns}
-                tableData={tableData}
-                searchPlaceholder="Buscar producto"
-                handleCreate={handleCreate}
-                onChange={getProducts}
+            <ProductsTable getProducts={getProducts} handleCreate={handleCreate} handleEdit={handleEdit} tableData={tableData} productModals={productModals} />
+
+            <ModalEditSellerProduct
+                open={dataItem.open}
+                loading={saving || dataItem.loading}
+                onCancel={handleClose}
+                onSubmit={saveProduct}
+                data={dataItem.data}
             />
-            <ModalEditSellerProduct open={dataItem.open} onCancel={handleClose} onSubmit={saveProduct} data={dataItem?.data} />
+
+            <SellerProductModals
+                saving={saving}
+                modals={productModals}
+            />
         </Space>
     )
 }

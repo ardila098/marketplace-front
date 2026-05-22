@@ -8,19 +8,21 @@ const initialModalData = {
 
 const useItemsTableActions = ({ onDelete, onGetItem }) => {
   const [dataItem, setDataItem] = useState(initialModalData)
-  const [itemExternalData, setModalExternalData] = useState(initialModalData)
+  const [itemExternalData, setItemExternalData] = useState(initialModalData)
 
 
   const handleCreate = () => {
     setDataItem({
       open: true,
-      data:null
+      data: null
     })
   }
 
-  const handleCreateExternal = () => {
-    setModalExternalData({
+  const handleCreateExternal = async (id) => {
+    const data = await onGetItem(id)
+    setItemExternalData({
       open: true,
+      data
     })
   }
 
@@ -36,6 +38,11 @@ const useItemsTableActions = ({ onDelete, onGetItem }) => {
     setDataItem(initialModalData)
   }
 
+  const handleCloseExternal = () => {
+    setItemExternalData(initialModalData)
+  }
+
+
   const handleDelete = data => {
     onDelete?.(data)
   }
@@ -47,7 +54,8 @@ const useItemsTableActions = ({ onDelete, onGetItem }) => {
     handleClose,
     handleDelete,
     handleCreateExternal,
-    itemExternalData
+    itemExternalData,
+    handleCloseExternal
   }
 }
 

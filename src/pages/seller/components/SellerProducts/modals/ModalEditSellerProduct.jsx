@@ -1,9 +1,8 @@
 import { Modal } from 'antd'
-import FormEditSellerProduct from './FormEditSellerProduct'
 import PropTypes from 'prop-types'
+import FormEditSellerProduct from '../forms/productTypeForms.js/FormEditSellerProduct'
 
 const ModalEditSellerProduct = ({ open, loading, data, onSubmit, onCancel, }) => {
-
 
   const handleSubmitProduct = async payload => {
     const success = await onSubmit({
