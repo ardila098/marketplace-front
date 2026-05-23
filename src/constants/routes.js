@@ -22,6 +22,9 @@ export const ROUTES = {
   SELLER_DESIGN: '/seller/design',
   SELLER_PRODUCTS: '/seller/products',
   SELLER_ORDERS: '/seller/orders',
+  SELLER_PRODUCTS_MANAGE: '/seller/products/:id/manage',
+
+
 
   ADMIN_DASHBOARD: '/admin',
   ADMIN_STORES: '/admin/stores',

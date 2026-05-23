@@ -17,6 +17,7 @@
     "axios": "latest",
     "dayjs": "latest",
     "lucide-react": "latest",
+    "prop-types": "^15.8.1",
     "react": "latest",
     "react-dom": "latest",
     "react-redux": "latest",

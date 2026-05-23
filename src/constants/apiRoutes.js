@@ -17,11 +17,18 @@ export const API_ROUTES = {
 
   products: {
     base: '/products',
+    myStoreProducts: '/products/my-store-products',
     byId: id => `/products/${id}`,
     bySlug: slug => `/products/slug/${slug}`,
     byStore: storeSlug => `/stores/${storeSlug}/products`,
     approve: id => `/products/${id}/approve`,
     reject: id => `/products/${id}/reject`,
+    sellerById: id => `/products/seller/${id}`,
+    addVariant: id => `/products/${id}/variants`,
+    addPiece: id => `/products/${id}/pieces`,
+    addInventoryItem: id => `/products/${id}/inventory-items`,
+    addReference: id => `/products/${id}/references`,
+    sellerDetail: id => `/products/seller/${id}/detail`,
   },
 
   cart: {
@@ -38,6 +45,11 @@ export const API_ROUTES = {
     myOrders: '/orders/me',
     sellerOrders: '/orders/seller',
     adminOrders: '/orders/admin',
+  },
+
+  categories: {
+    base: '/categories',
+    byId: id => `/categories/${id}`,
   },
 
   uploads: {

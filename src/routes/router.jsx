@@ -24,12 +24,13 @@ const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const OrdersPage = createLazyPage(() => import('../pages/customer/OrdersPage'))
 
 const VerticalsPage = createLazyPage(() => import('../pages/verticals/VerticalsPage'))
-
-const SellerDashboardPage = createLazyPage(() => import('../pages/seller/SellerDashboardPage'))
+const SellerDashboardPage = createLazyPage(() => import('../pages/seller/components/SellerDashboardPage/SellerDashboardPage'))
 const StoreFormPage = createLazyPage(() => import('../pages/seller/StoreFormPage'))
 const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesignPage'))
-const SellerProductsPage = createLazyPage(() => import('../pages/seller/SellerProductsPage'))
+const SellerProductsPage = createLazyPage(() => import('../pages/seller/components/SellerProducts/SellerProductsPage'))
 const SellerOrdersPage = createLazyPage(() => import('../pages/seller/SellerOrdersPage'))
+const SellerProductManagePage = createLazyPage(() => import('../pages/seller/components/sellerProductsManage/SellerProductsManagePage'))
+
 
 const AdminDashboardPage = createLazyPage(() => import('../pages/admin/AdminDashboardPage'))
 const AdminStoresPage = createLazyPage(() => import('../pages/admin/AdminStoresPage'))
@@ -68,7 +69,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <ProtectedRoute roles={[ROLES.CUSTOMER]} />,
+    element: <ProtectedRoute roles={[ROLES.CUSTOMER.value]} />,
     children: [
       {
         element: <DashboardLayout area="customer" />,
@@ -80,7 +81,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    element: <ProtectedRoute roles={[ROLES.SELLER]} />,
+    element: <ProtectedRoute roles={[ROLES.SELLER.value]} />,
     children: [
       {
         element: <DashboardLayout area="seller" />,
@@ -90,12 +91,14 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_DESIGN, element: <StoreDesignPage /> },
           { path: ROUTES.SELLER_PRODUCTS, element: <SellerProductsPage /> },
           { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> },
+          {path: ROUTES.SELLER_PRODUCTS_MANAGE,element: <SellerProductManagePage />,
+          }
         ],
       },
     ],
   },
   {
-    element: <ProtectedRoute roles={[ROLES.ADMIN]} />,
+    element: <ProtectedRoute roles={[ROLES.ADMIN.value]} />,
     children: [
       {
         element: <DashboardLayout area="admin" />,

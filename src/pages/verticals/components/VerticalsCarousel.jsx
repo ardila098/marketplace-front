@@ -8,6 +8,8 @@ const VerticalsCarousel = () => {
     const navigate = useNavigate()
     const { data = [] } = useVerticals()
 
+    console.log(data)
+
     const items = data
         .filter((vertical) => vertical.isActive)
         .sort((a, b) => a.sortOrder - b.sortOrder)

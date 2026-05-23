@@ -24,3 +24,5 @@ export const normalizeAuthResponse = (response, defaultMessage = '') => {
     message: response?.message || defaultMessage,
   }
 }
+
+

@@ -1,6 +1,6 @@
 import { Col, Row, Space, Typography } from 'antd'
-import MetricCard from '../../components/common/MetricCard'
-import ModuleAccessGrid from '../../components/dashboard/ModuleAccessGrid'
+import MetricCard from '../../../../components/common/MetricCard'
+import ModuleAccessGrid from '../../../../components/dashboard/ModuleAccessGrid'
 
 const SellerDashboardPage = () => (
   <Space direction="vertical" size={24} style={{ width: '100%' }}>

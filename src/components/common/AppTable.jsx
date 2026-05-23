@@ -1,64 +1,60 @@
-import { Button, Card, Input, Select, Space, Table } from 'antd'
-import { Search, SlidersHorizontal } from 'lucide-react'
-import { useTableState } from '../../hooks/useTableState'
+import { Button, Col, Input, Row, Space, Table } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
+
 
 const AppTable = ({
-  title,
-  rows = [],
   columns = [],
-  searchableFields = [],
-  filters = [],
+  tableData,
   rowKey = '_id',
-  primaryAction,
-  loading = false
+  searchPlaceholder = 'Buscar...',
+  createPlaceholder = 'Crear Item',
+  handleCreate,
+  onChange
 }) => {
-  const { data, search, setSearch, filters: activeFilters, setFilters } = useTableState(rows, searchableFields)
-
-  const handleFilterChange = (key, value) => {
-    setFilters({ ...activeFilters, [key]: value })
-  }
-
   return (
-    <Card>
-      <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-        <Space style={{ width: '100%', justifyContent: 'space-between' }} align="center">
-          <h2 style={{ margin: 0 }}>{title}</h2>
-          {primaryAction && <Button type="primary" onClick={primaryAction.onClick}>{primaryAction.label}</Button>}
-        </Space>
-        <Space wrap style={{ width: '100%', justifyContent: 'space-between' }}>
-          <Input
-            allowClear
-            prefix={<Search size={16} />}
-            placeholder="Buscar"
-            value={search}
-            onChange={event => setSearch(event.target.value)}
-            style={{ width: 280 }}
-          />
-          <Space wrap>
-            {filters.map(filter => (
-              <Select
-                key={filter.key}
-                allowClear
-                placeholder={filter.label}
-                options={filter.options}
-                value={activeFilters[filter.key]}
-                onChange={value => handleFilterChange(filter.key, value)}
-                style={{ minWidth: 180 }}
-                suffixIcon={<SlidersHorizontal size={16} />}
-              />
-            ))}
-          </Space>
-        </Space>
-        <Table
-          loading={loading}
-          rowKey={rowKey}
-          columns={columns}
-          dataSource={data}
-          pagination={{ pageSize: 10, showSizeChanger: true }}
-          scroll={{ x: 'max-content' }}
-        />
-      </Space>
-    </Card>
+    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+
+
+      <Col md={24}>
+        <Row>
+          <Col md={12}>
+            <Input.Search
+              placeholder={searchPlaceholder}
+              value={tableData?.search}
+              onChange={event => tableData.handleSearch(event.target.value)}
+              allowClear
+              style={{ maxWidth: 320 }}
+            />
+          </Col>
+
+          <Col md={12}>
+            <Row justify={'end'}>
+
+              <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
+                {createPlaceholder}
+              </Button>
+            </Row>
+          </Col>
+        </Row>
+
+
+      </Col>
+
+
+      <Table
+        rowKey={rowKey}
+        columns={columns}
+        dataSource={tableData?.rows}
+        loading={tableData?.loading}
+        pagination={{
+          current: tableData?.page,
+          pageSize: tableData?.pageSize,
+          total: tableData?.total,
+          showSizeChanger: true,
+        }}
+        onChange={onChange}
+      />
+    </Space>
   )
 }
 

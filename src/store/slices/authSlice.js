@@ -1,53 +1,102 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { authService } from '../../services/authService'
 
+const TOKEN_KEY = 'accessToken'
+
+const getStoredToken = () => localStorage.getItem(TOKEN_KEY)
+
 const initialState = {
   user: null,
-  token: localStorage.getItem('accessToken'),
+  token: getStoredToken(),
   loading: false,
-  error: null
+  initialized: false,
+  error: null,
 }
 
 export const login = createAsyncThunk('auth/login', async payload => {
   const response = await authService.login(payload)
-  localStorage.setItem('accessToken', response.token)
+
+  localStorage.setItem(TOKEN_KEY, response.token)
+
   return response
 })
 
-export const loadSession = createAsyncThunk('auth/loadSession', async () => authService.me())
+export const loadSession = createAsyncThunk('auth/loadSession', async () => {
+  const token = getStoredToken()
 
-const authSlice = createSlice({
-  name: 'auth',
-  initialState,
-  reducers: {
-    setDemoSession: (state, action) => {
-      state.user = action.payload.user
-      state.token = action.payload.token
-      localStorage.setItem('accessToken', action.payload.token)
-    },
-    logout: state => {
-      state.user = null
-      state.token = null
-      localStorage.removeItem('accessToken')
+  if (!token) {
+    return {
+      user: null,
+      token: null,
     }
-  },
-  extraReducers: builder => {
-    builder
-      .addCase(login.pending, state => { state.loading = true; state.error = null })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loading = false
-        state.user = action.payload.user
-        state.token = action.payload.token
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.loading = false
-        state.error = action.error.message
-      })
-      .addCase(loadSession.fulfilled, (state, action) => {
-        state.user = action.payload.user || action.payload
-      })
+  }
+
+  const response = await authService.me()
+
+  return {
+    user: response.user,
+    token,
   }
 })
 
-export const { logout, setDemoSession } = authSlice.actions
+const authSlice = createSlice({
+  name: 'auth',
+
+  initialState,
+
+  reducers: {
+    logout: state => {
+      state.user = null
+      state.token = null
+      state.error = null
+      state.initialized = true
+
+      localStorage.removeItem(TOKEN_KEY)
+    },
+  },
+
+  extraReducers: builder => {
+    builder
+      .addCase(login.pending, state => {
+        state.loading = true
+        state.error = null
+      })
+
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false
+        state.initialized = true
+        state.user = action.payload.user
+        state.token = action.payload.token
+      })
+
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || 'No se pudo iniciar sesión'
+      })
+
+      .addCase(loadSession.pending, state => {
+        state.loading = true
+        state.error = null
+      })
+
+      .addCase(loadSession.fulfilled, (state, action) => {
+        state.loading = false
+        state.initialized = true
+        state.user = action.payload.user
+        state.token = action.payload.token
+      })
+
+      .addCase(loadSession.rejected, state => {
+        state.loading = false
+        state.initialized = true
+        state.user = null
+        state.token = null
+
+        localStorage.removeItem(TOKEN_KEY)
+      })
+  },
+})
+
+export const { logout } = authSlice.actions
+
 export default authSlice.reducer

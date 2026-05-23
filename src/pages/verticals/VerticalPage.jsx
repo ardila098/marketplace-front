@@ -6,7 +6,6 @@ const VerticalPage = () => {
   const { id } = useParams()
   const { getVertical, dataVertical } = useVerticals(id)
 
-  console.log(dataVertical)
 
   useEffect(() => {
     getVertical()
