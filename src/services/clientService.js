@@ -1,14 +1,27 @@
 import axios from 'axios'
 import { env } from '../config/env'
 
-export const authHeader = () => {
-  const token = localStorage.getItem('accessToken')
+const getToken = () => localStorage.getItem('accessToken')
 
-  if (!token) return {}
+const addAuthHeader = config => {
+  const token = getToken()
 
-  return {
-    Authorization: `Bearer ${token}`,
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
+
+  return config
+}
+
+const handleResponse = response => response.data
+
+const handleError = error => {
+  const message =
+    error?.response?.data?.message ||
+    error.message ||
+    'Error inesperado'
+
+  return Promise.reject(new Error(message))
 }
 
 export const client = axios.create({
@@ -24,16 +37,8 @@ export const fileClient = axios.create({
   timeout: 30000,
 })
 
-const handleResponse = response => response.data
-
-const handleError = error => {
-  const message =
-    error?.response?.data?.message ||
-    error.message ||
-    'Error inesperado'
-
-  return Promise.reject(new Error(message))
-}
+client.interceptors.request.use(addAuthHeader)
+fileClient.interceptors.request.use(addAuthHeader)
 
 client.interceptors.response.use(handleResponse, handleError)
 fileClient.interceptors.response.use(handleResponse, handleError)

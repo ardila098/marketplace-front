@@ -1,9 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { authService } from '../../services/authService'
 
+const TOKEN_KEY = 'accessToken'
+
+const getStoredToken = () => localStorage.getItem(TOKEN_KEY)
+
 const initialState = {
   user: null,
-  token: localStorage.getItem('accessToken'),
+  token: getStoredToken(),
   loading: false,
   initialized: false,
   error: null,
@@ -12,17 +16,32 @@ const initialState = {
 export const login = createAsyncThunk('auth/login', async payload => {
   const response = await authService.login(payload)
 
-  localStorage.setItem('accessToken', response.token)
+  localStorage.setItem(TOKEN_KEY, response.token)
 
   return response
 })
 
 export const loadSession = createAsyncThunk('auth/loadSession', async () => {
-  return authService.me()
+  const token = getStoredToken()
+
+  if (!token) {
+    return {
+      user: null,
+      token: null,
+    }
+  }
+
+  const response = await authService.me()
+
+  return {
+    user: response.user,
+    token,
+  }
 })
 
 const authSlice = createSlice({
   name: 'auth',
+
   initialState,
 
   reducers: {
@@ -32,7 +51,7 @@ const authSlice = createSlice({
       state.error = null
       state.initialized = true
 
-      localStorage.removeItem('accessToken')
+      localStorage.removeItem(TOKEN_KEY)
     },
   },
 
@@ -52,25 +71,28 @@ const authSlice = createSlice({
 
       .addCase(login.rejected, (state, action) => {
         state.loading = false
-        state.error = action.error.message
+        state.error = action.error.message || 'No se pudo iniciar sesión'
       })
 
       .addCase(loadSession.pending, state => {
         state.loading = true
+        state.error = null
       })
 
       .addCase(loadSession.fulfilled, (state, action) => {
         state.loading = false
         state.initialized = true
         state.user = action.payload.user
+        state.token = action.payload.token
       })
 
       .addCase(loadSession.rejected, state => {
         state.loading = false
         state.initialized = true
         state.user = null
+        state.token = null
 
-      
+        localStorage.removeItem(TOKEN_KEY)
       })
   },
 })

@@ -7,25 +7,25 @@ import { hasAnyRole, hasPermission } from '../utils/permissions'
 const ProtectedRoute = ({ roles = [], permission }) => {
   const {
     user,
-    token,
     role,
     initialized,
+    loading,
     isAuthenticated,
   } = useAuth()
 
-  if (!initialized) {
+  if (!initialized || loading) {
     return <Spin fullscreen />
   }
 
-  if (!token || !isAuthenticated || !user) {
+  if (!isAuthenticated || !user) {
     return <Navigate to={ROUTES.LOGIN} replace />
   }
 
-  if (!hasAnyRole(role, roles)) {
+  if (roles.length > 0 && !hasAnyRole(role, roles)) {
     return <Navigate to={ROUTES.UNAUTHORIZED} replace />
   }
 
-  if (!hasPermission(role, permission)) {
+  if (permission && !hasPermission(role, permission)) {
     return <Navigate to={ROUTES.UNAUTHORIZED} replace />
   }
 

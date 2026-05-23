@@ -20,8 +20,7 @@ export const authService = {
     const response = await DataService.get(API_ROUTES.auth.me)
 
     return {
-      data: response?.data || null,
-      user: response?.user || response?.data || null,
+      user: response?.data || null,
       message: response?.message || '',
     }
   },

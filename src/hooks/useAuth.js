@@ -8,7 +8,7 @@ export const useAuth = () => {
   return {
     ...auth,
     role,
-    isAuthenticated: Boolean(auth.token),
-    permissions: getPermissionsByRole(role)
+    isAuthenticated: Boolean(auth.token && auth.user),
+    permissions: getPermissionsByRole(role),
   }
 }

@@ -9,15 +9,14 @@ import { loadSession } from '../store/slices/authSlice'
 
 const App = () => {
   const dispatch = useDispatch()
-
   const appTheme = useSelector(state => state.theme.appTheme)
-  const { token, initialized } = useSelector(state => state.auth)
+  const initialized = useSelector(state => state.auth.initialized)
 
   useEffect(() => {
-    if (token && !initialized) {
+    if (!initialized) {
       dispatch(loadSession())
     }
-  }, [dispatch, token, initialized])
+  }, [dispatch, initialized])
 
   return (
     <ConfigProvider theme={createAntdTheme(appTheme)}>

@@ -1,13 +1,10 @@
-import { authHeader, client, fileClient } from './clientService'
+import { client, fileClient } from './clientService'
 
 class DataService {
   static get(path = '', params = {}, signal) {
     return client({
       method: 'GET',
       url: path,
-      headers: {
-        ...authHeader(),
-      },
       params,
       signal,
     })
@@ -19,7 +16,6 @@ class DataService {
       url: path,
       data,
       headers: {
-        ...authHeader(),
         'Content-Type': 'application/json',
         ...optionalHeader,
       },
@@ -31,9 +27,6 @@ class DataService {
       method: 'PATCH',
       url: path,
       data,
-      headers: {
-        ...authHeader(),
-      },
     })
   }
 
@@ -42,9 +35,6 @@ class DataService {
       method: 'PUT',
       url: path,
       data,
-      headers: {
-        ...authHeader(),
-      },
     })
   }
 
@@ -53,9 +43,6 @@ class DataService {
       method: 'DELETE',
       url: path,
       params: data,
-      headers: {
-        ...authHeader(),
-      },
     })
   }
 
@@ -68,9 +55,6 @@ class DataService {
       method: 'POST',
       url: path,
       data: formData,
-      headers: {
-        ...authHeader(),
-      },
       onUploadProgress,
     })
   }
@@ -84,9 +68,6 @@ class DataService {
       method: 'PUT',
       url: path,
       data: formData,
-      headers: {
-        ...authHeader(),
-      },
       onUploadProgress,
     })
   }
