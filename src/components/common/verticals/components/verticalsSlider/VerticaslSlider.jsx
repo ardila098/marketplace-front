@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom"
-import useVerticals from "../hooks/useVerticals"
-import { UPLOAD_ROUTES } from "../../../constants/uploadRoutes"
-import CardCarousel from "../../../components/common/CardCarousel/CardCarousel"
+import CardCarousel from "../../../CardCarousel/CardCarousel"
+import useVerticals from "../../../../../pages/verticals/hooks/useVerticals"
+import { UPLOAD_ROUTES } from "../../../../../constants/uploadRoutes"
 
 
-const VerticalsCarousel = () => {
+const VerticalsSlider = () => {
     const navigate = useNavigate()
     const { data = [] } = useVerticals()
 
@@ -31,4 +31,6 @@ const VerticalsCarousel = () => {
     )
 }
 
-export default VerticalsCarousel
+export default VerticalsSlider
+
+

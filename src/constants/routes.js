@@ -7,6 +7,8 @@ export const ROUTES = {
   REGISTER: '/register',
   UNAUTHORIZED: '/unauthorized',
 
+  VERTICALS: '/verticals',
+
   STORES: '/stores',
   STOREFRONT_HOME: '/stores/:storeSlug',
   STOREFRONT_PRODUCTS: '/stores/:storeSlug/products',

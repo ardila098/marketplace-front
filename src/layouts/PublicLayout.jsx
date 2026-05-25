@@ -40,7 +40,7 @@ const Brand = styled(Link)`
 const PublicLayout = () => (
   <Layout>
     <HeaderBar>
-      <Brand to={ROUTES.HOME}>{env.appName}</Brand>
+      <Brand to={ROUTES.HOME}>{}</Brand>
       <ResponsivePublicMenu />
       <UserActions />
     </HeaderBar>
