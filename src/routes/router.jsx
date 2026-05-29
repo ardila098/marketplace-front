@@ -7,7 +7,6 @@ import PublicLayout from '../layouts/PublicLayout'
 import DashboardLayout from '../layouts/DashboardLayout'
 import StorefrontLayout from '../layouts/StorefrontLayout'
 import { createLazyPage } from './lazyPage'
-import VerticalPage from '../pages/verticals/VerticalPage'
 
 const HomePage = createLazyPage(() => import('../pages/public/homePage/HomePage'))
 const ProductListPage = createLazyPage(() => import('../pages/public/ProductListPage'))
@@ -24,6 +23,7 @@ const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const OrdersPage = createLazyPage(() => import('../pages/customer/OrdersPage'))
 
 const VerticalsPage = createLazyPage(() => import('../pages/verticals/VerticalsPage'))
+const VerticalPage = createLazyPage(() => import('../pages/vertical/VerticalPage'))
 const SellerDashboardPage = createLazyPage(() => import('../pages/seller/components/SellerDashboardPage/SellerDashboardPage'))
 const StoreFormPage = createLazyPage(() => import('../pages/seller/StoreFormPage'))
 const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesignPage'))
@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
     element: <PublicLayout />,
     children: [
       { path: ROUTES.HOME, element: <HomePage /> },
-      { path: ROUTES.VERTICAL_DETAILS, element: <VerticalPage /> },
+      { path: ROUTES.VERTICAL, element: <VerticalPage /> },
       { path: ROUTES.VERTICALS, element: <VerticalsPage /> },
       { path: ROUTES.MARKETPLACE, element: <ProductListPage /> },
       { path: ROUTES.STORES, element: <StoresPage /> },

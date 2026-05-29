@@ -63,4 +63,10 @@ export const API_ROUTES = {
     byId: id => `/verticals/${id}`,
     updateItem: itemId => `/verticals/${itemId}`,
   },
+
+
+  catalogs: {
+    base: '/catalogs',
+    byIdVertical: id => `/catalogs/${id}`,
+  },
 }

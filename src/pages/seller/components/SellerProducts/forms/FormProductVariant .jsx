@@ -1,11 +1,15 @@
 import {
-  Button, Col, Form, Input, InputNumber, Row, Space,
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Space,
 } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import ImageUploadField from '../../../../../components/uploads/ImageUploadField/ImageUploadField'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../../../../constants/uploadRoutes'
-
-
 
 const FormProductVariant = ({
   loading = false,
@@ -16,13 +20,13 @@ const FormProductVariant = ({
 
   const handleFinish = values => {
     onSubmit?.({
-      sku: values.sku,
       price: values.price,
       compareAtPrice: values.compareAtPrice || 0,
       stock: values.stock || 0,
       lowStockThreshold: values.lowStockThreshold || 0,
       images: values.images || [],
       attributes: values.attributes || [],
+      isActive: true,
     })
   }
 
@@ -59,16 +63,6 @@ const FormProductVariant = ({
 
         <Col xs={24} md={12}>
           <Form.Item
-            label="SKU"
-            name="sku"
-            rules={[{ required: true, message: 'El SKU es obligatorio' }]}
-          >
-            <Input placeholder="Ej: CAM-NEG-M" />
-          </Form.Item>
-        </Col>
-
-        <Col xs={24} md={12}>
-          <Form.Item
             label="Precio"
             name="price"
             rules={[{ required: true, message: 'El precio es obligatorio' }]}
@@ -78,13 +72,39 @@ const FormProductVariant = ({
         </Col>
 
         <Col xs={24} md={12}>
-          <Form.Item label="Precio anterior" name="compareAtPrice">
+          <Form.Item
+            label="Precio anterior"
+            name="compareAtPrice"
+            dependencies={['price']}
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const price = Number(getFieldValue('price') || 0)
+                  const compareAtPrice = Number(value || 0)
+
+                  if (!compareAtPrice || compareAtPrice > price) {
+                    return Promise.resolve()
+                  }
+
+                  return Promise.reject(
+                    new Error('El precio anterior debe ser mayor al precio actual')
+                  )
+                },
+              }),
+            ]}
+          >
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
 
         <Col xs={24} md={12}>
           <Form.Item label="Stock inicial" name="stock">
+            <InputNumber min={0} style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item label="Alerta stock bajo" name="lowStockThreshold">
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
         </Col>

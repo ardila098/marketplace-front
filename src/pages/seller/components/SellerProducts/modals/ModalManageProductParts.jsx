@@ -14,7 +14,6 @@ const ModalManageProductParts = ({
       productId: product?._id || product?.id,
       payload: {
         name: values.name,
-        key: values.key,
         required: true,
         minSelect: 1,
         maxSelect: 1,
@@ -44,14 +43,6 @@ const ModalManageProductParts = ({
           rules={[{ required: true, message: 'El nombre es obligatorio' }]}
         >
           <Input placeholder="Ej: Brasier, Panty" />
-        </Form.Item>
-
-        <Form.Item
-          label="Key"
-          name="key"
-          rules={[{ required: true, message: 'El key es obligatorio' }]}
-        >
-          <Input placeholder="Ej: brasier, panty" />
         </Form.Item>
 
         <Space style={{ width: '100%', justifyContent: 'flex-end' }}>

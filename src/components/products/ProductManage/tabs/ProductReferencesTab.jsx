@@ -1,6 +1,15 @@
-import { Card, Empty, Image, Space, Tag } from 'antd'
+import { Card, Empty, Image, Space, Tag, Typography } from 'antd'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../../constants/uploadRoutes'
 
+const { Text } = Typography
+
+const formatPrice = value => {
+  return Number(value || 0).toLocaleString('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    maximumFractionDigits: 0,
+  })
+}
 
 const ProductReferencesTab = ({ product }) => {
   const references = product.references || []
@@ -19,13 +28,27 @@ const ProductReferencesTab = ({ product }) => {
           style={{ width: 260 }}
         >
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Tag>{reference.key}</Tag>
-
-            {reference.sku && (
-              <div>
-                SKU: {reference.sku}
-              </div>
+            {reference.isDefault && (
+              <Tag color="blue">
+                Inicial
+              </Tag>
             )}
+
+            <Text strong>
+              {formatPrice(reference.price)}
+            </Text>
+
+            {reference.compareAtPrice > reference.price && (
+              <Text delete type="secondary">
+                {formatPrice(reference.compareAtPrice)}
+              </Text>
+            )}
+
+            {reference.attributes?.map(attribute => (
+              <Tag key={`${attribute.labelSnapshot}-${attribute.valueSnapshot}`}>
+                {attribute.labelSnapshot}: {attribute.valueSnapshot}
+              </Tag>
+            ))}
 
             <Image.PreviewGroup>
               <Space wrap>

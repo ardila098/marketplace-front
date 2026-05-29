@@ -1,16 +1,7 @@
 import { useEffect } from 'react'
-import { Button, Form, Input, Modal, Space } from 'antd'
+import { Button, Form, Input, InputNumber, Modal, Space, Switch } from 'antd'
 import ImageUploadField from '../../../../../components/uploads/ImageUploadField/ImageUploadField'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../../../../constants/uploadRoutes'
-
-
-
-const normalizeKey = value => {
-  return String(value || '')
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-}
 
 const ModalAddProductReference = ({
   open,
@@ -27,30 +18,21 @@ const ModalAddProductReference = ({
     }
   }, [open, form])
 
-  const handleNameChange = event => {
-    const name = event.target.value
-
-    form.setFieldsValue({
-      key: normalizeKey(name),
-    })
-  }
-
   const handleFinish = values => {
-    const color = values.name
-
     onSubmit?.({
       productId: product?._id || product?.id,
       payload: {
         name: values.name,
-        key: values.key || normalizeKey(values.name),
-        sku: values.sku,
+        price: values.price || 0,
+        compareAtPrice: values.compareAtPrice || 0,
         images: values.images || [],
         attributes: [
           {
             labelSnapshot: 'Color',
-            valueSnapshot: color,
+            valueSnapshot: values.name,
           },
         ],
+        isDefault: Boolean(values.isDefault),
         isActive: true,
       },
     })
@@ -69,28 +51,54 @@ const ModalAddProductReference = ({
         form={form}
         layout="vertical"
         onFinish={handleFinish}
+        initialValues={{
+          price: product?.price || 0,
+          compareAtPrice: product?.compareAtPrice || 0,
+          isDefault: false,
+        }}
       >
         <Form.Item
           label="Nombre de la referencia"
           name="name"
           rules={[{ required: true, message: 'El nombre es obligatorio' }]}
         >
-          <Input
-            placeholder="Ej: Negro, Rojo, Azul"
-            onChange={handleNameChange}
-          />
+          <Input placeholder="Ej: Negro, Rojo, Azul" />
         </Form.Item>
 
         <Form.Item
-          label="Key"
-          name="key"
-          rules={[{ required: true, message: 'El key es obligatorio' }]}
+          label="Precio"
+          name="price"
+          rules={[{ required: true, message: 'El precio es obligatorio' }]}
         >
-          <Input placeholder="Ej: negro" />
+          <InputNumber min={0} style={{ width: '100%' }} placeholder="Ej: 130000" />
         </Form.Item>
 
-        <Form.Item label="SKU de referencia" name="sku">
-          <Input placeholder="Ej: BIKINI-VERONA-NEGRO" />
+        <Form.Item
+          label="Precio comparativo"
+          name="compareAtPrice"
+          dependencies={['price']}
+          rules={[
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                const price = Number(getFieldValue('price') || 0)
+                const compareAtPrice = Number(value || 0)
+
+                if (!compareAtPrice || compareAtPrice > price) {
+                  return Promise.resolve()
+                }
+
+                return Promise.reject(
+                  new Error('El precio comparativo debe ser mayor al precio actual')
+                )
+              },
+            }),
+          ]}
+        >
+          <InputNumber min={0} style={{ width: '100%' }} placeholder="Ej: 160000" />
+        </Form.Item>
+
+        <Form.Item label="Referencia inicial" name="isDefault" valuePropName="checked">
+          <Switch />
         </Form.Item>
 
         <ImageUploadField

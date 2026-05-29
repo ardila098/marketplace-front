@@ -28,7 +28,6 @@ const ModalAddInventoryItem = ({
       payload: {
         referenceId: values.referenceId,
         partId: values.partId,
-        sku: values.sku,
         stock: values.stock || 0,
         lowStockThreshold: values.lowStockThreshold || 0,
         attributes: [
@@ -103,16 +102,6 @@ const ModalAddInventoryItem = ({
               rules={[{ required: true, message: 'La talla es obligatoria' }]}
             >
               <Input placeholder="Ej: S, M, XL, 34B" />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Form.Item
-              label="SKU"
-              name="sku"
-              rules={[{ required: true, message: 'El SKU es obligatorio' }]}
-            >
-              <Input placeholder="Ej: BIK-NEG-BRA-S" />
             </Form.Item>
           </Col>
 

@@ -1,7 +1,7 @@
 export const ROUTES = {
   HOME: '/',
   MARKETPLACE: '/marketplace',
-  VERTICAL_DETAILS: '/vertical/:id',
+  VERTICAL: '/vertical/:id',
   PRODUCT_DETAIL: '/products/:productSlug',
   LOGIN: '/login',
   REGISTER: '/register',
