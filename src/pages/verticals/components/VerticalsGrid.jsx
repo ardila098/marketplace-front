@@ -1,54 +1,39 @@
 import { Row, Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { UPLOAD_ROUTES } from '../../../constants/uploadRoutes';
+import {
+    GridCardContainer,
+    GridCardImage,
+    GridCardOverlay,
+    GridCardIcon,
+    GridCardTitle,
+    GridCardExploreText
+} from '../styles/styleVerticalsGrid';
 
 const VerticalsGrid = ({ data }) => {
     const navigate = useNavigate();
 
     return (
         <Row gutter={[24, 24]} justify="center">
-            {data.map((vertical) => (
-                <Col key={vertical._id} xs={24} sm={12} lg={6}>
-                    <div
-                        onClick={() => navigate(`/vertical/${vertical._id}`)}
-                        style={{
-                            position: 'relative',
-                            borderRadius: 15,
-                            overflow: 'hidden',
-                            cursor: 'pointer',
-                            height: 300
-                        }}
-                    >
-                        <img
-                            src={`${UPLOAD_ROUTES.verticals.banners}/${vertical.banner}`}
-                            alt={`Vertical: ${vertical.name}`}
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                display: 'block',
-                                objectPosition: 'top'
-                            }}
+            {data.map((item) => (
+                <Col key={item.vertical._id} xs={24} sm={12} lg={6}>
+                    <GridCardContainer onClick={() => navigate(`/vertical/${item.vertical._id}`)}>
+                        <GridCardImage
+                            src={`${UPLOAD_ROUTES.verticals.banners}/${item.vertical.banner}`}
+                            alt={`Vertical: ${item.vertical.name}`}
                         />
 
-                        <div style={{
-                            position: 'absolute',
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            padding: '15px'
-                        }}>
-                            <img
-                                src={`${UPLOAD_ROUTES.verticals.icons}/${vertical.icon}`}
-                                alt={`Icono ${vertical.name}`}
-                                style={{ width: 24, height: 24 }}
+                        <GridCardOverlay>
+                            <GridCardIcon
+                                src={`${UPLOAD_ROUTES.verticals.icons}/${item.vertical.icon}`}
+                                alt={`Icono ${item.vertical.name}`}
                             />
                             <div>
-                                <div style={{ fontWeight: 600 }}>{vertical.name}</div>
-                                <div style={{ fontSize: 12, color: '#000' }}>Explorar</div>
+                                <GridCardTitle>{item.vertical.name}</GridCardTitle>
+                                <GridCardExploreText>Explorar</GridCardExploreText>
                             </div>
-                        </div>
-                    </div>
+                        </GridCardOverlay>
+                    </GridCardContainer>
                 </Col>
             ))}
         </Row>

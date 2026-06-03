@@ -11,16 +11,19 @@ const VerticalsSlider = () => {
     console.log(data)
 
     const items = data
-        .filter((vertical) => vertical.isActive)
-        .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map((vertical) => ({
-            id: vertical._id,
-            title: vertical?.name,
-            description: vertical?.description,
-            image: `${UPLOAD_ROUTES.verticals?.banners}/${vertical.banner}`,
-            icon: `${UPLOAD_ROUTES.verticals?.icons}/${vertical.icon}`,
-            slug: vertical.slug,
-        }))
+        .filter((item) => item.vertical && item.vertical.isActive !== false)
+        .sort((a, b) => (a.vertical.sortOrder || 0) - (b.vertical.sortOrder || 0))
+        .map((item) => {
+            const vertical = item.vertical;
+            return {
+                id: vertical._id,
+                title: vertical?.name,
+                description: vertical?.description,
+                image: `${UPLOAD_ROUTES.verticals?.banners}/${vertical.banner}`,
+                icon: `${UPLOAD_ROUTES.verticals?.icons}/${vertical.icon}`,
+                slug: vertical.slug,
+            }
+        })
 
     return (
         <CardCarousel

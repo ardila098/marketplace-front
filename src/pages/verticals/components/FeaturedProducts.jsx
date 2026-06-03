@@ -1,5 +1,6 @@
 import { Col } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { UPLOAD_ROUTES } from '../../../constants/uploadRoutes';
 
 import {
     FeaturedProductsRow,
@@ -29,8 +30,9 @@ const FeaturedProducts = ({ data = [], }) => {
 
     return (
         <FeaturedProductsRow gutter={[16, 16]}>
-            {data.map((vertical) => {
-
+            {data.map((item) => {
+                const { vertical, products } = item;
+                
                 return (
                     <FeaturedProductCol key={vertical._id} xs={24} sm={12} lg={6}>
                         <FeaturedProductCard>
@@ -43,10 +45,10 @@ const FeaturedProducts = ({ data = [], }) => {
                             </FeaturedProductHeader>
 
                             <ProductImagesRow gutter={8}>
-                                {vertical?.map((product) => (
+                                {products?.slice(0, 3).map((product) => (
                                     <Col key={product._id} span={8}>
                                         <ProductImage
-                                            // src={getProductImage(product)}
+                                            src={product.image ? `${UPLOAD_ROUTES.products.images}/${product.image}` : 'https://via.placeholder.com/150'}
                                             alt={product.name}
                                             onClick={() => handleProductClick(product._id)}
                                         />
@@ -57,7 +59,7 @@ const FeaturedProducts = ({ data = [], }) => {
                             <FeaturedStoresLabel>Tiendas destacadas</FeaturedStoresLabel>
 
                             <FeaturedStoresText>
-                                {/* {getStoreNames()} */}
+                                {products?.[0]?.store?.name || 'Múltiples Tiendas'}
                             </FeaturedStoresText>
                         </FeaturedProductCard>
                     </FeaturedProductCol>
