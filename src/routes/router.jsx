@@ -10,7 +10,7 @@ import { createLazyPage } from './lazyPage'
 
 const HomePage = createLazyPage(() => import('../pages/public/homePage/HomePage'))
 const ProductListPage = createLazyPage(() => import('../pages/public/ProductListPage'))
-const ProductDetailPage = createLazyPage(() => import('../pages/public/ProductDetailPage'))
+const ProductDetailPage = createLazyPage(() => import('../pages/itemDetails/ItemDetailsPage'))
 const StoresPage = createLazyPage(() => import('../pages/public/StoresPage'))
 const LoginPage = createLazyPage(() => import('../pages/public/LoginPage'))
 const RegisterPage = createLazyPage(() => import('../pages/public/RegisterPage'))
@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.VERTICALS, element: <VerticalsPage /> },
       { path: ROUTES.MARKETPLACE, element: <ProductListPage /> },
       { path: ROUTES.STORES, element: <StoresPage /> },
-      { path: ROUTES.PRODUCT_DETAIL, element: <ProductDetailPage /> },
+      { path: ROUTES.VERTICAL_PRODUCT_DETAIL, element: <ProductDetailPage /> },
       { path: ROUTES.LOGIN, element: <LoginPage /> },
       { path: ROUTES.REGISTER, element: <RegisterPage /> },
       { path: ROUTES.UNAUTHORIZED, element: <UnauthorizedPage /> },

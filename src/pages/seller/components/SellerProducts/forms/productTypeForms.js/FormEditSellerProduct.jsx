@@ -1,9 +1,5 @@
 import { useEffect } from 'react'
-import {
-  Button, Col, Form, Input, Row, Space,
-} from 'antd'
-
-
+import { Button, Col, Form, Input, Row, Space } from 'antd'
 
 import ProductVariantFields from './ProductVariantFields'
 import ProductConfigurableSetFields from './ProductConfigurableSetFields'
@@ -13,12 +9,7 @@ import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../../../../../constants/uploa
 import SelectCategory from '../../../../../../components/selects/selectCategory/SelectCategory'
 import SelectProductType from '../../../../../../components/selects/selectProductType/SelectProductType'
 
-const FormEditSellerProduct = ({
-  loading = false,
-  data,
-  onSubmit,
-  onCancel,
-}) => {
+const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) => {
   const [form] = Form.useForm()
   const productType = Form.useWatch('productType', form)
 
@@ -34,13 +25,10 @@ const FormEditSellerProduct = ({
       specs: {},
       ...data,
       category: data?.category?._id || data?.category,
-
     })
   }, [form, data])
 
   const renderProductTypeFields = () => {
-
-
     if (productType === PRODUCT_TYPES.CONFIGURABLE_SET.value) {
       return <ProductConfigurableSetFields />
     }
@@ -53,11 +41,7 @@ const FormEditSellerProduct = ({
   }
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={handleFinish}
-    >
+    <Form form={form} layout="vertical" onFinish={handleFinish}>
       <Row gutter={16}>
         <Col xs={24}>
           <ImageUploadField
@@ -82,12 +66,6 @@ const FormEditSellerProduct = ({
         </Col>
 
         <Col xs={24} md={12}>
-          <Form.Item label="Slug" name="slug">
-            <Input placeholder="smartwatch-3" />
-          </Form.Item>
-        </Col>
-
-        <Col xs={24} md={12}>
           <Form.Item
             label="Categoría"
             name="category"
@@ -101,9 +79,7 @@ const FormEditSellerProduct = ({
           <Form.Item
             label="Tipo de producto"
             name="productType"
-            rules={[
-              { required: true, message: 'El tipo de producto es obligatorio' },
-            ]}
+            rules={[{ required: true, message: 'El tipo de producto es obligatorio' }]}
           >
             <SelectProductType />
           </Form.Item>
@@ -115,15 +91,11 @@ const FormEditSellerProduct = ({
           </Form.Item>
         </Col>
 
-        <Col xs={24}>
-          {renderProductTypeFields()}
-        </Col>
+        <Col xs={24}>{renderProductTypeFields()}</Col>
       </Row>
 
       <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-        <Button onClick={onCancel}>
-          Cancelar
-        </Button>
+        <Button onClick={onCancel}>Cancelar</Button>
 
         <Button type="primary" htmlType="submit" loading={loading}>
           Guardar

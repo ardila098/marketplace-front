@@ -7,22 +7,20 @@ import VerticalsSlider from '../../../../../components/common/verticals/componen
 
 const ContainerHome = () => (
     
-    
-    
     <>
-        <Col md={24} xs={24} lg={24}>
-            <HeaderHome />
-        </Col>
+    <Col md={24} xs={24} lg={24}>
+        <HeaderHome />
+    </Col>
 
-        <Col md={24} xs={24} lg={24}>
+    <Col md={24} xs={24} lg={24}>
         
-           <Row justify={'center'}>
-                <Col md={24}>
-                    <VerticalsSlider />
-                </Col>
-        
-                  </Row>
+      <Row justify={'center'}>
+        <Col md={24}>
+          <VerticalsSlider />
         </Col>
+        
+    	</Row>
+    </Col>
 
 
 

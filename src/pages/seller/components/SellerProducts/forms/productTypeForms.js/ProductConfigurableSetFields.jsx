@@ -4,38 +4,6 @@ import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 const ProductConfigurableSetFields = () => {
   return (
     <Row gutter={16}>
-      <Col xs={24} md={8}>
-        <Form.Item label="Precio base" name="price">
-          <InputNumber min={0} style={{ width: '100%' }} />
-        </Form.Item>
-      </Col>
-
-      <Col xs={24} md={8}>
-        <Form.Item
-          label="Precio anterior base"
-          name="compareAtPrice"
-          dependencies={['price']}
-          rules={[
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                const price = Number(getFieldValue('price') || 0)
-                const compareAtPrice = Number(value || 0)
-
-                if (!compareAtPrice || compareAtPrice > price) {
-                  return Promise.resolve()
-                }
-
-                return Promise.reject(
-                  new Error('El precio anterior debe ser mayor al precio actual')
-                )
-              },
-            }),
-          ]}
-        >
-          <InputNumber min={0} style={{ width: '100%' }} />
-        </Form.Item>
-      </Col>
-
       <Col xs={24}>
         <Form.List name="parts">
           {(fields, { add, remove }) => (

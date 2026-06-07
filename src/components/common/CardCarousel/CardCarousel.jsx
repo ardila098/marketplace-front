@@ -14,7 +14,7 @@ import {
   Title,
 } from './styles'
 
-const getCarouselSettings = (itemsLength) => ({
+const getCarouselSettings = itemsLength => ({
   dots: true,
   arrows: false,
   draggable: true,
@@ -49,14 +49,13 @@ const getCarouselSettings = (itemsLength) => ({
 })
 
 const CardCarousel = ({ title, items = [], onItemClick }) => {
-  const carouselSettings = useMemo(
-    () => getCarouselSettings(items.length),
-    [items.length]
-  )
+  const carouselSettings = useMemo(() => getCarouselSettings(items.length), [items.length])
+
+  console.log(items)
 
   if (!items.length) return null
 
-  const handleItemClick = (item) => {
+  const handleItemClick = item => {
     onItemClick?.(item)
   }
 
@@ -65,7 +64,7 @@ const CardCarousel = ({ title, items = [], onItemClick }) => {
       {title && <Title>{title}</Title>}
 
       <CarouselWrapper {...carouselSettings}>
-        {items.map((item) => (
+        {items.map(item => (
           <div key={item.id || item.title}>
             <Card onClick={() => handleItemClick(item)}>
               <CardImage src={item.image} alt={item.title || 'Imagen'} />
@@ -80,15 +79,13 @@ const CardCarousel = ({ title, items = [], onItemClick }) => {
                 <CardContent>
                   {item.title && <CardTitle>{item.title}</CardTitle>}
 
-                  {item.description && (
-                    <CardDescription>{item.description}</CardDescription>
-                  )}
+                  {item.description && <CardDescription>{item.description}</CardDescription>}
                 </CardContent>
 
                 <NextButton
                   type="button"
                   aria-label={`Ver ${item.title || 'detalle'}`}
-                  onClick={(event) => {
+                  onClick={event => {
                     event.stopPropagation()
                     handleItemClick(item)
                   }}

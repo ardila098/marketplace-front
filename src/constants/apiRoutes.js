@@ -64,12 +64,8 @@ export const API_ROUTES = {
     updateItem: itemId => `/verticals/${itemId}`,
   },
 
-  catalog: {
-    base: '/catalog',
-    catalogVerticals: '/catalog/catalogVerticals',
-  },
   catalogs: {
     base: '/catalogs',
-    byIdVertical: id => `/catalogs/${id}`,
+    byId: id => `/catalogs/products/${id}`,
   },
 }
