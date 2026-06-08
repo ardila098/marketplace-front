@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { verticalsServices } from '../services/verticalsServices'
 
-const useVerticals = id => {
+const useVerticals = () => {
   const [data, setData] = useState()
   const [dataVertical, setDataVertical] = useState()
   const [loading, setLoading] = useState()
@@ -18,7 +18,7 @@ const useVerticals = id => {
     }
   }, [])
 
-  const getVertical = useCallback(async () => {
+  const getVertical = useCallback(async id => {
     setLoading(true)
     try {
       const data = await verticalsServices.getVertical(id)
@@ -28,7 +28,7 @@ const useVerticals = id => {
     } finally {
       setLoading(false)
     }
-  }, [id])
+  }, [])
 
   useEffect(() => {
     getVerticals()

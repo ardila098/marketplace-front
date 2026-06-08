@@ -9,13 +9,13 @@ import useVerticals from '../../hooks/useVerticals'
 const VerticalPage = () => {
   const { id } = useParams()
   const { data, getVerticalCatalog, loading } = useCatalog()
-  const { dataVertical, getVertical } = useVerticals(id)
+  const { dataVertical, getVertical } = useVerticals()
 
   useEffect(() => {
     const filters = {
       vertical: id,
     }
-    getVertical()
+    getVertical(id)
     getVerticalCatalog(filters)
   }, [id])
 
