@@ -3,14 +3,18 @@ import { catalogService } from '../../../services/catalogService'
 
 const useItemDetails = id => {
   const [dataItem, setDataitem] = useState()
+  const [isLoading, setIsLoading] = useState(false)
 
   const getCatalogItem = useCallback(async () => {
+    setIsLoading(true)
     try {
       const data = await catalogService.getCatalogItem(id)
       console.log(data)
-      setDataitem(data)
+      setDataitem(data.data)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }, [id])
 
@@ -21,6 +25,7 @@ const useItemDetails = id => {
   return {
     getCatalogItem,
     dataItem,
+    isLoading,
   }
 }
 

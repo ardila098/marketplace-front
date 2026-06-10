@@ -21,7 +21,7 @@ export const BannerContainer = styled.div`
 `;
 
 export const BannerOverlay = styled.div`
-  postiion: absolute;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;

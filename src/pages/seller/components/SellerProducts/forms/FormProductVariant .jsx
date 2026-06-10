@@ -1,21 +1,9 @@
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Space,
-} from 'antd'
+import { Button, Col, Form, Input, InputNumber, Row, Space } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import ImageUploadField from '../../../../../components/uploads/ImageUploadField/ImageUploadField'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../../../../constants/uploadRoutes'
 
-const FormProductVariant = ({
-  loading = false,
-  onSubmit,
-  onCancel,
-}) => {
+const FormProductVariant = ({ loading = false, onSubmit, onCancel }) => {
   const [form] = Form.useForm()
 
   const handleFinish = values => {
@@ -26,6 +14,7 @@ const FormProductVariant = ({
       lowStockThreshold: values.lowStockThreshold || 0,
       images: values.images || [],
       attributes: values.attributes || [],
+      variantReference: values.variantReference,
       isActive: true,
     })
   }
@@ -60,6 +49,15 @@ const FormProductVariant = ({
             disabled={loading}
           />
         </Col>
+        <Col xs={24} md={12}>
+          <Form.Item
+            label="referencia de variante"
+            name="variantReference"
+            rules={[{ required: true, message: 'El nombre de la variante es obligatorio' }]}
+          >
+            <Input style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
 
         <Col xs={24} md={12}>
           <Form.Item
@@ -70,7 +68,6 @@ const FormProductVariant = ({
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
-
         <Col xs={24} md={12}>
           <Form.Item
             label="Precio anterior"
@@ -96,19 +93,16 @@ const FormProductVariant = ({
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
-
         <Col xs={24} md={12}>
           <Form.Item label="Stock inicial" name="stock">
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
-
         <Col xs={24} md={12}>
           <Form.Item label="Alerta stock bajo" name="lowStockThreshold">
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
-
         <Col xs={24}>
           <Form.List name="attributes">
             {(fields, { add, remove }) => (
@@ -153,12 +147,7 @@ const FormProductVariant = ({
                   </Row>
                 ))}
 
-                <Button
-                  type="dashed"
-                  block
-                  icon={<PlusOutlined />}
-                  onClick={() => add()}
-                >
+                <Button type="dashed" block icon={<PlusOutlined />} onClick={() => add()}>
                   Agregar atributo
                 </Button>
               </Space>
@@ -168,9 +157,7 @@ const FormProductVariant = ({
       </Row>
 
       <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: 24 }}>
-        <Button onClick={onCancel}>
-          Cancelar
-        </Button>
+        <Button onClick={onCancel}>Cancelar</Button>
 
         <Button type="primary" htmlType="submit" loading={loading}>
           Guardar variante
