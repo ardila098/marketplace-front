@@ -1,6 +1,5 @@
 import { Col, Row, Space, Typography } from 'antd'
 import StoreCard from '../../components/storefront/StoreCard'
-import { mockStores } from '../../data/mockData'
 import { PageShell } from '../../styles/layoutStyles'
 import useStore from './hooks/useStore'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
@@ -10,7 +9,6 @@ const StoresPage = () => {
   const { translate: t } = useDictionaryTranslation()
 
 
-  console.log(data)
 
   return (
     <PageShell>

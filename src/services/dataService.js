@@ -1,48 +1,47 @@
 import { client, fileClient } from './clientService'
 
 class DataService {
-  static get(path = '', params = {}, signal) {
+  static get(path = '', params = {}, config = {}) {
     return client({
       method: 'GET',
       url: path,
       params,
-      signal,
+      ...config,
     })
   }
 
-  static post(path = '', data = {}, optionalHeader = {}) {
+  static post(path = '', data = {}, config = {}) {
     return client({
       method: 'POST',
       url: path,
       data,
-      headers: {
-        'Content-Type': 'application/json',
-        ...optionalHeader,
-      },
+      ...config,
     })
   }
 
-  static patch(path = '', data = {}) {
+  static patch(path = '', data = {}, config = {}) {
     return client({
       method: 'PATCH',
       url: path,
       data,
+      ...config,
     })
   }
 
-  static put(path = '', data = {}) {
+  static put(path = '', data = {}, config = {}) {
     return client({
       method: 'PUT',
       url: path,
       data,
+      ...config,
     })
   }
 
-  static delete(path = '', data = {}) {
+  static delete(path = '', config = {}) {
     return client({
       method: 'DELETE',
       url: path,
-      params: data,
+      ...config,
     })
   }
 

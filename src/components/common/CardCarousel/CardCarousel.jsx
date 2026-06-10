@@ -51,7 +51,6 @@ const getCarouselSettings = itemsLength => ({
 const CardCarousel = ({ title, items = [], onItemClick }) => {
   const carouselSettings = useMemo(() => getCarouselSettings(items.length), [items.length])
 
-  console.log(items)
 
   if (!items.length) return null
 

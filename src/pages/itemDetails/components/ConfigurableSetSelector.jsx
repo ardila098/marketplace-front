@@ -17,12 +17,21 @@ const getOptionLabel = option => {
     .join(' / ')
 }
 
+const buildSelectedItems = (parts = [], selectedOptions = {}) => {
+  return parts
+    .map(part => ({
+      partId: part._id,
+      inventoryItemId: selectedOptions[part._id],
+    }))
+    .filter(item => item.inventoryItemId)
+}
+
 const ConfigurableSetSelector = ({
   product,
   onDisplayItemChange,
   onSelectionChange,
 }) => {
-  const references = product.references || []
+  const references = product?.references || []
 
   const defaultReference = useMemo(() => {
     return references.find(reference => reference.isDefault) || references[0]
@@ -31,9 +40,17 @@ const ConfigurableSetSelector = ({
   const [selectedReferenceId, setSelectedReferenceId] = useState(defaultReference?._id)
   const [selectedOptions, setSelectedOptions] = useState({})
 
-  const selectedReference = references.find(reference => {
-    return reference._id === selectedReferenceId
-  })
+  const selectedReference = useMemo(() => {
+    return references.find(reference => reference._id === selectedReferenceId)
+  }, [references, selectedReferenceId])
+
+  const parts = selectedReference?.parts || []
+
+  useEffect(() => {
+    if (!selectedReferenceId && defaultReference?._id) {
+      setSelectedReferenceId(defaultReference._id)
+    }
+  }, [defaultReference, selectedReferenceId])
 
   useEffect(() => {
     setSelectedOptions({})
@@ -42,18 +59,10 @@ const ConfigurableSetSelector = ({
   useEffect(() => {
     if (!selectedReference) return
 
-    onDisplayItemChange?.(selectedReference)
-
-    const parts = selectedReference.parts || []
-
-    const selectedItems = parts
-      .map(part => ({
-        partId: part._id,
-        inventoryItemId: selectedOptions[part._id],
-      }))
-      .filter(item => item.inventoryItemId)
-
+    const selectedItems = buildSelectedItems(parts, selectedOptions)
     const isValid = parts.length > 0 && selectedItems.length === parts.length
+
+    onDisplayItemChange?.(selectedReference)
 
     onSelectionChange?.({
       isValid,
@@ -65,11 +74,16 @@ const ConfigurableSetSelector = ({
     })
   }, [
     product,
+    parts,
     selectedReference,
     selectedOptions,
     onDisplayItemChange,
     onSelectionChange,
   ])
+
+  const handleSelectReference = referenceId => {
+    setSelectedReferenceId(referenceId)
+  }
 
   const handleSelectOption = (partId, inventoryItemId) => {
     setSelectedOptions(current => ({
@@ -91,7 +105,7 @@ const ConfigurableSetSelector = ({
               key={reference._id}
               type="button"
               $active={reference._id === selectedReferenceId}
-              onClick={() => setSelectedReferenceId(reference._id)}
+              onClick={() => handleSelectReference(reference._id)}
             >
               <OptionLabel>{reference.name}</OptionLabel>
 
@@ -103,19 +117,17 @@ const ConfigurableSetSelector = ({
         </OptionsGrid>
       </SelectorBlock>
 
-      {(selectedReference?.parts || []).map(part => (
+      {parts.map(part => (
         <PartBlock key={part._id}>
           <SelectorTitle>{part.name}</SelectorTitle>
 
           <OptionsGrid>
-            {part.options.map(option => (
+            {(part.options || []).map(option => (
               <OptionButton
                 key={option.inventoryItemId}
                 type="button"
                 $active={selectedOptions[part._id] === option.inventoryItemId}
-                onClick={() =>
-                  handleSelectOption(part._id, option.inventoryItemId)
-                }
+                onClick={() => handleSelectOption(part._id, option.inventoryItemId)}
               >
                 <OptionLabel>
                   {getOptionLabel(option) || 'Opción'}

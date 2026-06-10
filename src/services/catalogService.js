@@ -24,9 +24,7 @@ export const catalogService = {
   },
 
   getCatalogItem: async id => {
-    console.log(id)
     const response = await DataService.get(API_ROUTES.catalogs.byId(id))
-    console.log(response)
     return normalizeItemResponse(response)
   },
 }

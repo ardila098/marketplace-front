@@ -2,10 +2,12 @@ import { useEffect } from 'react'
 import { ConfigProvider } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { RouterProvider } from 'react-router-dom'
+
 import { router } from '../routes/router'
 import { GlobalStyles } from '../styles/GlobalStyles'
 import { createAntdTheme } from '../styles/antdTheme'
 import { loadSession } from '../store/slices/authSlice'
+import { fetchCart } from '../store/slices/cartSlice'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -15,6 +17,12 @@ const App = () => {
   useEffect(() => {
     if (!initialized) {
       dispatch(loadSession())
+    }
+  }, [dispatch, initialized])
+
+  useEffect(() => {
+    if (initialized) {
+      dispatch(fetchCart())
     }
   }, [dispatch, initialized])
 

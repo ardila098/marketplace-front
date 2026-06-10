@@ -9,7 +9,6 @@ const useItemDetails = id => {
     setIsLoading(true)
     try {
       const data = await catalogService.getCatalogItem(id)
-      console.log(data)
       setDataitem(data.data)
     } catch (error) {
       console.error(error)

@@ -33,10 +33,9 @@ export const API_ROUTES = {
 
   cart: {
     base: '/cart',
-    addItem: '/cart/items',
-    updateItem: itemId => `/cart/items/${itemId}`,
-    removeItem: itemId => `/cart/items/${itemId}`,
-    clear: '/cart/clear',
+    items: '/cart/items',
+    itemById: id => `/cart/items/${id}`,
+    coupon: '/cart/coupon',
   },
 
   orders: {
