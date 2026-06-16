@@ -24,7 +24,9 @@ const StorefrontProductDetailPage = createLazyPage(
 )
 
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
+const CheckoutPage = createLazyPage(() => import('../pages/checkout/CheckoutPage'))
 const OrdersPage = createLazyPage(() => import('../pages/customer/OrdersPage'))
+const OrdersLookupPage = createLazyPage(() => import('../pages/orders/OrderLookupPage'))
 
 const VerticalsPage = createLazyPage(() => import('../pages/verticals/VerticalsPage'))
 const VerticalPage = createLazyPage(() => import('../pages/vertical/VerticalPage'))
@@ -36,7 +38,10 @@ const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesign
 const SellerProductsPage = createLazyPage(
   () => import('../pages/seller/components/SellerProducts/SellerProductsPage')
 )
-const SellerOrdersPage = createLazyPage(() => import('../pages/seller/SellerOrdersPage'))
+const SellerOrdersPage = createLazyPage(() => import('../pages/seller/components/sellerOrdersPage/SellerOrdersPage'))
+const SellerOrderDetailPage = createLazyPage(
+  () => import('../pages/seller/components/sellerOrderDetails/SellerOrderDetailPage')
+)
 const SellerProductManagePage = createLazyPage(
   () => import('../pages/seller/components/sellerProductsManage/SellerProductsManagePage')
 )
@@ -63,6 +68,8 @@ export const router = createBrowserRouter([
       { path: ROUTES.REGISTER, element: <RegisterPage /> },
       { path: ROUTES.UNAUTHORIZED, element: <UnauthorizedPage /> },
       { path: ROUTES.CUSTOMER_CART, element: <CartPage /> },
+      { path: ROUTES.CHECKOUT, element: <CheckoutPage /> },
+      { path: ROUTES.ORDER_LOOKUP, element: <OrdersLookupPage /> },
     ],
   },
   {
@@ -99,6 +106,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_PRODUCTS, element: <SellerProductsPage /> },
           { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> },
           { path: ROUTES.SELLER_PRODUCTS_MANAGE, element: <SellerProductManagePage /> },
+          { path: ROUTES.SELLER_ORDER_DETAIL, element: <SellerOrderDetailPage /> },
         ],
       },
     ],

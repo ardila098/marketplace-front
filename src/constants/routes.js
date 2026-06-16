@@ -13,8 +13,10 @@ export const ROUTES = {
   STOREFRONT_HOME: '/stores/:storeSlug',
   STOREFRONT_PRODUCTS: '/stores/:storeSlug/products',
   STOREFRONT_PRODUCT_DETAIL: '/stores/:storeSlug/products/:productSlug',
+  ORDER_LOOKUP: '/order-lookup',
 
   CUSTOMER_CART: '/customer/cart',
+  CHECKOUT: '/checkout',
   CUSTOMER_ORDERS: '/customer/orders',
 
   SELLER_DASHBOARD: '/seller',
@@ -23,6 +25,9 @@ export const ROUTES = {
   SELLER_PRODUCTS: '/seller/products',
   SELLER_ORDERS: '/seller/orders',
   SELLER_PRODUCTS_MANAGE: '/seller/products/:id/manage',
+  SELLER_ORDER_DETAIL: '/seller/orderDetail/:id',
+
+  
 
   ADMIN_DASHBOARD: '/admin',
   ADMIN_STORES: '/admin/stores',

@@ -1,20 +1,25 @@
+import { Currency } from 'lucide-react'
 import AppTable from '../../components/common/AppTable'
 import StatusTag from '../../components/common/StatusTag'
-import { currency } from '../../utils/formatters'
+import useSellerOrders from './hooks/useSellerOrders'
 
-const rows = [{ _id: '1', code: 'ORD-001', total: 89900, status: 'paid' }]
+const OrdersPage = () => {
+  const { data } = useSellerOrders()
 
-const OrdersPage = () => (
-  <AppTable
-    title="Mis órdenes"
-    rows={rows}
-    searchableFields={['code', 'status']}
-    columns={[
-      { title: 'Orden', dataIndex: 'code' },
-      { title: 'Total', dataIndex: 'total', render: currency },
-      { title: 'Estado', dataIndex: 'status', render: status => <StatusTag status={status} /> }
-    ]}
-  />
-)
+  console.log(data)
+
+  return (
+    <AppTable
+      title="Mis órdenes"
+      rows={[]}
+      searchableFields={['code', 'status']}
+      columns={[
+        { title: 'Orden', dataIndex: 'code' },
+        { title: 'Total', dataIndex: 'total', render: Currency },
+        { title: 'Estado', dataIndex: 'status', render: status => <StatusTag status={status} /> },
+      ]}
+    />
+  )
+}
 
 export default OrdersPage

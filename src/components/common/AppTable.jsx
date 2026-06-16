@@ -1,7 +1,6 @@
 import { Button, Col, Input, Row, Space, Table } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
-
 const AppTable = ({
   columns = [],
   tableData,
@@ -9,12 +8,11 @@ const AppTable = ({
   searchPlaceholder = 'Buscar...',
   createPlaceholder = 'Crear Item',
   handleCreate,
-  onChange
+  onChange,
 }) => {
+  console.log(tableData)
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-
-
       <Col md={24}>
         <Row>
           <Col md={12}>
@@ -29,22 +27,18 @@ const AppTable = ({
 
           <Col md={12}>
             <Row justify={'end'}>
-
               <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
                 {createPlaceholder}
               </Button>
             </Row>
           </Col>
         </Row>
-
-
       </Col>
-
 
       <Table
         rowKey={rowKey}
         columns={columns}
-        dataSource={tableData?.rows}
+        dataSource={tableData?.rows || tableData}
         loading={tableData?.loading}
         pagination={{
           current: tableData?.page,

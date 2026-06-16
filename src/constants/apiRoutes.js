@@ -41,9 +41,12 @@ export const API_ROUTES = {
   orders: {
     base: '/orders',
     byId: id => `/orders/${id}`,
-    myOrders: '/orders/me',
+    myOrders: '/orders/mine',
     sellerOrders: '/orders/seller',
     adminOrders: '/orders/admin',
+    sellerById: id => `/orders/seller/${id}`,
+    sellerDispatch: id => `/orders/seller/${id}/dispatch`,
+    lookup: '/orders/lookup',
   },
 
   categories: {
@@ -66,5 +69,9 @@ export const API_ROUTES = {
   catalogs: {
     base: '/catalogs',
     byId: id => `/catalogs/products/${id}`,
+  },
+
+  checkout: {
+    base: '/checkout',
   },
 }

@@ -22,4 +22,19 @@ export const orderService = {
     const response = await DataService.get(API_ROUTES.orders.byId(id))
     return normalizeItemResponse(response)
   },
+
+  lookupOrder: payload => {
+    return DataService.post(API_ROUTES.orders.lookup, payload)
+  },
+
+  getSellerOrderById: async id => {
+    const response = await DataService.get(API_ROUTES.orders.sellerById(id))
+    console.log(response)
+
+    return normalizeItemResponse(response)
+  },
+
+  dispatchSellerOrder: (id, payload = {}) => {
+    return DataService.patch(API_ROUTES.orders.sellerDispatch(id), payload)
+  },
 }
