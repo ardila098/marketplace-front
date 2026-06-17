@@ -16,12 +16,8 @@ const LoginPage = createLazyPage(() => import('../pages/public/LoginPage'))
 const RegisterPage = createLazyPage(() => import('../pages/public/RegisterPage'))
 
 const StorefrontHomePage = createLazyPage(() => import('../pages/storefront/StorefrontHomePage'))
-const StorefrontProductsPage = createLazyPage(
-  () => import('../pages/storefront/StorefrontProductsPage')
-)
-const StorefrontProductDetailPage = createLazyPage(
-  () => import('../pages/storefront/StorefrontProductDetailPage')
-)
+const StorefrontProductsPage = createLazyPage(() => import('../pages/storefront/StorefrontProductsPage'))
+const StorefrontProductDetailPage = createLazyPage(() => import('../pages/storefront/StorefrontProductDetailPage'))
 
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const CheckoutPage = createLazyPage(() => import('../pages/checkout/CheckoutPage'))
@@ -30,9 +26,7 @@ const OrdersLookupPage = createLazyPage(() => import('../pages/orders/OrderLooku
 
 const VerticalsPage = createLazyPage(() => import('../pages/verticals/VerticalsPage'))
 const VerticalPage = createLazyPage(() => import('../pages/vertical/VerticalPage'))
-const SellerDashboardPage = createLazyPage(
-  () => import('../pages/seller/components/SellerDashboardPage/SellerDashboardPage')
-)
+const SellerDashboardPage = createLazyPage(() => import('../pages/seller/components/SellerDashboardPage/SellerDashboardPage'))
 const StoreFormPage = createLazyPage(() => import('../pages/seller/StoreFormPage'))
 const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesignPage'))
 const SellerProductsPage = createLazyPage(
@@ -90,7 +84,10 @@ export const router = createBrowserRouter([
     children: [
       {
         element: <DashboardLayout area="customer" />,
-        children: [{ path: ROUTES.CUSTOMER_ORDERS, element: <OrdersPage /> }],
+        children: [
+          { path: ROUTES.CUSTOMER_CART, element: <CartPage /> },
+          { path: ROUTES.CUSTOMER_ORDERS, element: <OrdersPage /> },
+        ],
       },
     ],
   },

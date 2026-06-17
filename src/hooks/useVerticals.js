@@ -1,16 +1,30 @@
 import { useCallback, useEffect, useState } from 'react'
 import { verticalsServices } from '../services/verticalsServices'
+import { catalogService } from '../services/catalogService'
 
 const useVerticals = () => {
-  const [data, setData] = useState()
+  const [data, setData] = useState([])
+  const [catalogData, setCatalogData] = useState([])
   const [dataVertical, setDataVertical] = useState()
-  const [loading, setLoading] = useState()
+  const [loading, setLoading] = useState(false)
 
   const getVerticals = useCallback(async () => {
     setLoading(true)
     try {
       const newData = await verticalsServices.list()
-      setData(newData.data)
+      setData(newData.data || [])
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  const getVerticalsCatalog = useCallback(async (limit = 8) => {
+    setLoading(true)
+    try {
+      const response = await catalogService.getVerticalsCatalog(limit)
+      setCatalogData(response.data || [])
     } catch (error) {
       console.error(error)
     } finally {
@@ -40,6 +54,8 @@ const useVerticals = () => {
     loading,
     getVertical,
     dataVertical,
+    getVerticalsCatalog,
+    catalogData,
   }
 }
 
