@@ -1,32 +1,30 @@
 import { API_ROUTES } from '../constants/apiRoutes'
 import { DataService } from './dataService'
+import { normalizeItemResponse } from '../utils/responseNormalizer'
 
 export const cartService = {
-  getCart: async () => {
-    return DataService.get(API_ROUTES.cart.base)
+  get: async () => {
+    const response = await DataService.get(API_ROUTES.cart.base)
+    return normalizeItemResponse(response)
   },
 
   addItem: async payload => {
-    return DataService.post(API_ROUTES.cart.items, payload)
+    const response = await DataService.post(API_ROUTES.cart.addItem, payload)
+    return normalizeItemResponse(response, 'Producto agregado al carrito')
   },
 
-  updateItemQuantity: async ({ itemId, quantity }) => {
-    return DataService.patch(API_ROUTES.cart.itemById(itemId), {
-      quantity,
-    })
+  updateItem: async (itemId, payload) => {
+    const response = await DataService.put(API_ROUTES.cart.updateItem(itemId), payload)
+    return normalizeItemResponse(response, 'Carrito actualizado correctamente')
   },
 
   removeItem: async itemId => {
-    return DataService.delete(API_ROUTES.cart.itemById(itemId))
+    const response = await DataService.delete(API_ROUTES.cart.removeItem(itemId))
+    return normalizeItemResponse(response, 'Producto eliminado del carrito')
   },
 
-  clearCart: async () => {
-    return DataService.delete(API_ROUTES.cart.base)
-  },
-
-  applyCoupon: async code => {
-    return DataService.post(API_ROUTES.cart.coupon, {
-      code,
-    })
+  checkout: async payload => {
+    const response = await DataService.post(API_ROUTES.cart.checkout, payload)
+    return normalizeItemResponse(response, 'Checkout creado correctamente')
   },
 }

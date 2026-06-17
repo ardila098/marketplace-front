@@ -1,21 +1,13 @@
 import axios from 'axios'
 import { env } from '../config/env'
-import { getGuestId } from '../helpers/guestCart'
 
 const getToken = () => localStorage.getItem('accessToken')
 
-const addRequestHeaders = config => {
+const addAuthHeader = config => {
   const token = getToken()
-  const guestId = getGuestId()
-
-  config.headers = config.headers || {}
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
-  }
-
-  if (guestId) {
-    config.headers['x-guest-id'] = guestId
   }
 
   return config
@@ -45,8 +37,8 @@ export const fileClient = axios.create({
   timeout: 30000,
 })
 
-client.interceptors.request.use(addRequestHeaders)
-fileClient.interceptors.request.use(addRequestHeaders)
+client.interceptors.request.use(addAuthHeader)
+fileClient.interceptors.request.use(addAuthHeader)
 
 client.interceptors.response.use(handleResponse, handleError)
 fileClient.interceptors.response.use(handleResponse, handleError)

@@ -9,9 +9,7 @@ export const verticalsServices = {
   },
 
   getVertical: async id => {
-    console.log(id)
     const response = await DataService.get(API_ROUTES.verticals.byId(id))
-    console.log(response)
     return normalizeItemResponse(response)
   },
 

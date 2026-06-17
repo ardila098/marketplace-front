@@ -1,8 +1,10 @@
 export const getItemId = item => {
+  console.log(item)
   return item?._id || item?.itemId
 }
 
 export const getItemImage = item => {
+  console.log(item)
   return item?.image || item?.images?.[0] || null
 }
 

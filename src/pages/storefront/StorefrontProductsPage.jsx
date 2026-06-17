@@ -1,24 +1,31 @@
-import { Col, Input, Row, Select, Space, Typography } from 'antd'
+import { Col, Input, Row, Select, Space, Spin, Typography } from 'antd'
 import { useMemo, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import StorefrontProductGrid from '../../components/storefront/StorefrontProductGrid'
-import { mockProducts, mockStores } from '../../data/mockData'
 import { PageShell } from '../../styles/layoutStyles'
 import { normalizeText } from '../../utils/formatters'
+import useStoreProducts from './hooks/useStoreProducts'
+
+const categoryName = product => product.category?.name || product.category || ''
 
 const StorefrontProductsPage = () => {
   const { storeSlug } = useParams()
-  const store = mockStores.find(item => item.slug === storeSlug)
+  const store = useSelector(state => state.storefront.currentStore)
+  const { products: allProducts, loading } = useStoreProducts(storeSlug)
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('all')
-  const categories = [...new Set(mockProducts.filter(product => product.store.slug === storeSlug).map(product => product.category))]
 
-  const products = useMemo(() => mockProducts.filter(product => {
-    const matchesStore = product.store.slug === storeSlug
+  const categories = useMemo(
+    () => [...new Set(allProducts.map(categoryName).filter(Boolean))],
+    [allProducts]
+  )
+
+  const products = useMemo(() => allProducts.filter(product => {
     const matchesSearch = normalizeText(product.name).includes(normalizeText(search))
-    const matchesCategory = category === 'all' || product.category === category
-    return matchesStore && matchesSearch && matchesCategory
-  }), [storeSlug, search, category])
+    const matchesCategory = category === 'all' || categoryName(product) === category
+    return matchesSearch && matchesCategory
+  }), [allProducts, search, category])
 
   return (
     <PageShell>
@@ -36,7 +43,9 @@ const StorefrontProductsPage = () => {
             ]} />
           </Col>
         </Row>
-        <StorefrontProductGrid products={products} storeSlug={storeSlug} />
+        {loading
+          ? <Spin />
+          : <StorefrontProductGrid products={products} storeSlug={storeSlug} />}
       </Space>
     </PageShell>
   )

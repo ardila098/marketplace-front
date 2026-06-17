@@ -2,6 +2,7 @@ import { Button, Col, Row, Space, Typography } from 'antd'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { buildRoute, ROUTES } from '../../constants/routes'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 
 const Wrapper = styled.section`
   padding: 72px max(20px, calc((100vw - 1180px) / 2));
@@ -19,6 +20,9 @@ const HeroImage = styled.div`
 
 const StorefrontHero = ({ store }) => {
   const { storeSlug } = useParams()
+  const banner = store.banner?.startsWith('http')
+    ? store.banner
+    : getUploadUrl(UPLOAD_ROUTES.stores.banners, store.banner)
 
   return (
     <Wrapper>
@@ -43,7 +47,7 @@ const StorefrontHero = ({ store }) => {
           </Space>
         </Col>
         <Col xs={24} lg={13}>
-          <HeroImage $image={store.banner} />
+          <HeroImage $image={banner} />
         </Col>
       </Row>
     </Wrapper>

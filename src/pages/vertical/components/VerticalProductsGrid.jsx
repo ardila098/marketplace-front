@@ -7,7 +7,7 @@ const VerticalProductsGrid = ({ products = [], loadingProducts }) => {
     <Spin spinning={loadingProducts}>
       <ProductGrid>
         {products.map(product => (
-          <ProductCatalogCard product={product} />
+          <ProductCatalogCard key={product._id} product={product} />
         ))}
       </ProductGrid>
     </Spin>

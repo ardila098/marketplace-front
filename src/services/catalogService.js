@@ -5,14 +5,14 @@ import { normalizeItemResponse, normalizeListResponse } from '../utils/responseN
 
 export const catalogService = {
   getVerticalsCatalog: async (limit = 8) => {
-    const response = await client.get(API_ROUTES.catalog.catalogVerticals, {
+    const response = await client.get(API_ROUTES.catalogs.catalogVerticals, {
       params: { limit },
     })
     return normalizeListResponse(response)
   },
 
   getProductsCatalog: async (params = {}) => {
-    const response = await client.get(API_ROUTES.catalog.base, {
+    const response = await client.get(API_ROUTES.catalogs.base, {
       params: { view: 'products', ...params },
     })
     return normalizeListResponse(response)

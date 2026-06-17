@@ -7,7 +7,13 @@ const initialState = {
   error: null
 }
 
-export const loadStorefront = createAsyncThunk('storefront/load', async storeSlug => storeService.getBySlug(storeSlug))
+// El backend no expone /stores/slug/:slug todavía, así que traemos la lista real
+// de tiendas (GET /stores) y filtramos por slug del lado del cliente.
+export const loadStorefront = createAsyncThunk('storefront/load', async storeSlug => {
+  const response = await storeService.list()
+  const stores = response?.data || []
+  return stores.find(store => store.slug === storeSlug) || null
+})
 
 const storefrontSlice = createSlice({
   name: 'storefront',
@@ -23,7 +29,7 @@ const storefrontSlice = createSlice({
       .addCase(loadStorefront.pending, state => { state.loading = true; state.error = null })
       .addCase(loadStorefront.fulfilled, (state, action) => {
         state.loading = false
-        state.currentStore = action.payload.store || action.payload
+        state.currentStore = action.payload?.store || action.payload || null
       })
       .addCase(loadStorefront.rejected, (state, action) => {
         state.loading = false

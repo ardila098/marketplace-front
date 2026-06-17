@@ -10,7 +10,7 @@ import {
   GridCardExploreText,
 } from '../../vertical/styles/styleVerticalsGrid'
 
-const VerticalsGrid = ({ data }) => {
+const VerticalsGrid = ({ data = [] }) => {
   const navigate = useNavigate()
 
   return (

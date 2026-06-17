@@ -19,7 +19,7 @@ const FeaturedProducts = ({ data = [] }) => {
   const navigate = useNavigate()
 
   const handleProductClick = productId => {
-    navigate(`/product/${productId}`)
+    navigate(`/vertical/products/${productId}`)
   }
 
   const handleViewMoreClick = verticalId => {

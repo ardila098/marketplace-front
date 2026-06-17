@@ -3,12 +3,12 @@ import StoreCard from '../../components/storefront/StoreCard'
 import { PageShell } from '../../styles/layoutStyles'
 import useStore from './hooks/useStore'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
+import useVerticals from '../../hooks/useVerticals'
 
 const StoresPage = () => {
   const { data } = useStore()
   const { translate: t } = useDictionaryTranslation()
-
-
+  const { data: verticals } = useVerticals()
 
   return (
     <PageShell>
@@ -30,7 +30,7 @@ const StoresPage = () => {
         <Row gutter={[24, 24]}>
           {data.map(store => (
             <Col xs={24} md={12} key={store._id}>
-              <StoreCard store={store} />
+              <StoreCard store={store} verticals={verticals} />
             </Col>
           ))}
         </Row>

@@ -2,7 +2,7 @@ import { Card, Image, Space, Typography } from 'antd'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { buildRoute, ROUTES } from '../../constants/routes'
-import { getAssetUrl } from '../../utils/assets'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { currency } from '../../utils/formatters'
 
 const ImageWrap = styled.div`
@@ -38,11 +38,11 @@ const Dot = styled.span`
 `
 
 const ProductCard = ({ product, storeSlug }) => {
-  const image = getAssetUrl(product.images?.[0] || product.variants?.[0]?.image)
-  const price = product.variants?.[0]?.price || product.price
+  const image = getUploadUrl(UPLOAD_ROUTES.products.images, product.image || product.images?.[0] || product.variants?.[0]?.image)
+  const price = product.minPrice || product.variants?.[0]?.price || product.price
   const to = storeSlug
     ? buildRoute(ROUTES.STOREFRONT_PRODUCT_DETAIL, { storeSlug, productSlug: product.slug })
-    : buildRoute(ROUTES.PRODUCT_DETAIL, { productSlug: product.slug })
+    : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id })
 
   return (
     <Link to={to}>
@@ -53,10 +53,10 @@ const ProductCard = ({ product, storeSlug }) => {
           <Typography.Text type="secondary">{product.store?.name || product.category}</Typography.Text>
           <Typography.Text strong>{currency(price)}</Typography.Text>
           <VariantPreview>
-            {(product.variants || []).slice(0, 5).map(variant => (
+            {(product.itemsPreview || product.variants || []).slice(0, 5).map(variant => (
               variant.image
-                ? <PreviewImage key={variant._id || variant.sku} src={variant.image} title={Object.values(variant.attributes || {}).join(' / ')} />
-                : <Dot key={variant._id || variant.sku} title={variant.attributes?.color} $color={variant.attributes?.hex || variant.hex} />
+                ? <PreviewImage key={variant._id || variant.itemId || variant.sku} src={getUploadUrl(UPLOAD_ROUTES.products.images, variant.image)} title={Object.values(variant.attributes || {}).join(' / ')} />
+                : <Dot key={variant._id || variant.itemId || variant.sku} title={variant.attributes?.color} $color={variant.attributes?.hex || variant.hex} />
             ))}
           </VariantPreview>
         </Space>
