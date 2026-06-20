@@ -5,7 +5,7 @@ import useVerticals from '../../../../../hooks/useVerticals'
 
 const VerticalsSlider = () => {
   const navigate = useNavigate()
-  const { data = [] } = useVerticals()
+  const { data} = useVerticals()
 
   const items = data.map(item => {
     return {

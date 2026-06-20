@@ -26,7 +26,7 @@ const ProductPurchasePanel = ({
   const [selection, setSelection] = useState(null)
 
   const isConfigurableSet =
-    Number(product.productType) === PRODUCT_TYPES.CONFIGURABLE_SET.value
+    Number(product?.productType) === PRODUCT_TYPES.CONFIGURABLE_SET.value
 
   useEffect(() => {
     onSelectionChange?.(selection)

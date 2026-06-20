@@ -7,17 +7,17 @@ export const cartService = {
   },
 
   addItem: async payload => {
-    return DataService.post(API_ROUTES.cart.items, payload)
+    return DataService.post(API_ROUTES.cart.addItem, payload)
   },
 
   updateItemQuantity: async ({ itemId, quantity }) => {
-    return DataService.patch(API_ROUTES.cart.itemById(itemId), {
+    return DataService.patch(API_ROUTES.cart.updateItem(itemId), {
       quantity,
     })
   },
 
   removeItem: async itemId => {
-    return DataService.delete(API_ROUTES.cart.itemById(itemId))
+    return DataService.delete(API_ROUTES.cart.removeItem(itemId))
   },
 
   clearCart: async () => {

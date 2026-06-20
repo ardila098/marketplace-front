@@ -1,0 +1,29 @@
+import { Col, Row, Space } from 'antd'
+import HeaderItemsList from './HeaderItemsList'
+import ProductCard from '../../../components/products/ProductCard'
+import { PageShell } from '../../../styles/layoutStyles'
+import PropTypes from 'prop-types'
+
+const ContainerItemsList = ({ data }) => {
+  return (
+    <PageShell>
+      <Space direction="vertical" size={24} style={{ width: '100%' }}>
+        <HeaderItemsList />
+
+        <Row gutter={[22, 22]}>
+          {data?.map(item => (
+            <Col xs={24} sm={12} lg={8} key={item._id}>
+              <ProductCard product={item} />
+            </Col>
+          ))}
+        </Row>
+      </Space>
+    </PageShell>
+  )
+}
+
+export default ContainerItemsList
+
+ContainerItemsList.propTypes = {
+  data: PropTypes.object,
+}

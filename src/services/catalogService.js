@@ -11,13 +11,6 @@ export const catalogService = {
     return normalizeListResponse(response)
   },
 
-  getProductsCatalog: async (params = {}) => {
-    const response = await client.get(API_ROUTES.catalog.base, {
-      params: { view: 'products', ...params },
-    })
-    return normalizeListResponse(response)
-  },
-
   getCatalog: async filters => {
     const response = await DataService.get(API_ROUTES.catalogs.base, filters)
     return normalizeListResponse(response)

@@ -18,6 +18,8 @@ import {
 const FeaturedProducts = ({ data = [] }) => {
   const navigate = useNavigate()
 
+console.log(data)
+
   const handleProductClick = productId => {
     navigate(`/product/${productId}`)
   }

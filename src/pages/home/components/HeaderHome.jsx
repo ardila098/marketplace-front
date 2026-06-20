@@ -1,8 +1,8 @@
-import { Hero } from '../../style/style'
+import { Hero } from '../../public/homePage/style/style'
 import { Button, Space, Typography } from 'antd'
 import { Link } from 'react-router-dom'
-import { ROUTES } from '../../../../../constants/routes'
-import { useDictionaryTranslation } from '../../../../../hooks/useDictionaryTranslation'
+import { ROUTES } from '../../../constants/routes'
+import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'
 
 const HeaderHome = () => {
     const { translate: t } = useDictionaryTranslation()

@@ -10,8 +10,15 @@ const ImageWrap = styled.div`
   border-radius: 18px;
   overflow: hidden;
   background: #f4f4f5;
-  img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s ease; }
-  &:hover img { transform: scale(1.03); }
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+  &:hover img {
+    transform: scale(1.03);
+  }
 `
 
 const VariantPreview = styled.div`
@@ -37,27 +44,46 @@ const Dot = styled.span`
   background: ${({ $color }) => $color || '#fff'};
 `
 
-const ProductCard = ({ product, storeSlug }) => {
-  const image = getUploadUrl(UPLOAD_ROUTES.products.images, product.image || product.images?.[0] || product.variants?.[0]?.image)
+const ProductCard = ({ product }) => {
+  const image = getUploadUrl(
+    UPLOAD_ROUTES.products.images,
+    product.image || product.images?.[0] || product.variants?.[0]?.image
+  )
   const price = product.minPrice || product.variants?.[0]?.price || product.price
-  const to = storeSlug
-    ? buildRoute(ROUTES.STOREFRONT_PRODUCT_DETAIL, { storeSlug, productSlug: product.slug })
-    : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id })
 
   return (
-    <Link to={to}>
-      <Card hoverable bordered={false} styles={{ body: { padding: 14 } }} style={{ borderRadius: 22, height: '100%' }}>
+    <Link to={buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id })}>
+      <Card
+        hoverable
+        bordered={false}
+        styles={{ body: { padding: 14 } }}
+        style={{ borderRadius: 22, height: '100%' }}
+      >
         <ImageWrap>{image && <Image src={image} alt={product.name} preview={false} />}</ImageWrap>
         <Space direction="vertical" size={2} style={{ marginTop: 12, width: '100%' }}>
           <Typography.Text strong>{product.name}</Typography.Text>
-          <Typography.Text type="secondary">{product.store?.name || product.category}</Typography.Text>
+          <Typography.Text type="secondary">
+            {product.store?.name || product.category}
+          </Typography.Text>
           <Typography.Text strong>{currency(price)}</Typography.Text>
           <VariantPreview>
-            {(product.itemsPreview || product.variants || []).slice(0, 5).map(variant => (
-              variant.image
-                ? <PreviewImage key={variant._id || variant.itemId || variant.sku} src={getUploadUrl(UPLOAD_ROUTES.products.images, variant.image)} title={Object.values(variant.attributes || {}).join(' / ')} />
-                : <Dot key={variant._id || variant.itemId || variant.sku} title={variant.attributes?.color} $color={variant.attributes?.hex || variant.hex} />
-            ))}
+            {(product.itemsPreview || product.variants || [])
+              .slice(0, 5)
+              .map(variant =>
+                variant.image ? (
+                  <PreviewImage
+                    key={variant._id || variant.itemId || variant.sku}
+                    src={getUploadUrl(UPLOAD_ROUTES.products.images, variant.image)}
+                    title={Object.values(variant.attributes || {}).join(' / ')}
+                  />
+                ) : (
+                  <Dot
+                    key={variant._id || variant.itemId || variant.sku}
+                    title={variant.attributes?.color}
+                    $color={variant.attributes?.hex || variant.hex}
+                  />
+                )
+              )}
           </VariantPreview>
         </Space>
       </Card>

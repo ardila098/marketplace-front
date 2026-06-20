@@ -8,16 +8,17 @@ import DashboardLayout from '../layouts/DashboardLayout'
 import StorefrontLayout from '../layouts/StorefrontLayout'
 import { createLazyPage } from './lazyPage'
 
-const HomePage = createLazyPage(() => import('../pages/public/homePage/HomePage'))
-const ProductListPage = createLazyPage(() => import('../pages/public/ProductListPage'))
-const ProductDetailPage = createLazyPage(() => import('../pages/itemDetails/ItemDetailsPage'))
-const StoresPage = createLazyPage(() => import('../pages/public/StoresPage'))
+const HomePage = createLazyPage(() => import('../pages/home/Homepage'))
+const ProductListPage = createLazyPage(() => import('../pages/items/ItemsListPage'))
+const ItemDetailPage = createLazyPage(() => import('../pages/itemDetails/ItemDetailsPage'))
 const LoginPage = createLazyPage(() => import('../pages/public/LoginPage'))
 const RegisterPage = createLazyPage(() => import('../pages/public/RegisterPage'))
 
 const StorefrontHomePage = createLazyPage(() => import('../pages/storefront/StorefrontHomePage'))
-const StorefrontProductsPage = createLazyPage(() => import('../pages/storefront/StorefrontProductsPage'))
-const StorefrontProductDetailPage = createLazyPage(() => import('../pages/storefront/StorefrontProductDetailPage'))
+const StorefrontProductsPage = createLazyPage(() => import('../pages/items/ItemsListPage'))
+const StorefrontProductDetailPage = createLazyPage(
+  () => import('../pages/itemDetails/ItemDetailsPage')
+)
 
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const CheckoutPage = createLazyPage(() => import('../pages/checkout/CheckoutPage'))
@@ -26,13 +27,17 @@ const OrdersLookupPage = createLazyPage(() => import('../pages/orders/OrderLooku
 
 const VerticalsPage = createLazyPage(() => import('../pages/verticals/VerticalsPage'))
 const VerticalPage = createLazyPage(() => import('../pages/vertical/VerticalPage'))
-const SellerDashboardPage = createLazyPage(() => import('../pages/seller/components/SellerDashboardPage/SellerDashboardPage'))
+const SellerDashboardPage = createLazyPage(
+  () => import('../pages/seller/components/SellerDashboardPage/SellerDashboardPage')
+)
 const StoreFormPage = createLazyPage(() => import('../pages/seller/StoreFormPage'))
 const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesignPage'))
 const SellerProductsPage = createLazyPage(
   () => import('../pages/seller/components/SellerProducts/SellerProductsPage')
 )
-const SellerOrdersPage = createLazyPage(() => import('../pages/seller/components/sellerOrdersPage/SellerOrdersPage'))
+const SellerOrdersPage = createLazyPage(
+  () => import('../pages/seller/components/sellerOrdersPage/SellerOrdersPage')
+)
 const SellerOrderDetailPage = createLazyPage(
   () => import('../pages/seller/components/sellerOrderDetails/SellerOrderDetailPage')
 )
@@ -56,8 +61,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.VERTICAL, element: <VerticalPage /> },
       { path: ROUTES.VERTICALS, element: <VerticalsPage /> },
       { path: ROUTES.MARKETPLACE, element: <ProductListPage /> },
-      { path: ROUTES.STORES, element: <StoresPage /> },
-      { path: ROUTES.VERTICAL_PRODUCT_DETAIL, element: <ProductDetailPage /> },
+      { path: ROUTES.VERTICAL_PRODUCT_DETAIL, element: <ItemDetailPage /> },
       { path: ROUTES.LOGIN, element: <LoginPage /> },
       { path: ROUTES.REGISTER, element: <RegisterPage /> },
       { path: ROUTES.UNAUTHORIZED, element: <UnauthorizedPage /> },

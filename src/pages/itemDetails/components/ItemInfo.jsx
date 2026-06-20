@@ -18,19 +18,19 @@ import {
 } from '../styles/styles'
 
 const ItemInfo = ({ product, selectedItem }) => {
-  const price = getItemPrice(selectedItem) || product.price || 0
-  const compareAtPrice = getItemCompareAtPrice(selectedItem) || product.compareAtPrice || 0
+  const price = getItemPrice(selectedItem) || product?.price || 0
+  const compareAtPrice = getItemCompareAtPrice(selectedItem) || product?.compareAtPrice || 0
 
   const discountPercentage = getItemDiscountPercentage(selectedItem)
   const hasDiscount = compareAtPrice > price
 
   return (
     <ProductHeader>
-      <StoreText>{product.store?.name}</StoreText>
+      <StoreText>{product?.store?.name}</StoreText>
 
-      <ProductTitle>{product.name}</ProductTitle>
+      <ProductTitle>{product?.name}</ProductTitle>
 
-      <CategoryText>{product.category?.name}</CategoryText>
+      <CategoryText>{product?.category?.name}</CategoryText>
 
       <PriceRow>
         <PriceText>{formatPrice(price)}</PriceText>
@@ -40,7 +40,7 @@ const ItemInfo = ({ product, selectedItem }) => {
 
       {hasDiscount && <DiscountText>{discountPercentage}% de reducción</DiscountText>}
 
-      {product.description && <Description>{product.description}</Description>}
+      {product?.description && <Description>{product?.description}</Description>}
     </ProductHeader>
   )
 }

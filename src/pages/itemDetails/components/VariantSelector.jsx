@@ -21,7 +21,7 @@ const VariantSelector = ({
   onDisplayItemChange,
   onSelectionChange,
 }) => {
-  const variants = product.variants || []
+  const variants = product?.variants || []
   const [selectedVariantId, setSelectedVariantId] = useState(variants[0]?._id)
 
   const selectedVariant = variants.find(variant => variant._id === selectedVariantId)

@@ -15,9 +15,8 @@ import { PERMISSIONS } from './permissions'
 import { ROUTES } from './routes'
 
 export const publicMenu = [
-  { key: ROUTES.HOME, label: 'Inicio', path: ROUTES.HOME, icon: Home },
-  { key: ROUTES.MARKETPLACE, label: 'Marketplace', path: ROUTES.MARKETPLACE, icon: Package },
-  { key: ROUTES.VERTICALS,   label: 'Verticales',  path: ROUTES.VERTICALS,  icon: '' },
+  { key: ROUTES.HOME, label: 'Marketplace', path: ROUTES.HOME, icon: Home },
+  { key: ROUTES.VERTICALS, label: 'Verticales', path: ROUTES.VERTICALS, icon: '' },
   { key: ROUTES.STORES, label: 'Tiendas', path: ROUTES.STORES, icon: '' },
 ]
 
