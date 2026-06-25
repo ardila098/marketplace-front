@@ -1,71 +1,25 @@
-import { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 
-import {
-  SelectorBlock,
-  SelectorTitle,
-  OptionsGrid,
-  OptionButton,
-  OptionLabel,
-  OptionStock,
-} from '../styles/styles'
+import { SelectorBlock, SelectorTitle } from '../styles/styles'
+import ContainerVariantsSlider from './pucharse/components/ContainerVariantsSlider'
 
-const getVariantLabel = variant => {
-  return (variant.attributes || [])
-    .map(attribute => attribute.valueSnapshot)
-    .filter(Boolean)
-    .join(' / ')
-}
-
-const VariantSelector = ({
-  product,
-  onDisplayItemChange,
-  onSelectionChange,
-}) => {
-  const variants = product?.variants || []
-  const [selectedVariantId, setSelectedVariantId] = useState(variants[0]?._id)
-
-  const selectedVariant = variants.find(variant => variant._id === selectedVariantId)
-
-  useEffect(() => {
-    if (!selectedVariant) return
-
-    onDisplayItemChange?.(selectedVariant)
-
-    onSelectionChange?.({
-      isValid: true,
-      productId: product._id,
-      productType: product.productType,
-      variantId: selectedVariant._id,
-      quantity: 1,
-    })
-  }, [product, selectedVariant, onDisplayItemChange, onSelectionChange])
-
-  if (!variants.length) return null
-
+const VariantSelector = ({ item, purchase }) => {
   return (
     <SelectorBlock>
       <SelectorTitle>Selecciona una opción</SelectorTitle>
 
-      <OptionsGrid>
-        {variants.map(variant => (
-          <OptionButton
-            key={variant._id}
-            type="button"
-            $active={variant._id === selectedVariantId}
-            onClick={() => setSelectedVariantId(variant._id)}
-          >
-            <OptionLabel>
-              {getVariantLabel(variant) || 'Opción'}
-            </OptionLabel>
-
-            <OptionStock>
-              {variant.stock} disponibles
-            </OptionStock>
-          </OptionButton>
-        ))}
-      </OptionsGrid>
+      <ContainerVariantsSlider
+        variants={item?.variants || []}
+        selectedVariant={purchase.selectedReference}
+        onSelectVariant={purchase.handleSelectReference}
+      />
     </SelectorBlock>
   )
+}
+
+VariantSelector.propTypes = {
+  item: PropTypes.object,
+  purchase: PropTypes.object,
 }
 
 export default VariantSelector

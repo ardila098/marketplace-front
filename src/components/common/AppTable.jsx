@@ -10,7 +10,6 @@ const AppTable = ({
   handleCreate,
   onChange,
 }) => {
-  console.log(tableData)
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
       <Col md={24}>

@@ -19,9 +19,6 @@ const ContainerVertical = () => {
     getVerticalCatalog(filters)
   }, [id])
 
-  console.log(dataVertical)
-  console.log(data)
-
   return (
     <>
       <PageContainer>
@@ -32,7 +29,6 @@ const ContainerVertical = () => {
         />
 
         <ContainerItemsList data={data} />
-
       </PageContainer>
     </>
   )

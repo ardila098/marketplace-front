@@ -1,70 +1,37 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
-import { getItemImage } from '../../../helpers/catalogProduct'
 
-import {
-  GalleryWrapper,
-  MainImageBox,
-  MainImage,
-  GalleryThumbs,
-  GalleryThumbButton,
-  GalleryThumbImage,
-} from '../styles/styles'
+import GalleryThumbsList from './GalleryThumbsList'
 
-const getGalleryImages = (product, selectedItem) => {
-  const itemImages = selectedItem?.images || []
-  const productImages = product?.images || []
-  const mainImage = getItemImage(selectedItem)
+import { GalleryWrapper, MainImageBox, MainImage } from '../styles/styles'
 
-  return [...new Set([mainImage, ...itemImages, ...productImages].filter(Boolean))]
-}
+const ItemGallery = ({ item }) => {
+  const [selectedImage, setSelectedImage] = useState(null)
 
-const ItemGallery = ({ product, selectedItem }) => {
-  const images = useMemo(() => {
-    return getGalleryImages(product, selectedItem)
-  }, [product, selectedItem])
-
-  const [selectedImage, setSelectedImage] = useState(images[0])
+  const images = item?.images || []
 
   useEffect(() => {
-    setSelectedImage(images[0])
-  }, [images])
-
-  if (!images.length) {
-    return (
-      <GalleryWrapper>
-        <MainImageBox />
-      </GalleryWrapper>
-    )
-  }
+    setSelectedImage(images[0] || null)
+  }, [item?._id])
 
   return (
     <GalleryWrapper>
       <MainImageBox>
-        <MainImage
-          src={getUploadUrl(UPLOAD_ROUTES.products.images, selectedImage)}
-          alt={product.name}
-        />
+        {selectedImage && (
+          <MainImage
+            src={getUploadUrl(UPLOAD_ROUTES.products.images, selectedImage)}
+            alt={item?.name || 'item'}
+          />
+        )}
       </MainImageBox>
 
-      {images.length > 1 && (
-        <GalleryThumbs>
-          {images.map(image => (
-            <GalleryThumbButton
-              key={image}
-              type="button"
-              $active={image === selectedImage}
-              onClick={() => setSelectedImage(image)}
-            >
-              <GalleryThumbImage
-                src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
-                alt={product.name}
-              />
-            </GalleryThumbButton>
-          ))}
-        </GalleryThumbs>
-      )}
+      <GalleryThumbsList
+        images={images}
+        selectedImage={selectedImage}
+        itemName={item?.name}
+        onSelect={setSelectedImage}
+      />
     </GalleryWrapper>
   )
 }

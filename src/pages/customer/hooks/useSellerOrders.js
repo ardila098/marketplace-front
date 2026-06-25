@@ -9,7 +9,6 @@ const useSellerOrders = () => {
     try {
       setLoading(true)
       const response = await orderService.sellerOrders(filters)
-      console.log(response)
       setData(response?.data)
     } catch (err) {
       console.error(err)

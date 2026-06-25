@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { CarouselWrapper, Section, Title } from '../styles'
-  import ProductCard from '../../../products/ProductCard'
+import ProductCard from '../../../products/ProductCard'
 
 const getCarouselSettings = items => ({
   dots: true,
@@ -39,7 +39,6 @@ const getCarouselSettings = items => ({
 const CardCarouselITem = ({ title, items = [] }) => {
   const carouselSettings = useMemo(() => getCarouselSettings(items.length), [items.length])
 
-  console.log(items)
   if (!items.length) return null
 
   return (

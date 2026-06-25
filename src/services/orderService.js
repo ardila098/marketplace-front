@@ -29,7 +29,6 @@ export const orderService = {
 
   getSellerOrderById: async id => {
     const response = await DataService.get(API_ROUTES.orders.sellerById(id))
-    console.log(response)
 
     return normalizeItemResponse(response)
   },

@@ -82,7 +82,6 @@ export const useSellerProductModals = ({
   }
 
   const closeReferenceModal = () => {
-    console.log('nnnn')
     setReferenceModal(initialModal)
   }
 

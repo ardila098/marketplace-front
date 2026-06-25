@@ -6,7 +6,6 @@ import useSellerOrders from './hooks/useSellerOrders'
 const OrdersPage = () => {
   const { data } = useSellerOrders()
 
-  console.log(data)
 
   return (
     <AppTable

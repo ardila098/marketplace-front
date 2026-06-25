@@ -17,30 +17,28 @@ import {
   Description,
 } from '../styles/styles'
 
-const ItemInfo = ({ product, selectedItem }) => {
-  const price = getItemPrice(selectedItem) || product?.price || 0
-  const compareAtPrice = getItemCompareAtPrice(selectedItem) || product?.compareAtPrice || 0
-
-  const discountPercentage = getItemDiscountPercentage(selectedItem)
-  const hasDiscount = compareAtPrice > price
+const ItemInfo = ({ item }) => {
+  const compareAtPrice = getItemCompareAtPrice(item)
+  const discountPercentage = getItemDiscountPercentage(item)
+  const hasDiscount = compareAtPrice > item?.price
 
   return (
     <ProductHeader>
-      <StoreText>{product?.store?.name}</StoreText>
+      <StoreText>{item?.store?.name}</StoreText>
 
-      <ProductTitle>{product?.name}</ProductTitle>
+      <ProductTitle>{item?.name}</ProductTitle>
 
-      <CategoryText>{product?.category?.name}</CategoryText>
+      <CategoryText>{item?.category?.name}</CategoryText>
 
       <PriceRow>
-        <PriceText>{formatPrice(price)}</PriceText>
+        <PriceText>{formatPrice(item?.price)}</PriceText>
 
         {hasDiscount && <ComparePrice>{formatPrice(compareAtPrice)}</ComparePrice>}
       </PriceRow>
 
       {hasDiscount && <DiscountText>{discountPercentage}% de reducción</DiscountText>}
 
-      {product?.description && <Description>{product?.description}</Description>}
+      {item?.description && <Description>{item?.description}</Description>}
     </ProductHeader>
   )
 }

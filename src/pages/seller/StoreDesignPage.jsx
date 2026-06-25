@@ -10,7 +10,6 @@ const StoreDesignPage = () => {
 
   const handleValuesChange = (_, values) => setTheme({ ...neutralTheme, ...values })
   const handleSubmit = async values => {
-    console.log(values)
     setSaving(true)
     message.success('')
     setSaving(false)

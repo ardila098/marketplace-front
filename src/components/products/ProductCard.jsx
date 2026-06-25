@@ -1,93 +1,74 @@
-import { Card, Image, Space, Typography } from 'antd'
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
 import { buildRoute, ROUTES } from '../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { currency } from '../../utils/formatters'
 
-const ImageWrap = styled.div`
-  aspect-ratio: 1 / 1;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #f4f4f5;
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.25s ease;
-  }
-  &:hover img {
-    transform: scale(1.03);
-  }
-`
+import {
+  ProductLink,
+  ProductCardWrapper,
+  ImageWrap,
+  ProductImage,
+  ProductInfo,
+  ProductName,
+  ProductMeta,
+  ProductPrice,
+  VariantPreview,
+  PreviewImage,
+  Dot,
+} from './style'
 
-const VariantPreview = styled.div`
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-`
-
-const PreviewImage = styled.img`
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  object-fit: cover;
-  border: 1px solid #e5e7eb;
-  background: #fff;
-`
-
-const Dot = styled.span`
-  width: 28px;
-  height: 28px;
-  border-radius: 999px;
-  border: 1px solid #d1d5db;
-  background: ${({ $color }) => $color || '#fff'};
-`
+const getImage = item => {
+  return item?.image || item?.images?.[0] || null
+}
 
 const ProductCard = ({ product }) => {
-  const image = getUploadUrl(
-    UPLOAD_ROUTES.products.images,
-    product.image || product.images?.[0] || product.variants?.[0]?.image
-  )
-  const price = product.minPrice || product.variants?.[0]?.price || product.price
+  const mainImage = getImage(product) || getImage(product?.variants?.[0])
+  const price = product.minPrice || product.variants?.[0]?.price || product.price || 0
+  const previews = (product.itemsPreview || product.variants || []).slice(0, 5)
 
   return (
-    <Link to={buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id })}>
-      <Card
-        hoverable
-        bordered={false}
-        styles={{ body: { padding: 14 } }}
-        style={{ borderRadius: 22, height: '100%' }}
-      >
-        <ImageWrap>{image && <Image src={image} alt={product.name} preview={false} />}</ImageWrap>
-        <Space direction="vertical" size={2} style={{ marginTop: 12, width: '100%' }}>
-          <Typography.Text strong>{product.name}</Typography.Text>
-          <Typography.Text type="secondary">
-            {product.store?.name || product.category}
-          </Typography.Text>
-          <Typography.Text strong>{currency(price)}</Typography.Text>
-          <VariantPreview>
-            {(product.itemsPreview || product.variants || [])
-              .slice(0, 5)
-              .map(variant =>
-                variant.image ? (
+    <ProductLink to={buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id })}>
+      <ProductCardWrapper hoverable bordered={false}>
+        <ImageWrap>
+          {mainImage && (
+            <ProductImage
+              src={getUploadUrl(UPLOAD_ROUTES.products.images, mainImage)}
+              alt={product.name}
+            />
+          )}
+        </ImageWrap>
+
+        <ProductInfo>
+          <ProductName>{product.name}</ProductName>
+
+          <ProductMeta>{product.store?.name || product.category}</ProductMeta>
+
+          <ProductPrice>{currency(price)}</ProductPrice>
+
+          {!!previews.length && (
+            <VariantPreview>
+              {previews.map((variant, index) => {
+                const image = getImage(variant)
+                const key = `${variant._id || variant.itemId || variant.sku || image || 'preview'}-${index}`
+
+                return image ? (
                   <PreviewImage
-                    key={variant._id || variant.itemId || variant.sku}
-                    src={getUploadUrl(UPLOAD_ROUTES.products.images, variant.image)}
-                    title={Object.values(variant.attributes || {}).join(' / ')}
+                    key={key}
+                    src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
+                    alt={variant.name || product.name}
                   />
                 ) : (
                   <Dot
-                    key={variant._id || variant.itemId || variant.sku}
-                    title={variant.attributes?.color}
+                    key={key}
                     $color={variant.attributes?.hex || variant.hex}
+                    title={variant.attributes?.color}
                   />
                 )
-              )}
-          </VariantPreview>
-        </Space>
-      </Card>
-    </Link>
+              })}
+            </VariantPreview>
+          )}
+        </ProductInfo>
+      </ProductCardWrapper>
+    </ProductLink>
   )
 }
 
