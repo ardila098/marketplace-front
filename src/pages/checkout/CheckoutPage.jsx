@@ -104,7 +104,7 @@ const CheckoutPage = () => {
             form={form}
             layout="vertical"
             initialValues={{
-              paymentMethod: 'manual',
+              paymentMethod: '1',
             }}
             onFinish={handleSubmit}
           >
@@ -214,7 +214,7 @@ const CheckoutPage = () => {
               ]}
             >
               <Radio.Group>
-                <Radio value="manual">Pago manual</Radio>
+                <Radio value="1">Pago manual</Radio>
               </Radio.Group>
             </Form.Item>
 

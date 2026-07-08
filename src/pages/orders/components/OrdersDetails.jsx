@@ -2,8 +2,6 @@ import { Button, Space, Spin } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { useSellerOrderDetail } from './hooks/useSellerOrderDetail'
-
 import {
   DetailContainer,
   DetailHeader,
@@ -26,16 +24,17 @@ import {
   InfoValue,
   ActionBox,
   WarningText,
-} from './style'
-import { currency } from '../../../../utils/formatters'
-import { getUploadUrl, UPLOAD_ROUTES } from '../../../../constants/uploadRoutes'
-import StatusTag from '../../../../components/common/StatusTag'
+} from '../style'
+import useOrders from '../hooks/useOrders'
+import StatusTag from '../../../components/common/StatusTag'
+import { currency } from '../../../utils/formatters'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 
-const SellerOrderDetailPage = () => {
+const OrdersDetails = () => {
   const navigate = useNavigate()
   const { id } = useParams()
+  const { order, loading } = useOrders(id)
 
-  const { order, loading, dispatching, dispatchOrder } = useSellerOrderDetail(id)
 
   return (
     <DetailContainer>
@@ -59,9 +58,9 @@ const SellerOrderDetailPage = () => {
           <Button
             type="primary"
             size="large"
-            loading={dispatching}
-            disabled={!order?.canSellerDispatch}
-            onClick={dispatchOrder}
+            // loading={dispatching}
+            // disabled={!order?.canSellerDispatch}
+            // onClick={dispatchOrder}
           >
             Marcar como despachado
           </Button>
@@ -173,4 +172,4 @@ const SellerOrderDetailPage = () => {
   )
 }
 
-export default SellerOrderDetailPage
+export default OrdersDetails

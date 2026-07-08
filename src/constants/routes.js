@@ -14,6 +14,8 @@ export const ROUTES = {
   STOREFRONT_PRODUCTS: '/stores/:storeSlug/products',
   STOREFRONT_PRODUCT_DETAIL: '/stores/:storeSlug/products/:productSlug',
   ORDER_LOOKUP: '/order-lookup',
+  ORDER_DETAIL: '/orderDetail/:id',
+
 
   CUSTOMER_CART: '/customer/cart',
   CHECKOUT: '/checkout',
@@ -25,7 +27,6 @@ export const ROUTES = {
   SELLER_PRODUCTS: '/seller/products',
   SELLER_ORDERS: '/seller/orders',
   SELLER_PRODUCTS_MANAGE: '/seller/products/:id/manage',
-  SELLER_ORDER_DETAIL: '/seller/orderDetail/:id',
 
   
 
@@ -34,6 +35,8 @@ export const ROUTES = {
   ADMIN_PRODUCTS: '/admin/products',
   ADMIN_USERS: '/admin/users',
   ADMIN_SETTINGS: '/admin/settings',
+  ADMIN_ORDERS: '/admin/orders',
+
 }
 
 export const buildRoute = (route, params = {}) => {

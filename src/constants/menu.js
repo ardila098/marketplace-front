@@ -106,6 +106,13 @@ export const adminMenu = [
     permission: PERMISSIONS.ADMIN_USERS_MANAGE,
   },
   {
+    key: ROUTES.ADMIN_ORDERS,
+    label: 'Órdenes',
+    path: ROUTES.ADMIN_ORDERS,
+    icon: ClipboardList,
+    permission: PERMISSIONS.ADMIN_USERS_MANAGE,
+  },
+  {
     key: ROUTES.ADMIN_SETTINGS,
     label: 'Configuración',
     path: ROUTES.ADMIN_SETTINGS,

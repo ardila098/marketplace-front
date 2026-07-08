@@ -1,75 +1,83 @@
 export const ORDER_STATUS = Object.freeze({
   PENDING: {
-    value: 0,
+    value: '0',
     label: 'Pendiente',
   },
   CONFIRMED: {
-    value: 1,
+    value: '1',
     label: 'Confirmada',
   },
-  COMPLETED: {
-    value: 2,
-    label: 'Completada',
-  },
   CANCELLED: {
-    value: 3,
+    value: '2',
     label: 'Cancelada',
+  },
+  COMPLETED: {
+    value: '3',
+    label: 'Completada',
   },
 })
 
 export const PAYMENT_STATUS = Object.freeze({
   PENDING: {
-    value: 0,
+    value: '0',
     label: 'Pendiente',
   },
-  PAID: {
-    value: 1,
-    label: 'Pagado',
+  APPROVED: {
+    value: '1',
+    label: 'Aprobado',
+  },
+  REJECTED: {
+    value: '2',
+    label: 'Rechazado',
   },
   FAILED: {
-    value: 2,
+    value: '3',
     label: 'Fallido',
   },
+  CANCELLED: {
+    value: '4',
+    label: 'Cancelado',
+  },
   REFUNDED: {
-    value: 3,
+    value: '5',
     label: 'Reembolsado',
   },
 })
 
 export const FULFILLMENT_STATUS = Object.freeze({
   PENDING: {
-    value: 0,
+    value: '0',
     label: 'Pendiente',
   },
   PROCESSING: {
-    value: 1,
+    value: '1',
     label: 'En preparación',
   },
   READY_TO_SHIP: {
-    value: 2,
+    value: '2',
     label: 'Lista para enviar',
   },
   SHIPPED: {
-    value: 3,
+    value: '3',
     label: 'Enviada',
   },
   DELIVERED: {
-    value: 4,
+    value: '4',
     label: 'Entregada',
   },
   CANCELLED: {
-    value: 5,
+    value: '5',
     label: 'Cancelada',
   },
 })
 
 export const PAYMENT_METHODS = Object.freeze({
   MANUAL: {
-    value: 0,
+    value: '0',
     label: 'Manual',
   },
   WOMPI: {
-    value: 1,
+    value: '1',
     label: 'Wompi',
   },
 })

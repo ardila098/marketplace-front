@@ -42,12 +42,8 @@ export const API_ROUTES = {
   orders: {
     base: '/orders',
     byId: id => `/orders/${id}`,
-    myOrders: '/orders/mine',
-    sellerOrders: '/orders/seller',
-    adminOrders: '/orders/admin',
-    sellerById: id => `/orders/seller/${id}`,
-    sellerDispatch: id => `/orders/seller/${id}/dispatch`,
     lookup: '/orders/lookup',
+    dispatch: id => `/orders/${id}/dispatch`,
   },
 
   categories: {

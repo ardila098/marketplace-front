@@ -23,7 +23,7 @@ const StorefrontProductDetailPage = createLazyPage(
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const CheckoutPage = createLazyPage(() => import('../pages/checkout/CheckoutPage'))
 const OrdersPage = createLazyPage(() => import('../pages/customer/OrdersPage'))
-const OrdersLookupPage = createLazyPage(() => import('../pages/orders/OrderLookupPage'))
+const OrdersLookupPage = createLazyPage(() => import('../pages/orders/components/OrderLookupPage'))
 
 const VerticalsPage = createLazyPage(() => import('../pages/verticals/VerticalsPage'))
 const VerticalPage = createLazyPage(() => import('../pages/vertical/VerticalPage'))
@@ -35,12 +35,8 @@ const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesign
 const SellerProductsPage = createLazyPage(
   () => import('../pages/seller/components/SellerProducts/SellerProductsPage')
 )
-const SellerOrdersPage = createLazyPage(
-  () => import('../pages/seller/components/sellerOrdersPage/SellerOrdersPage')
-)
-const SellerOrderDetailPage = createLazyPage(
-  () => import('../pages/seller/components/sellerOrderDetails/SellerOrderDetailPage')
-)
+const SellerOrdersPage = createLazyPage(() => import('../pages/orders/OrdersPage'))
+const OrderDetailPage = createLazyPage(() => import('../pages/orders/components/OrdersDetails'))
 const SellerProductManagePage = createLazyPage(
   () => import('../pages/seller/components/sellerProductsManage/SellerProductsManagePage')
 )
@@ -50,6 +46,7 @@ const AdminStoresPage = createLazyPage(() => import('../pages/admin/AdminStoresP
 const AdminProductsPage = createLazyPage(() => import('../pages/admin/AdminProductsPage'))
 const AdminUsersPage = createLazyPage(() => import('../pages/admin/AdminUsersPage'))
 const AdminSettingsPage = createLazyPage(() => import('../pages/admin/AdminSettingsPage'))
+const AdminOrdersPage = createLazyPage(() => import('../pages/orders/OrdersPage'))
 
 const UnauthorizedPage = createLazyPage(() => import('../pages/system/UnauthorizedPage'))
 
@@ -68,6 +65,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.CUSTOMER_CART, element: <CartPage /> },
       { path: ROUTES.CHECKOUT, element: <CheckoutPage /> },
       { path: ROUTES.ORDER_LOOKUP, element: <OrdersLookupPage /> },
+      { path: ROUTES.ORDER_DETAIL, element: <OrderDetailPage /> },
     ],
   },
   {
@@ -107,7 +105,6 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_PRODUCTS, element: <SellerProductsPage /> },
           { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> },
           { path: ROUTES.SELLER_PRODUCTS_MANAGE, element: <SellerProductManagePage /> },
-          { path: ROUTES.SELLER_ORDER_DETAIL, element: <SellerOrderDetailPage /> },
         ],
       },
     ],
@@ -122,6 +119,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_STORES, element: <AdminStoresPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },
           { path: ROUTES.ADMIN_USERS, element: <AdminUsersPage /> },
+          { path: ROUTES.ADMIN_ORDERS, element: <AdminOrdersPage /> },
           { path: ROUTES.ADMIN_SETTINGS, element: <AdminSettingsPage /> },
         ],
       },

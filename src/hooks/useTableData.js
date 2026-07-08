@@ -47,7 +47,7 @@ export const useTableData = ({
     page: tableState.page,
     pageSize: tableState.pageSize,
     search: tableState.search,
-    total: tableState.total || tableState.data.length,
+    total: tableState.total,
     handleSearch,
     handleTableChange,
   }

@@ -37,7 +37,7 @@ const AppTable = ({
       <Table
         rowKey={rowKey}
         columns={columns}
-        dataSource={tableData?.rows || tableData}
+        dataSource={tableData?.rows || tableData?.data}
         loading={tableData?.loading}
         pagination={{
           current: tableData?.page,

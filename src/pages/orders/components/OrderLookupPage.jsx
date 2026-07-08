@@ -1,8 +1,8 @@
 import { Button, Empty, Form, Input, message } from 'antd'
 import { useState } from 'react'
 
-import { formatPrice } from '../../helpers/formatPrice'
-import { orderService } from '../../services/orderService'
+import { formatPrice } from '../../../helpers/formatPrice'
+import { orderService } from '../../../services/orderService'
 
 import {
   OrderLookupContainer,
@@ -25,7 +25,7 @@ import {
   OrderItemPrice,
   TotalRow,
   AddressText,
-} from './styles'
+} from '../styles'
 
 const STATUS_LABELS = {
   pending: 'Pendiente',
