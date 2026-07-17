@@ -46,7 +46,7 @@ const useVerticals = () => {
 
   useEffect(() => {
     getVerticals()
-  }, [])
+  }, [getVerticals])
 
   return {
     getVerticals,

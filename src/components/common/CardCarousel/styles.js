@@ -4,8 +4,7 @@ import { Carousel } from 'antd'
 export const Section = styled.section`
   width: 100%;
   padding: 32px 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--app-font-family);
 
   @media (max-width: 576px) {
     padding: 24px 0;
@@ -62,7 +61,7 @@ export const CarouselWrapper = styled(Carousel)`
 export const Card = styled.article`
   position: relative;
   height: 230px;
-  border-radius: 18px;
+  border-radius: 8px;
   overflow: hidden;
   background: #f3f3f3;
   cursor: pointer;
@@ -74,7 +73,7 @@ export const Card = styled.article`
 
   @media (max-width: 576px) {
     height: 220px;
-    border-radius: 16px;
+    border-radius: 8px;
   }
 `
 
@@ -97,7 +96,7 @@ export const IconBox = styled.div`
   z-index: 2;
   width: 36px;
   height: 36px;
-  border-radius: 12px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(8px);
   display: flex;
@@ -171,8 +170,9 @@ export const NextButton = styled.button`
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);
   color: #111;
-  font-size: 22px;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
   transition: transform 0.2s ease, background 0.2s ease;

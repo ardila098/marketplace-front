@@ -1,4 +1,5 @@
-import { Empty, Table, Tag } from 'antd'
+import { Button, Empty, Table, Tag } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
 
 const getAttributeValue = (attributes = [], label) => {
   return attributes.find(
@@ -6,7 +7,7 @@ const getAttributeValue = (attributes = [], label) => {
   )?.valueSnapshot
 }
 
-const ProductInventoryTab = ({ product, inventory }) => {
+const ProductInventoryTab = ({ product, inventory, onEdit }) => {
   const getReferenceName = referenceId => {
     return product.references?.find(
       reference => String(reference._id) === String(referenceId)
@@ -57,6 +58,20 @@ const ProductInventoryTab = ({ product, inventory }) => {
       render: (_, record) => Math.max(
         (record.stock || 0) - (record.reservedStock || 0),
         0
+      ),
+    },
+    {
+      title: 'Acciones',
+      key: 'actions',
+      align: 'right',
+      render: (_, record) => (
+        <Button
+          type="text"
+          icon={<EditOutlined />}
+          onClick={() => onEdit?.(record)}
+        >
+          Editar
+        </Button>
       ),
     },
   ]

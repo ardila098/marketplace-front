@@ -45,9 +45,21 @@ const ProductCatalogCard = ({ product }) => {
     navigate(`/vertical/products/${product._id}`)
   }
 
+  const handleImageKeyDown = event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      handleOpenDetail()
+    }
+  }
+
   return (
-    <ProductCard onClick={handleOpenDetail}>
-      <CardImageContainer>
+    <ProductCard>
+      <CardImageContainer
+        role="link"
+        tabIndex={0}
+        onClick={handleOpenDetail}
+        onKeyDown={handleImageKeyDown}
+      >
         <CardImage
           src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
           alt={product.name}

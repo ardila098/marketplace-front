@@ -44,7 +44,7 @@ const IconWrapper = styled.div`
 
 const BadgeTitle = styled.h4`
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: #111827;
   margin: 0;
 `

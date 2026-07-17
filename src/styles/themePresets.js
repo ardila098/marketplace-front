@@ -7,12 +7,16 @@ export const neutralTheme = {
   borderRadius: 14
 }
 
-export const buildStoreTheme = store => ({
-  ...neutralTheme,
-  primaryColor: store?.theme?.primaryColor || neutralTheme.primaryColor,
-  backgroundColor: store?.theme?.backgroundColor || neutralTheme.backgroundColor,
-  surfaceColor: store?.theme?.surfaceColor || neutralTheme.surfaceColor,
-  textColor: store?.theme?.textColor || neutralTheme.textColor,
-  mutedTextColor: store?.theme?.mutedTextColor || neutralTheme.mutedTextColor,
-  borderRadius: store?.theme?.borderRadius || neutralTheme.borderRadius
-})
+export const buildStoreTheme = store => {
+  const theme = store?.storefront?.theme || store?.theme || {}
+
+  return {
+    ...neutralTheme,
+    primaryColor: theme.primaryColor || neutralTheme.primaryColor,
+    backgroundColor: theme.backgroundColor || neutralTheme.backgroundColor,
+    surfaceColor: theme.surfaceColor || neutralTheme.surfaceColor,
+    textColor: theme.textColor || neutralTheme.textColor,
+    mutedTextColor: theme.mutedTextColor || neutralTheme.mutedTextColor,
+    borderRadius: theme.borderRadius || neutralTheme.borderRadius
+  }
+}

@@ -2,7 +2,6 @@ import { formatPrice } from '../../../helpers/formatPrice'
 import {
   getItemCompareAtPrice,
   getItemDiscountPercentage,
-  getItemPrice,
 } from '../../../helpers/catalogProduct'
 
 import {

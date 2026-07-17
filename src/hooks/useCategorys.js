@@ -7,10 +7,17 @@ const useCategorys = (params) => {
   const [loading, setLoading] = useState(false)
 
   const getCategorys = useCallback(async () => {
+    if (params?.enabled === false) {
+      setCategorys([])
+      return
+    }
+
     setLoading(true)
 
     try {
-      const response = await categoryService.list(params)
+      const queryParams = { ...(params || {}) }
+      delete queryParams.enabled
+      const response = await categoryService.list(queryParams)
 
       setCategorys(response.data || [])
     } catch (error) {
@@ -22,7 +29,7 @@ const useCategorys = (params) => {
 
   useEffect(() => {
     getCategorys()
-  }, [])
+  }, [getCategorys])
 
   return {
     categorys,

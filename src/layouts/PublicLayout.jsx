@@ -1,11 +1,14 @@
 import { Layout } from 'antd'
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet, Link, useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import CartDrawer from '../components/cart/CartDrawer'
+import SiteFooter from '../components/layout/SiteFooter'
 import ResponsivePublicMenu from '../components/navigation/ResponsivePublicMenu'
 import UserActions from '../components/navigation/UserActions'
 import { env } from '../config/env'
 import { ROUTES } from '../constants/routes'
+import StorefrontLayout from './StorefrontLayout'
 
 const { Header, Content } = Layout
 
@@ -31,24 +34,48 @@ const HeaderBar = styled(Header)`
 
 const Brand = styled(Link)`
   color: #111;
-  font-weight: 850;
-  letter-spacing: -0.05em;
-  font-size: 20px;
+  font-weight: 200;
+  letter-spacing: 0;
+  font-size: 18px;
   white-space: nowrap;
 `
 
-const PublicLayout = () => (
-  <Layout>
-    <HeaderBar>
-      <Brand to={ROUTES.HOME}>{}</Brand>
-      <ResponsivePublicMenu />
-      <UserActions />
-    </HeaderBar>
-    <Content>
-      <Outlet />
-    </Content>
-    <CartDrawer />
-  </Layout>
-)
+const PublicLayout = () => {
+  const location = useLocation()
+  const { currentStore, resolutionMode } = useSelector(state => state.storefront)
+  const isCustomDomainHome = location.pathname === '/' && currentStore && resolutionMode === 'host'
+  const isCustomDomainStorePath =
+    currentStore &&
+    resolutionMode === 'host' &&
+    (
+      location.pathname === '/products' ||
+      location.pathname.startsWith('/products/') ||
+      location.pathname === '/categories' ||
+      location.pathname === '/outlet'
+    )
+
+  if (isCustomDomainHome) {
+    return <StorefrontLayout />
+  }
+
+  if (isCustomDomainStorePath) {
+    return <Outlet />
+  }
+
+  return (
+    <Layout style={{ minHeight: '100vh' }}>
+      <HeaderBar>
+        <Brand to={ROUTES.HOME}>{env.appName || 'Marketplace'}</Brand>
+        <ResponsivePublicMenu />
+        <UserActions />
+      </HeaderBar>
+      <Content>
+        <Outlet />
+      </Content>
+      <SiteFooter />
+      <CartDrawer />
+    </Layout>
+  )
+}
 
 export default PublicLayout

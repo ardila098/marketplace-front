@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 
@@ -9,11 +9,11 @@ import { GalleryWrapper, MainImageBox, MainImage } from '../styles/styles'
 const ItemGallery = ({ item }) => {
   const [selectedImage, setSelectedImage] = useState(null)
 
-  const images = item?.images || []
+  const images = useMemo(() => item?.images || [], [item])
 
   useEffect(() => {
     setSelectedImage(images[0] || null)
-  }, [item?._id])
+  }, [images])
 
   return (
     <GalleryWrapper>

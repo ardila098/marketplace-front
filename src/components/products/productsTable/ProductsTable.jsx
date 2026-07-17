@@ -1,16 +1,45 @@
-import { Space } from 'antd'
+import { Image, Space } from 'antd'
 import HeaderTable from '../../common/TableActions/HeaderTable'
 import AppTable from '../../common/AppTable'
 import TableActions from '../../common/TableActions/TableActions'
 import { PRODUCT_TYPES } from '../../../constants/productTypeConstants'
 import { useNavigate } from 'react-router-dom'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 
+const getProductPreviewImage = product => {
+    return (
+        product?.images?.[0] ||
+        product?.variants?.find(variant => variant.images?.length)?.images?.[0] ||
+        product?.references?.find(reference => reference.images?.length)?.images?.[0] ||
+        ''
+    )
+}
 
 const ProductsTable = ({ handleEdit, productModals, tableData, handleCreate, getProducts }) => {
     const navigate = useNavigate()
 
 
     const columns = [
+        {
+            title: 'Imagen',
+            key: 'image',
+            width: 80,
+            render: (_, record) => {
+                const image = getProductPreviewImage(record)
+
+                if (!image) return '-'
+
+                return (
+                    <Image
+                        src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
+                        width={48}
+                        height={48}
+                        preview={false}
+                        style={{ borderRadius: 6, objectFit: 'cover' }}
+                    />
+                )
+            },
+        },
         {
             title: 'Producto',
             dataIndex: 'name',
@@ -25,6 +54,12 @@ const ProductsTable = ({ handleEdit, productModals, tableData, handleCreate, get
             title: 'Tienda',
             dataIndex: ['store', 'name'],
             key: 'store',
+        },
+        {
+            title: 'Vertical',
+            dataIndex: ['vertical', 'name'],
+            key: 'vertical',
+            render: (_, record) => record.vertical?.name || '-',
         },
 
         {

@@ -1,48 +1,55 @@
-import { Button, Col, Divider, message, Row, Space, Typography } from 'antd'
-import { useMemo, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { Empty, Spin } from 'antd'
+import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import ProductImageGallery from '../../components/products/ProductImageGallery'
-import VariantSelector from '../../components/products/VariantSelector'
-import { mockProducts } from '../../data/mockData'
-import { addCartItem, openCartDrawer } from '../../store/slices/cartSlice'
-import { PageShell } from '../../styles/layoutStyles'
-import { currency } from '../../utils/formatters'
+import ItemGallery from '../itemDetails/components/ItemGallery'
+import ItemInfo from '../itemDetails/components/ItemInfo'
+import ItemPucharse from '../itemDetails/components/pucharse/ItemPucharse'
+import ProductTabs from '../itemDetails/components/ProductTabs'
+import RelatedItems from '../itemDetails/components/RelatedItems'
+import TrustBadges from '../itemDetails/components/TrustBadges'
+import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
+import useItemPucharse from '../itemDetails/hooks/useItemPucharse'
+import {
+  GalleryColumn,
+  InfoColumn,
+  PageContainer,
+  ProductLayout,
+} from '../itemDetails/styles/styles'
+import useStoreProductDetail from './hooks/useStoreProductDetail'
 
 const StorefrontProductDetailPage = () => {
-  const dispatch = useDispatch()
+  const { translate } = useDictionaryTranslation()
   const { storeSlug, productSlug } = useParams()
-  const product = mockProducts.find(item => item.store.slug === storeSlug && item.slug === productSlug) || mockProducts[0]
-  const [selectedVariant, setSelectedVariant] = useState(product.variants?.[0])
-  const images = useMemo(() => [selectedVariant?.image, ...(product.images || [])].filter(Boolean), [selectedVariant, product])
-
-  const handleAddToCart = () => {
-    dispatch(addCartItem({ product, variant: selectedVariant, quantity: 1 }))
-    dispatch(openCartDrawer())
-    message.success('Producto agregado al carrito')
-  }
+  const store = useSelector(state => state.storefront.currentStore)
+  const activeStoreSlug = storeSlug || store?.slug
+  const { product, relatedProducts, loading } = useStoreProductDetail(activeStoreSlug, productSlug)
+  const purchase = useItemPucharse(product)
 
   return (
-    <PageShell>
-      <Row gutter={[42, 42]}>
-        <Col xs={24} md={12}><ProductImageGallery images={images} /></Col>
-        <Col xs={24} md={12}>
-          <Space direction="vertical" size="large" style={{ width: '100%' }}>
-            <div>
-              <Typography.Text type="secondary">{product.store?.name} · {product.category}</Typography.Text>
-              <Typography.Title style={{ marginBottom: 8, letterSpacing: '-.05em' }}>{product.name}</Typography.Title>
-              <Typography.Title level={3}>{currency(selectedVariant?.price || product.price)}</Typography.Title>
-              <Typography.Paragraph type="secondary">{product.description}</Typography.Paragraph>
-            </div>
-            <VariantSelector variants={product.variants} selectedVariant={selectedVariant} onChange={setSelectedVariant} />
-            <Divider />
-            <Button type="primary" size="large" block disabled={!selectedVariant || selectedVariant.stock <= 0} onClick={handleAddToCart}>
-              Agregar al carrito
-            </Button>
-          </Space>
-        </Col>
-      </Row>
-    </PageShell>
+    <PageContainer>
+      <Spin spinning={loading}>
+        {!product && !loading ? (
+          <Empty description={translate('productNotFound')} />
+        ) : (
+          <>
+            <ProductLayout style={{ marginTop: 20 }}>
+              <GalleryColumn>
+                <ItemGallery item={purchase.selectedReference || product} />
+                <TrustBadges />
+              </GalleryColumn>
+
+              <InfoColumn>
+                <ItemInfo item={purchase.selectedReference || product} />
+                <ItemPucharse item={product} purchase={purchase} />
+                <ProductTabs product={product} />
+              </InfoColumn>
+            </ProductLayout>
+
+            <RelatedItems data={relatedProducts} storeSlug={activeStoreSlug} />
+          </>
+        )}
+      </Spin>
+    </PageContainer>
   )
 }
 

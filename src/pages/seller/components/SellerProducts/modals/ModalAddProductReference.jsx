@@ -6,21 +6,33 @@ import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../../../../constants/uploadRo
 const ModalAddProductReference = ({
   open,
   product,
+  reference,
   loading = false,
   onCancel,
   onSubmit,
 }) => {
   const [form] = Form.useForm()
+  const isEditing = Boolean(reference?._id)
 
   useEffect(() => {
-    if (!open) {
+    if (open) {
+      form.setFieldsValue({
+        name: reference?.name || '',
+        price: reference?.price ?? product?.price ?? 0,
+        compareAtPrice: reference?.compareAtPrice ?? product?.compareAtPrice ?? 0,
+        images: reference?.images || [],
+        isDefault: Boolean(reference?.isDefault),
+        isActive: reference?.isActive !== false,
+      })
+    } else {
       form.resetFields()
     }
-  }, [open, form])
+  }, [open, form, product, reference])
 
   const handleFinish = values => {
     onSubmit?.({
       productId: product?._id || product?.id,
+      referenceId: reference?._id,
       payload: {
         name: values.name,
         price: values.price || 0,
@@ -33,14 +45,14 @@ const ModalAddProductReference = ({
           },
         ],
         isDefault: Boolean(values.isDefault),
-        isActive: true,
+        isActive: values.isActive !== false,
       },
     })
   }
 
   return (
     <Modal
-      title={`Agregar referencia${product?.name ? ` - ${product.name}` : ''}`}
+      title={`${isEditing ? 'Editar' : 'Agregar'} referencia${product?.name ? ` - ${product.name}` : ''}`}
       open={open}
       onCancel={onCancel}
       footer={null}
@@ -55,6 +67,7 @@ const ModalAddProductReference = ({
           price: product?.price || 0,
           compareAtPrice: product?.compareAtPrice || 0,
           isDefault: false,
+          isActive: true,
         }}
       >
         <Form.Item
@@ -101,6 +114,10 @@ const ModalAddProductReference = ({
           <Switch />
         </Form.Item>
 
+        <Form.Item label="Activa" name="isActive" valuePropName="checked">
+          <Switch />
+        </Form.Item>
+
         <ImageUploadField
           label="Imágenes de esta referencia"
           name="images"
@@ -117,7 +134,7 @@ const ModalAddProductReference = ({
           </Button>
 
           <Button type="primary" htmlType="submit" loading={loading}>
-            Guardar referencia
+            {isEditing ? 'Guardar cambios' : 'Guardar referencia'}
           </Button>
         </Space>
       </Form>

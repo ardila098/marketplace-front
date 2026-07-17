@@ -1,4 +1,5 @@
-import { Card, Empty, Image, Space, Tag, Typography } from 'antd'
+import { Button, Card, Empty, Image, Space, Tag, Typography } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../../constants/uploadRoutes'
 
 const { Text } = Typography
@@ -11,7 +12,7 @@ const formatPrice = value => {
   })
 }
 
-const ProductReferencesTab = ({ product }) => {
+const ProductReferencesTab = ({ product, onEdit }) => {
   const references = product.references || []
 
   if (!references.length) {
@@ -24,6 +25,14 @@ const ProductReferencesTab = ({ product }) => {
         <Card
           key={reference._id}
           title={reference.name}
+          extra={(
+            <Button
+              type="text"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => onEdit?.(reference)}
+            />
+          )}
           size="small"
           style={{ width: 260 }}
         >

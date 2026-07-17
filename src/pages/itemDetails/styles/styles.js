@@ -1,19 +1,10 @@
 import styled from 'styled-components'
 
-const fontStack = `
-  'Manrope',
-  system-ui,
-  -apple-system,
-  BlinkMacSystemFont,
-  'Segoe UI',
-  sans-serif
-`
-
 export const PageContainer = styled.div`
   max-width: 1180px;
   margin: 0 auto;
   padding: 40px 20px 70px;
-  font-family: ${fontStack};
+  font-family: var(--app-font-family);
 
   @media (max-width: 768px) {
     padding: 24px 16px 56px;
@@ -55,7 +46,7 @@ export const MainImageBox = styled.div`
   aspect-ratio: 1 / 1;
   background: #f4f4f4;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 8px;
 `
 
 export const MainImage = styled.img`
@@ -105,17 +96,21 @@ export const ProductHeader = styled.div`
 export const StoreText = styled.div`
   font-size: 0.82rem;
   color: #777777;
-  font-weight: 600;
+  font-weight: 560;
   margin-bottom: 8px;
 `
 
 export const ProductTitle = styled.h1`
-  font-size: clamp(1.6rem, 3vw, 2.35rem);
-  line-height: 1.12;
-  letter-spacing: -0.045em;
+  font-size: 2rem;
+  line-height: 1.18;
+  letter-spacing: 0;
   margin: 0 0 8px;
   color: #111111;
-  font-weight: 800;
+  font-weight: 620;
+
+  @media (max-width: 768px) {
+    font-size: 1.55rem;
+  }
 `
 
 export const CategoryText = styled.div`
@@ -132,9 +127,9 @@ export const PriceRow = styled.div`
 `
 
 export const PriceText = styled.span`
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.035em;
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: 0;
   color: #111111;
 `
 
@@ -149,7 +144,7 @@ export const DiscountText = styled.div`
   margin-top: 6px;
   font-size: 0.9rem;
   color: #444444;
-  font-weight: 700;
+  font-weight: 560;
 `
 
 export const Description = styled.p`
@@ -175,8 +170,8 @@ export const SelectorTitle = styled.h3`
   margin: 0;
   color: #111111;
   font-size: 0.92rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+  font-weight: 620;
+  letter-spacing: 0;
 `
 
 export const OptionsGrid = styled.div`
@@ -190,7 +185,7 @@ export const OptionButton = styled.button`
   border: 1px solid ${({ $active }) => ($active ? '#111111' : '#dddddd')};
   background: ${({ $active }) => ($active ? '#111111' : '#ffffff')};
   color: ${({ $active }) => ($active ? '#ffffff' : '#111111')};
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 10px 12px;
   cursor: pointer;
   text-align: left;
@@ -207,7 +202,7 @@ export const OptionButton = styled.button`
 export const OptionLabel = styled.span`
   display: block;
   font-size: 0.86rem;
-  font-weight: 800;
+  font-weight: 600;
 `
 
 export const OptionStock = styled.span`
@@ -229,10 +224,10 @@ export const AddCartButtonWrapper = styled.div`
 
   .ant-btn-primary {
     height: 48px;
-    border-radius: 12px;
+    border-radius: 8px;
     background: #111111;
     border-color: #111111;
-    font-weight: 800;
+    font-weight: 620;
   }
 
   .ant-btn-primary:disabled {

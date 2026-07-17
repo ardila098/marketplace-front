@@ -8,6 +8,11 @@ export const categoryService = {
         return normalizeListResponse(response)
     },
 
+    adminList: async params => {
+        const response = await DataService.get(API_ROUTES.categories.admin, params)
+        return normalizeListResponse(response)
+    },
+
     getById: async id => {
         const response = await DataService.get(API_ROUTES.categories.byId(id))
         return normalizeItemResponse(response)
@@ -15,17 +20,17 @@ export const categoryService = {
 
     create: async payload => {
         const response = await DataService.post(API_ROUTES.categories.base, payload)
-        return normalizeItemResponse(response, 'Producto creado correctamente')
+        return normalizeItemResponse(response, 'Categoria creada correctamente')
     },
 
     update: async (id, payload) => {
-        const response = await DataService.put(API_ROUTES.categories.byId(id), payload)
-        return normalizeItemResponse(response, 'Producto actualizado correctamente')
+        const response = await DataService.patch(API_ROUTES.categories.byId(id), payload)
+        return normalizeItemResponse(response, 'Categoria actualizada correctamente')
     },
 
     remove: async id => {
-        const response = await DataService.delete(API_ROUTES.categorys.byId(id))
-        return normalizeItemResponse(response, 'Producto eliminado correctamente')
+        const response = await DataService.delete(API_ROUTES.categories.byId(id))
+        return normalizeItemResponse(response, 'Categoria desactivada correctamente')
     },
 
 

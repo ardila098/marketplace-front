@@ -19,7 +19,7 @@ const useCatalogItems = () => {
 
   useEffect(() => {
     getCatalogItems()
-  }, [])
+  }, [getCatalogItems])
 
   return {
     getCatalogItems,

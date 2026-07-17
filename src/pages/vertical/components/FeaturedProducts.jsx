@@ -1,6 +1,8 @@
 import { Col } from 'antd'
 import { useNavigate } from 'react-router-dom'
-import { UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
+import { buildRoute, ROUTES } from '../../../constants/routes'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
+import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'
 
 import {
   FeaturedProductsRow,
@@ -17,10 +19,10 @@ import {
 
 const FeaturedProducts = ({ data = [] }) => {
   const navigate = useNavigate()
-
+  const { translate } = useDictionaryTranslation()
 
   const handleProductClick = productId => {
-    navigate(`/product/${productId}`)
+    navigate(buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: productId }))
   }
 
   const handleViewMoreClick = verticalId => {
@@ -30,7 +32,9 @@ const FeaturedProducts = ({ data = [] }) => {
   return (
     <FeaturedProductsRow gutter={[16, 16]}>
       {data.map(item => {
-        const { vertical, products } = item
+        const { vertical, products = [] } = item
+
+        if (!vertical?._id) return null
 
         return (
           <FeaturedProductCol key={vertical._id} xs={24} sm={12} lg={6}>
@@ -39,19 +43,15 @@ const FeaturedProducts = ({ data = [] }) => {
                 <VerticalName>{vertical.name}</VerticalName>
 
                 <ViewMoreText onClick={() => handleViewMoreClick(vertical._id)}>
-                  Ver más
+                  {translate('catalog.explore')}
                 </ViewMoreText>
               </FeaturedProductHeader>
 
               <ProductImagesRow gutter={8}>
-                {products?.slice(0, 3).map(product => (
+                {products.slice(0, 3).map(product => (
                   <Col key={product._id} span={8}>
                     <ProductImage
-                      src={
-                        product.image
-                          ? `${UPLOAD_ROUTES.products.images}/${product.image}`
-                          : 'https://via.placeholder.com/150'
-                      }
+                      src={getUploadUrl(UPLOAD_ROUTES.products.images, product.image)}
                       alt={product.name}
                       onClick={() => handleProductClick(product._id)}
                     />
@@ -59,10 +59,10 @@ const FeaturedProducts = ({ data = [] }) => {
                 ))}
               </ProductImagesRow>
 
-              <FeaturedStoresLabel>Tiendas destacadas</FeaturedStoresLabel>
+              <FeaturedStoresLabel>{translate('officialStores')}</FeaturedStoresLabel>
 
               <FeaturedStoresText>
-                {products?.[0]?.store?.name || 'Múltiples Tiendas'}
+                {products[0]?.store?.name || translate('stores')}
               </FeaturedStoresText>
             </FeaturedProductCard>
           </FeaturedProductCol>

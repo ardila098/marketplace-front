@@ -1,14 +1,5 @@
 import styled from 'styled-components'
 
-const fontStack = `
-  'nunito',
-  system-ui,
-  -apple-system,
-  BlinkMacSystemFont,
-  'Segoe UI',
-  sans-serif
-`
-
 export const ProductCard = styled.div`
   background: #ffffff;
   border-radius: 16px;
@@ -18,7 +9,7 @@ export const ProductCard = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  font-family: ${fontStack};
+  font-family: var(--app-font-family);
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
@@ -37,6 +28,7 @@ export const CardImageContainer = styled.div`
   padding-top: 100%;
   overflow: hidden;
   background: #f3f4f4;
+  cursor: pointer;
 `
 
 export const CardImage = styled.img`
@@ -105,7 +97,7 @@ export const PriceBlock = styled.div`
 export const PriceText = styled.span`
   font-size: 0.98rem;
   font-weight: 800;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
   color: #050505;
 `
 
@@ -120,7 +112,7 @@ export const ProductTitle = styled.h3`
   font-size: 0.94rem;
   font-weight: 700;
   line-height: 1.28;
-  letter-spacing: -0.012em;
+  letter-spacing: 0;
   color: #111111;
   margin: 0;
 

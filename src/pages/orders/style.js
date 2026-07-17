@@ -1,8 +1,116 @@
 import styled from 'styled-components'
 import { Image } from 'antd'
 
+export const OrdersPageShell = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+
+export const OrdersPageHeader = styled.div`
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+`
+
+export const OrdersHeaderText = styled.div`
+  min-width: 0;
+`
+
+export const OrdersTitle = styled.h1`
+  margin: 0;
+  color: #111827;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0;
+`
+
+export const OrdersSubtitle = styled.p`
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 0.92rem;
+  line-height: 1.5;
+`
+
+export const OrdersToolbar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+`
+
+export const OrdersCount = styled.span`
+  color: #6b7280;
+  font-size: 0.84rem;
+`
+
+export const TablePanel = styled.div`
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  .ant-table-thead > tr > th {
+    background: #f9fafb;
+    color: #374151;
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .ant-table-cell {
+    vertical-align: top;
+  }
+`
+
+export const CellStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+`
+
+export const CellTitle = styled.span`
+  color: #111827;
+  font-size: 0.9rem;
+  font-weight: 700;
+`
+
+export const CellMeta = styled.span`
+  color: #6b7280;
+  font-size: 0.78rem;
+  line-height: 1.35;
+`
+
+export const ActionGroup = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  width: 100%;
+`
+
 export const DetailContainer = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `
 
 export const DetailHeader = styled.div`
@@ -10,7 +118,6 @@ export const DetailHeader = styled.div`
   justify-content: space-between;
   gap: 16px;
   align-items: flex-start;
-  margin-bottom: 24px;
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -20,86 +127,167 @@ export const DetailHeader = styled.div`
 export const HeaderInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  min-width: 0;
+`
+
+export const HeaderMeta = styled.div`
+  color: #6b7280;
+  font-size: 0.86rem;
+`
+
+export const HeaderActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  @media (max-width: 768px) {
+    width: 100%;
+
+    .ant-btn {
+      width: 100%;
+    }
+  }
 `
 
 export const OrderNumber = styled.h1`
   margin: 0;
-  font-size: 1.7rem;
-  color: #111111;
+  color: #111827;
+  font-size: 1.55rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0;
 `
 
-export const HeaderMeta = styled.div`
-  color: #777777;
-  font-size: 0.9rem;
+export const StatusRow = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+`
+
+export const MetricGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+
+  @media (max-width: 1180px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 620px) {
+    grid-template-columns: 1fr;
+  }
+`
+
+export const MetricBox = styled.div`
+  min-width: 0;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+`
+
+export const MetricLabel = styled.div`
+  color: #6b7280;
+  font-size: 0.76rem;
+  font-weight: 600;
+`
+
+export const MetricValue = styled.div`
+  margin-top: 6px;
+  color: #111827;
+  font-size: 1.05rem;
+  font-weight: 800;
 `
 
 export const DetailGrid = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 16px;
 
   @media (max-width: 992px) {
     grid-template-columns: 1fr;
   }
 `
 
-export const Panel = styled.div`
+export const DetailSide = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+
+export const Panel = styled.section`
   background: #ffffff;
-  border: 1px solid #eeeeee;
-  border-radius: 18px;
-  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
 `
 
 export const PanelTitle = styled.h2`
-  margin: 0 0 16px;
-  font-size: 1rem;
-  color: #111111;
+  margin: 0 0 14px;
+  color: #111827;
+  font-size: 0.98rem;
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: 0;
 `
 
 export const ProductList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 `
 
 export const ProductItem = styled.div`
   display: grid;
-  grid-template-columns: 86px minmax(0, 1fr);
-  gap: 14px;
-  padding: 14px;
-  border: 1px solid #eeeeee;
-  border-radius: 14px;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #eef0f3;
+  border-radius: 8px;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
 `
 
 export const ProductImage = styled(Image)`
-  width: 86px !important;
-  height: 86px !important;
+  width: 72px !important;
+  height: 72px !important;
   object-fit: cover;
-  border-radius: 12px;
-  background: #f5f5f5;
+  border-radius: 8px;
+  background: #f3f4f6;
+
+  @media (max-width: 520px) {
+    width: 56px !important;
+    height: 56px !important;
+  }
 `
 
 export const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 `
 
 export const ProductName = styled.div`
+  color: #111827;
+  font-size: 0.92rem;
   font-weight: 700;
-  color: #111111;
 `
 
 export const ProductMeta = styled.div`
-  font-size: 0.86rem;
-  color: #666666;
+  color: #6b7280;
+  font-size: 0.78rem;
+  line-height: 1.35;
 `
 
 export const ProductPrice = styled.div`
-  margin-top: 4px;
+  margin-top: 2px;
+  color: #111827;
+  font-size: 0.88rem;
   font-weight: 700;
-  color: #111111;
 `
 
 export const InfoBlock = styled.div`
@@ -109,29 +297,30 @@ export const InfoBlock = styled.div`
 `
 
 export const InfoRow = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 10px;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
 `
 
 export const InfoLabel = styled.span`
+  color: #6b7280;
   font-size: 0.76rem;
-  color: #888888;
+  font-weight: 600;
 `
 
 export const InfoValue = styled.span`
-  font-size: 0.92rem;
-  color: #111111;
+  color: #111827;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  word-break: break-word;
 `
 
-export const ActionBox = styled.div`
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid #eeeeee;
-`
-
-export const WarningText = styled.div`
-  margin-top: 10px;
-  font-size: 0.85rem;
-  color: #777777;
+export const EmptyText = styled.div`
+  color: #6b7280;
+  font-size: 0.88rem;
 `

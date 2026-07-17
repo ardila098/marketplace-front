@@ -19,7 +19,7 @@ const useItemDetails = id => {
 
   useEffect(() => {
     getCatalogItem()
-  }, [id])
+  }, [getCatalogItem])
 
   return {
     getCatalogItem,

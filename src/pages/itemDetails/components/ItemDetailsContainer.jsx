@@ -20,13 +20,13 @@ const ItemDetailsContainer = () => {
   const { dataItem, isLoading } = useItemDetails(id)
   const { getVerticalCatalog, data } = useCatalog()
   const purchase = useItemPucharse(dataItem)
+  const verticalId = dataItem?.vertical?._id || dataItem?.vertical
 
   useEffect(() => {
-    const verticalId = dataItem?.vertical?._id || dataItem?.vertical
     if (verticalId) {
       getVerticalCatalog({ verticals: verticalId })
     }
-  }, [dataItem])
+  }, [getVerticalCatalog, verticalId])
 
   return (
     <PageContainer>

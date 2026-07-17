@@ -1,10 +1,39 @@
-import { Button, Col, Form, Input, InputNumber, Row, Space } from 'antd'
+import { useEffect } from 'react'
+import { Button, Col, Form, Input, InputNumber, Row, Space, Switch } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import ImageUploadField from '../../../../../components/uploads/ImageUploadField/ImageUploadField'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../../../../constants/uploadRoutes'
 
-const FormProductVariant = ({ loading = false, onSubmit, onCancel }) => {
+const defaultValues = {
+  compareAtPrice: 0,
+  stock: 0,
+  lowStockThreshold: 0,
+  images: [],
+  isActive: true,
+  attributes: [
+    {
+      labelSnapshot: 'Talla',
+      valueSnapshot: '',
+    },
+  ],
+}
+
+const FormProductVariant = ({
+  loading = false,
+  initialValues,
+  submitLabel = 'Guardar variante',
+  stockLabel = 'Stock inicial',
+  onSubmit,
+  onCancel,
+}) => {
   const [form] = Form.useForm()
+
+  useEffect(() => {
+    form.setFieldsValue({
+      ...defaultValues,
+      ...(initialValues || {}),
+    })
+  }, [form, initialValues])
 
   const handleFinish = values => {
     onSubmit?.({
@@ -15,7 +44,7 @@ const FormProductVariant = ({ loading = false, onSubmit, onCancel }) => {
       images: values.images || [],
       attributes: values.attributes || [],
       variantReference: values.variantReference,
-      isActive: true,
+      isActive: values.isActive !== false,
     })
   }
 
@@ -24,18 +53,7 @@ const FormProductVariant = ({ loading = false, onSubmit, onCancel }) => {
       form={form}
       layout="vertical"
       onFinish={handleFinish}
-      initialValues={{
-        compareAtPrice: 0,
-        stock: 0,
-        lowStockThreshold: 0,
-        images: [],
-        attributes: [
-          {
-            labelSnapshot: 'Talla',
-            valueSnapshot: '',
-          },
-        ],
-      }}
+      initialValues={defaultValues}
     >
       <Row gutter={16}>
         <Col xs={24}>
@@ -94,13 +112,18 @@ const FormProductVariant = ({ loading = false, onSubmit, onCancel }) => {
           </Form.Item>
         </Col>
         <Col xs={24} md={12}>
-          <Form.Item label="Stock inicial" name="stock">
+          <Form.Item label={stockLabel} name="stock">
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
         </Col>
         <Col xs={24} md={12}>
           <Form.Item label="Alerta stock bajo" name="lowStockThreshold">
             <InputNumber min={0} style={{ width: '100%' }} />
+          </Form.Item>
+        </Col>
+        <Col xs={24} md={12}>
+          <Form.Item label="Activa" name="isActive" valuePropName="checked">
+            <Switch />
           </Form.Item>
         </Col>
         <Col xs={24}>
@@ -160,7 +183,7 @@ const FormProductVariant = ({ loading = false, onSubmit, onCancel }) => {
         <Button onClick={onCancel}>Cancelar</Button>
 
         <Button type="primary" htmlType="submit" loading={loading}>
-          Guardar variante
+          {submitLabel}
         </Button>
       </Space>
     </Form>

@@ -13,21 +13,34 @@ export const ProductLink = styled(Link)`
   }
 `
 
+export const ProductImageLink = styled(Link)`
+  display: block;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    color: inherit;
+  }
+`
+
 export const ProductCardWrapper = styled(Card)`
   height: 100%;
-  border-radius: 22px;
+  border-radius: 8px;
   overflow: hidden;
+  border: 1px solid #eef0f3;
 
   .ant-card-body {
-    padding: 14px;
+    padding: 12px;
   }
 `
 
 export const ImageWrap = styled.div`
   aspect-ratio: 1 / 1;
-  border-radius: 18px;
+  border-radius: 8px;
   overflow: hidden;
   background: #f4f4f5;
+  position: relative;
+  cursor: pointer;
 
   img {
     width: 100%;
@@ -45,6 +58,30 @@ export const ProductImage = styled.img`
   display: block;
 `
 
+export const NewBadge = styled.span`
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 2;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111111;
+  font-size: 11px;
+  font-weight: 650;
+  padding: 4px 8px;
+`
+
+export const ImagePlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #9ca3af;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #f5f6f8, #eceff3);
+`
+
 export const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -53,7 +90,9 @@ export const ProductInfo = styled.div`
 `
 
 export const ProductName = styled.div`
-  font-weight: 600;
+  font-weight: 560;
+  font-size: 14px;
+  line-height: 1.35;
   color: #111111;
 `
 
@@ -63,8 +102,31 @@ export const ProductMeta = styled.div`
 `
 
 export const ProductPrice = styled.div`
-  font-weight: 700;
+  font-weight: 650;
+  font-size: 14px;
   color: #111111;
+`
+
+export const PriceRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+`
+
+export const ComparePrice = styled.span`
+  color: #9ca3af;
+  font-size: 0.84rem;
+  text-decoration: line-through;
+`
+
+export const DiscountBadge = styled.span`
+  background: #dcfce7;
+  color: #166534;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
 `
 
 export const VariantPreview = styled.div`
@@ -73,19 +135,40 @@ export const VariantPreview = styled.div`
   margin-top: 10px;
 `
 
+export const PreviewButton = styled.button`
+  width: 30px;
+  height: 30px;
+  padding: 1px;
+  border-radius: 999px;
+  border: 1px solid ${({ $active }) => ($active ? '#111111' : '#e5e7eb')};
+  background: #ffffff;
+  cursor: pointer;
+  opacity: ${({ $active }) => ($active ? 1 : 0.76)};
+  transition:
+    border-color 160ms ease,
+    opacity 160ms ease,
+    transform 160ms ease;
+
+  &:hover {
+    border-color: #111111;
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+`
+
 export const PreviewImage = styled.img`
-  width: 28px;
-  height: 28px;
+  width: 100%;
+  height: 100%;
   border-radius: 999px;
   object-fit: cover;
-  border: 1px solid #e5e7eb;
   background: #ffffff;
+  display: block;
 `
 
 export const Dot = styled.span`
-  width: 28px;
-  height: 28px;
+  width: 100%;
+  height: 100%;
   border-radius: 999px;
-  border: 1px solid #d1d5db;
   background: ${({ $color }) => $color || '#ffffff'};
+  display: block;
 `

@@ -6,38 +6,58 @@ import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../hooks/useAuth'
 import { logout } from '../../store/slices/authSlice'
 import { openCartDrawer, selectCartCount } from '../../store/slices/cartSlice'
+import { ButtonCart } from './style'
 
 const dashboardByRole = {
   admin: ROUTES.ADMIN_DASHBOARD,
   seller: ROUTES.SELLER_DASHBOARD,
-  customer: ROUTES.CUSTOMER_ORDERS
+  customer: ROUTES.CUSTOMER_ORDERS,
 }
 
-const UserActions = () => {
+const UserActions = ({ compact = false, showAccount = true }) => {
   const dispatch = useDispatch()
   const cartCount = useSelector(selectCartCount)
   const { user, role } = useAuth()
 
-  const menuItems = user ? [
-    { key: 'dashboard', label: <Link to={dashboardByRole[role] || ROUTES.HOME}>Mi panel</Link> },
-    { key: 'logout', label: 'Cerrar sesión', icon: <LogOut size={15} />, onClick: () => dispatch(logout()) }
-  ] : []
+  const menuItems = user
+    ? [
+        {
+          key: 'dashboard',
+          label: <Link to={dashboardByRole[role] || ROUTES.HOME}>Mi panel</Link>,
+        },
+        {
+          key: 'logout',
+          label: 'Cerrar sesion',
+          icon: <LogOut size={15} />,
+          onClick: () => dispatch(logout()),
+        },
+      ]
+    : []
 
   return (
     <Space size="middle">
       <Badge count={cartCount} size="small">
-        <Button icon={<ShoppingBag size={18} />} onClick={() => dispatch(openCartDrawer())}>Carrito</Button>
+        <ButtonCart
+          aria-label="Carrito"
+          icon={<ShoppingBag size={18} />}
+          onClick={() => dispatch(openCartDrawer())}
+        >
+          {compact ? null : ''}
+        </ButtonCart>
       </Badge>
-      {user ? (
+
+      {showAccount && user ? (
         <Dropdown menu={{ items: menuItems }} trigger={['click']}>
           <Avatar icon={<User size={18} />} style={{ cursor: 'pointer' }} />
         </Dropdown>
-      ) : (
+      ) : showAccount ? (
         <Space>
           <Link to={ROUTES.LOGIN}>Ingresar</Link>
-          <Link to={ROUTES.REGISTER}><Button type="primary">Crear cuenta</Button></Link>
+          <Link to={ROUTES.REGISTER}>
+            <Button type="primary">Crear cuenta</Button>
+          </Link>
         </Space>
-      )}
+      ) : null}
     </Space>
   )
 }

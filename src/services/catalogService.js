@@ -1,13 +1,10 @@
-import { client } from './clientService'
 import { API_ROUTES } from '../constants/apiRoutes'
 import { DataService } from './dataService'
 import { normalizeItemResponse, normalizeListResponse } from '../utils/responseNormalizer'
 
 export const catalogService = {
   getVerticalsCatalog: async (limit = 8) => {
-    const response = await client.get(API_ROUTES.catalog.catalogVerticals, {
-      params: { limit },
-    })
+    const response = await DataService.get(API_ROUTES.catalogs.catalogVerticals, { limit })
     return normalizeListResponse(response)
   },
 

@@ -34,7 +34,7 @@ export const BannerOverlay = styled.div`
 
 export const BannerContent = styled.div`
     display: flex;
-    align-items: enter;
+    align-items: center;
     gap: 20px;
     color: white;
 `;
@@ -68,7 +68,7 @@ export const BannerTitle = styled.h1`
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0;
-  letter-spacing: -0.5px;
+  letter-spacing: 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   @media (max-width: 768px) {
     font-size: 1.8rem;

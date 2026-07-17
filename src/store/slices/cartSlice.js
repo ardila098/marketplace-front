@@ -81,6 +81,17 @@ export const clearCartAsync = createAsyncThunk(
   }
 )
 
+export const applyCartCoupon = createAsyncThunk(
+  'cart/applyCartCoupon',
+  async (code, { rejectWithValue }) => {
+    try {
+      return await cartService.applyCoupon(code)
+    } catch (error) {
+      return rejectWithValue(getErrorMessage(error))
+    }
+  }
+)
+
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
@@ -170,6 +181,19 @@ const cartSlice = createSlice({
         state.updating = false
         state.error = action.payload
       })
+
+      .addCase(applyCartCoupon.pending, state => {
+        state.updating = true
+        state.error = null
+      })
+      .addCase(applyCartCoupon.fulfilled, (state, action) => {
+        state.updating = false
+        setCartData(state, action.payload)
+      })
+      .addCase(applyCartCoupon.rejected, (state, action) => {
+        state.updating = false
+        state.error = action.payload
+      })
   },
 })
 
@@ -180,6 +204,16 @@ export const selectCartLoading = state => state.cart.loading
 export const selectCartAdding = state => state.cart.adding
 export const selectCartUpdating = state => state.cart.updating
 export const selectCartError = state => state.cart.error
+export const selectCartCoupon = state => state.cart.cart?.coupon || null
+export const selectCartCouponCode = state => state.cart.cart?.couponCode || ''
+export const selectCartDiscount = state => {
+  return Number(state.cart.cart?.totals?.discountTotal || 0)
+}
+export const selectCartSubtotal = state => {
+  return state.cart.items.reduce((total, item) => {
+    return total + Number(item.priceSnapshot || 0) * Number(item.quantity || 0)
+  }, 0)
+}
 
 export const selectCartCount = state => {
   return state.cart.items.reduce((total, item) => {
@@ -188,9 +222,11 @@ export const selectCartCount = state => {
 }
 
 export const selectCartTotal = state => {
-  return state.cart.items.reduce((total, item) => {
-    return total + Number(item.priceSnapshot || 0) * Number(item.quantity || 0)
-  }, 0)
+  if (state.cart.cart?.totals) {
+    return Number(state.cart.cart.totals.total || 0)
+  }
+
+  return selectCartSubtotal(state)
 }
 
 export const {

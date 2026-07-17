@@ -2,7 +2,7 @@ import { Button, Card, Form, Input, Select, Typography, message } from 'antd'
 import { PageShell } from '../../styles/layoutStyles'
 
 const RegisterPage = () => {
-  const handleSubmit = values => {
+  const handleSubmit = () => {
     message.success('Registro listo para conectar con /auth/register')
   }
 

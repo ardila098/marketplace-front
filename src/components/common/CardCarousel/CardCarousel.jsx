@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { ArrowRight } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -51,7 +52,6 @@ const getCarouselSettings = itemsLength => ({
 const CardCarousel = ({ title, items = [], onItemClick }) => {
   const carouselSettings = useMemo(() => getCarouselSettings(items.length), [items.length])
 
-
   if (!items.length) return null
 
   const handleItemClick = item => {
@@ -77,7 +77,6 @@ const CardCarousel = ({ title, items = [], onItemClick }) => {
               <CardOverlay>
                 <CardContent>
                   {item.title && <CardTitle>{item.title}</CardTitle>}
-
                   {item.description && <CardDescription>{item.description}</CardDescription>}
                 </CardContent>
 
@@ -89,7 +88,7 @@ const CardCarousel = ({ title, items = [], onItemClick }) => {
                     handleItemClick(item)
                   }}
                 >
-                  →
+                  <ArrowRight size={18} />
                 </NextButton>
               </CardOverlay>
             </Card>

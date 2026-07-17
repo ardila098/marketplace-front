@@ -33,6 +33,16 @@ export const productService = {
     return normalizeItemResponse(response, 'Producto eliminado correctamente')
   },
 
+  approve: async id => {
+    const response = await DataService.patch(API_ROUTES.products.approve(id))
+    return normalizeItemResponse(response, 'Producto aprobado correctamente')
+  },
+
+  reject: async id => {
+    const response = await DataService.patch(API_ROUTES.products.reject(id))
+    return normalizeItemResponse(response, 'Producto rechazado correctamente')
+  },
+
   addVariant: async (productId, payload) => {
     const response = await DataService.post(
       API_ROUTES.products.addVariant(productId),
@@ -40,6 +50,24 @@ export const productService = {
     )
 
     return normalizeItemResponse(response, 'Variante creada correctamente')
+  },
+
+  updateVariant: async (productId, variantId, payload) => {
+    const response = await DataService.patch(
+      API_ROUTES.products.updateVariant(productId, variantId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Variante actualizada correctamente')
+  },
+
+  adjustVariantStock: async (productId, variantId, payload) => {
+    const response = await DataService.patch(
+      API_ROUTES.products.adjustVariantStock(productId, variantId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Stock de variante actualizado correctamente')
   },
 
   addPiece: async (productId, payload) => {
@@ -61,6 +89,24 @@ export const productService = {
   },
 
 
+  updateInventoryItem: async (productId, inventoryItemId, payload) => {
+    const response = await DataService.patch(
+      API_ROUTES.products.updateInventoryItem(productId, inventoryItemId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Inventario actualizado correctamente')
+  },
+
+  adjustInventoryItemStock: async (productId, inventoryItemId, payload) => {
+    const response = await DataService.patch(
+      API_ROUTES.products.adjustInventoryItemStock(productId, inventoryItemId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Stock de inventario actualizado correctamente')
+  },
+
   addReference: async (productId, payload) => {
     const response = await DataService.post(
       API_ROUTES.products.addReference(productId),
@@ -68,6 +114,15 @@ export const productService = {
     )
 
     return normalizeItemResponse(response, 'Referencia creada correctamente')
+  },
+
+  updateReference: async (productId, referenceId, payload) => {
+    const response = await DataService.patch(
+      API_ROUTES.products.updateReference(productId, referenceId),
+      payload
+    )
+
+    return normalizeItemResponse(response, 'Referencia actualizada correctamente')
   },
 
   getMyStoreProducts: async params => {

@@ -12,7 +12,7 @@ const ContainerItemsList = ({ data }) => {
 
         <Row gutter={[22, 22]}>
           {data?.map(item => (
-            <Col xs={24} sm={12} lg={8} key={item._id}>
+            <Col xs={24} sm={12} lg={6} key={item._id}>
               <ProductCard product={item} />
             </Col>
           ))}
@@ -25,5 +25,5 @@ const ContainerItemsList = ({ data }) => {
 export default ContainerItemsList
 
 ContainerItemsList.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.array,
 }

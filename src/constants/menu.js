@@ -1,23 +1,27 @@
 import {
   BarChart3,
   Boxes,
+  Tags,
   Brush,
   ClipboardList,
   Home,
   LayoutDashboard,
   Package,
+  Percent,
+  Mail,
   Settings,
   ShoppingCart,
   Store,
+  Wallet,
   Users,
 } from 'lucide-react'
 import { PERMISSIONS } from './permissions'
 import { ROUTES } from './routes'
 
 export const publicMenu = [
-  { key: ROUTES.HOME, label: 'Marketplace', path: ROUTES.HOME, icon: Home },
-  { key: ROUTES.VERTICALS, label: 'Verticales', path: ROUTES.VERTICALS, icon: '' },
-  { key: ROUTES.STORES, label: 'Tiendas', path: ROUTES.STORES, icon: '' },
+  { key: ROUTES.HOME, labelKey: 'home', path: ROUTES.HOME, icon: Home },
+  { key: ROUTES.MARKETPLACE, labelKey: 'products', path: ROUTES.MARKETPLACE, icon: Package },
+  { key: `${ROUTES.MARKETPLACE}?discounted=true`, labelKey: 'outlet', path: `${ROUTES.MARKETPLACE}?discounted=true`, icon: Percent },
 ]
 
 export const customerMenu = [
@@ -31,7 +35,7 @@ export const customerMenu = [
   },
   {
     key: ROUTES.CUSTOMER_ORDERS,
-    label: 'Mis órdenes',
+    label: 'Mis ordenes',
     path: ROUTES.CUSTOMER_ORDERS,
     icon: ClipboardList,
     permission: PERMISSIONS.CUSTOMER_ORDERS_VIEW,
@@ -55,7 +59,7 @@ export const sellerMenu = [
   },
   {
     key: ROUTES.SELLER_DESIGN,
-    label: 'Diseño',
+    label: 'Diseno',
     path: ROUTES.SELLER_DESIGN,
     icon: Brush,
     permission: PERMISSIONS.SELLER_DESIGN_MANAGE,
@@ -68,11 +72,32 @@ export const sellerMenu = [
     permission: PERMISSIONS.SELLER_PRODUCTS_MANAGE,
   },
   {
+    key: ROUTES.SELLER_COUPONS,
+    label: 'Cupones',
+    path: ROUTES.SELLER_COUPONS,
+    icon: Percent,
+    permission: PERMISSIONS.SELLER_COUPONS_MANAGE,
+  },
+  {
+    key: ROUTES.SELLER_CUSTOMERS,
+    label: 'Clientes',
+    path: ROUTES.SELLER_CUSTOMERS,
+    icon: Mail,
+    permission: PERMISSIONS.SELLER_CUSTOMERS_VIEW,
+  },
+  {
     key: ROUTES.SELLER_ORDERS,
-    label: 'Órdenes',
+    label: 'Ordenes',
     path: ROUTES.SELLER_ORDERS,
     icon: ClipboardList,
     permission: PERMISSIONS.SELLER_ORDERS_VIEW,
+  },
+  {
+    key: ROUTES.SELLER_PAYOUTS,
+    label: 'Liquidaciones',
+    path: ROUTES.SELLER_PAYOUTS,
+    icon: Wallet,
+    permission: PERMISSIONS.SELLER_PAYOUTS_VIEW,
   },
 ]
 
@@ -99,6 +124,27 @@ export const adminMenu = [
     permission: PERMISSIONS.ADMIN_PRODUCTS_MANAGE,
   },
   {
+    key: ROUTES.ADMIN_CATEGORIES,
+    label: 'Categorias',
+    path: ROUTES.ADMIN_CATEGORIES,
+    icon: Tags,
+    permission: PERMISSIONS.ADMIN_CATEGORIES_MANAGE,
+  },
+  {
+    key: ROUTES.ADMIN_COUPONS,
+    label: 'Cupones',
+    path: ROUTES.ADMIN_COUPONS,
+    icon: Percent,
+    permission: PERMISSIONS.ADMIN_COUPONS_MANAGE,
+  },
+  {
+    key: ROUTES.ADMIN_CUSTOMERS,
+    label: 'Clientes',
+    path: ROUTES.ADMIN_CUSTOMERS,
+    icon: Mail,
+    permission: PERMISSIONS.ADMIN_CUSTOMERS_VIEW,
+  },
+  {
     key: ROUTES.ADMIN_USERS,
     label: 'Usuarios',
     path: ROUTES.ADMIN_USERS,
@@ -107,14 +153,21 @@ export const adminMenu = [
   },
   {
     key: ROUTES.ADMIN_ORDERS,
-    label: 'Órdenes',
+    label: 'Ordenes',
     path: ROUTES.ADMIN_ORDERS,
     icon: ClipboardList,
     permission: PERMISSIONS.ADMIN_USERS_MANAGE,
   },
   {
+    key: ROUTES.ADMIN_PAYOUTS,
+    label: 'Liquidaciones',
+    path: ROUTES.ADMIN_PAYOUTS,
+    icon: Wallet,
+    permission: PERMISSIONS.ADMIN_PAYOUTS_MANAGE,
+  },
+  {
     key: ROUTES.ADMIN_SETTINGS,
-    label: 'Configuración',
+    label: 'Configuracion',
     path: ROUTES.ADMIN_SETTINGS,
     icon: Settings,
     permission: PERMISSIONS.ADMIN_SETTINGS_MANAGE,

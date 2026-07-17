@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import {
   Button,
   Col,
@@ -8,23 +9,44 @@ import {
   Row,
   Select,
   Space,
+  Switch,
 } from 'antd'
 
 const ModalAddInventoryItem = ({
   open,
   product,
+  inventoryItem,
   loading = false,
   onCancel,
   onSubmit,
 }) => {
   const [form] = Form.useForm()
+  const isEditing = Boolean(inventoryItem?._id)
 
   const parts = product?.parts || []
   const references = product?.references || []
 
+  useEffect(() => {
+    if (open) {
+      form.setFieldsValue({
+        referenceId: inventoryItem?.referenceId || undefined,
+        partId: inventoryItem?.partId || undefined,
+        size: inventoryItem?.attributes?.find(
+          attribute => String(attribute.labelSnapshot).toLowerCase() === 'talla'
+        )?.valueSnapshot || '',
+        stock: inventoryItem?.stock || 0,
+        lowStockThreshold: inventoryItem?.lowStockThreshold || 0,
+        isActive: inventoryItem?.isActive !== false,
+      })
+    } else {
+      form.resetFields()
+    }
+  }, [form, inventoryItem, open])
+
   const handleFinish = values => {
     onSubmit?.({
       productId: product?._id || product?.id,
+      inventoryItemId: inventoryItem?._id,
       payload: {
         referenceId: values.referenceId,
         partId: values.partId,
@@ -37,16 +59,14 @@ const ModalAddInventoryItem = ({
           },
         ],
         images: [],
-        isActive: true,
+        isActive: values.isActive !== false,
       },
     })
-
-    form.resetFields()
   }
 
   return (
     <Modal
-      title={`Agregar inventario${product?.name ? ` - ${product.name}` : ''}`}
+      title={`${isEditing ? 'Editar' : 'Agregar'} inventario${product?.name ? ` - ${product.name}` : ''}`}
       open={open}
       onCancel={onCancel}
       footer={null}
@@ -60,6 +80,7 @@ const ModalAddInventoryItem = ({
         initialValues={{
           stock: 0,
           lowStockThreshold: 0,
+          isActive: true,
         }}
       >
         <Row gutter={16}>
@@ -107,7 +128,7 @@ const ModalAddInventoryItem = ({
 
           <Col xs={24} md={12}>
             <Form.Item
-              label="Stock"
+              label={isEditing ? 'Stock actual' : 'Stock inicial'}
               name="stock"
               rules={[{ required: true, message: 'El stock es obligatorio' }]}
             >
@@ -120,6 +141,12 @@ const ModalAddInventoryItem = ({
               <InputNumber min={0} style={{ width: '100%' }} />
             </Form.Item>
           </Col>
+
+          <Col xs={24} md={12}>
+            <Form.Item label="Activa" name="isActive" valuePropName="checked">
+              <Switch />
+            </Form.Item>
+          </Col>
         </Row>
 
         <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: 24 }}>
@@ -128,7 +155,7 @@ const ModalAddInventoryItem = ({
           </Button>
 
           <Button type="primary" htmlType="submit" loading={loading}>
-            Guardar inventario
+            {isEditing ? 'Guardar cambios' : 'Guardar inventario'}
           </Button>
         </Space>
       </Form>

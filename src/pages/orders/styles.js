@@ -14,10 +14,14 @@ export const OrderLookupHero = styled(Row)`
 
 export const OrderLookupTitle = styled.h1`
   margin: 0 0 10px;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.05;
-  letter-spacing: -0.055em;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: 0;
   color: #111111;
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+  }
 `
 
 export const OrderLookupText = styled.p`
@@ -39,9 +43,10 @@ export const OrderLookupLayout = styled(Row)`
 `
 
 export const OrderCard = styled(Row)`
+  display: block;
   background: #ffffff;
   border: 1px solid #eeeeee;
-  border-radius: 20px;
+  border-radius: 8px;
   padding: 24px;
 `
 
@@ -84,16 +89,66 @@ export const StatusGroup = styled(Row)`
 export const StatusBadge = styled.span`
   display: inline-flex;
   align-items: center;
-  height: 30px;
-  padding: 0 12px;
-  border-radius: 999px;
+  gap: 6px;
+  min-height: 30px;
+  padding: 4px 8px 4px 12px;
+  border-radius: 8px;
   background: #f5f5f5;
   color: #333333;
   font-size: 0.78rem;
   font-weight: 600;
+
+  .ant-tag {
+    margin-inline-end: 0;
+  }
+`
+
+export const SummaryGrid = styled.div`
+  display: grid;
+  gap: 10px;
+`
+
+export const SummaryRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: #555555;
+  font-size: 0.9rem;
+
+  strong {
+    color: #111111;
+  }
+`
+
+export const StoreOrderBlock = styled.div`
+  border: 1px solid #eeeeee;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+`
+
+export const StoreOrderHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #fafafa;
+
+  @media (max-width: 650px) {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+`
+
+export const StoreOrderTitle = styled.div`
+  color: #111111;
+  font-size: 0.92rem;
+  font-weight: 700;
 `
 
 export const OrderSection = styled(Row)`
+  display: block;
   padding-top: 20px;
 `
 
@@ -105,13 +160,45 @@ export const OrderSectionTitle = styled.h3`
 
 export const OrderItem = styled(Row)`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
-  padding: 14px 0;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  gap: 12px;
+  padding: 14px;
   border-bottom: 1px solid #eeeeee;
+  align-items: center;
 
   &:last-child {
     border-bottom: none;
+  }
+
+  @media (max-width: 650px) {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+`
+
+export const OrderItemImage = styled.div`
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f5f6f8, #e7ebf0);
+  display: grid;
+  place-items: center;
+  color: #9ca3af;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ant-image {
+    width: 100%;
+    height: 100%;
+  }
+
+  @media (max-width: 650px) {
+    width: 48px;
+    height: 48px;
   }
 `
 
@@ -132,6 +219,10 @@ export const OrderItemPrice = styled(Row)`
   font-weight: 700;
   color: #111111;
   white-space: nowrap;
+
+  @media (max-width: 650px) {
+    grid-column: 2;
+  }
 `
 
 export const TotalRow = styled(Row)`
@@ -147,6 +238,7 @@ export const TotalRow = styled(Row)`
 `
 
 export const AddressText = styled(Row)`
+  display: block;
   font-size: 0.9rem;
   line-height: 1.6;
   color: #555555;

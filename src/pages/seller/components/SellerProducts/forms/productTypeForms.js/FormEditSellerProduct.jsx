@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { Button, Col, Form, Input, Row, Space } from 'antd'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Button, Col, Form, Input, Row, Select, Space, Switch, message } from 'antd'
 
 import ProductVariantFields from './ProductVariantFields'
 import ProductConfigurableSetFields from './ProductConfigurableSetFields'
@@ -8,10 +8,51 @@ import ImageUploadField from '../../../../../../components/uploads/ImageUploadFi
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../../../../../constants/uploadRoutes'
 import SelectCategory from '../../../../../../components/selects/selectCategory/SelectCategory'
 import SelectProductType from '../../../../../../components/selects/selectProductType/SelectProductType'
+import { useDictionaryTranslation } from '../../../../../../hooks/useDictionaryTranslation'
+import { storeService } from '../../../../../../services/storeService'
 
 const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) => {
+  const { translate } = useDictionaryTranslation()
   const [form] = Form.useForm()
+  const [storeVerticals, setStoreVerticals] = useState([])
   const productType = Form.useWatch('productType', form)
+  const selectedVertical = Form.useWatch('vertical', form)
+  const categoryParams = useMemo(() => {
+    if (!selectedVertical) return { enabled: false }
+
+    return {
+      vertical: selectedVertical,
+      isActive: true,
+    }
+  }, [selectedVertical])
+
+  const normalizeStoreVerticals = useCallback(store => {
+    const verticals = store?.verticals?.length
+      ? store.verticals
+      : [store?.vertical].filter(Boolean)
+
+    return verticals
+      .map(vertical => ({
+        label: vertical?.name || vertical?.slug || 'Vertical',
+        value: vertical?._id || vertical,
+      }))
+      .filter(vertical => vertical.value)
+  }, [])
+
+  const loadStoreVerticals = useCallback(async () => {
+    try {
+      const response = await storeService.getMyStore()
+      const options = normalizeStoreVerticals(response.data)
+
+      setStoreVerticals(options)
+
+      if (!form.getFieldValue('vertical') && options.length === 1) {
+        form.setFieldValue('vertical', options[0].value)
+      }
+    } catch (error) {
+      message.error(error?.message || 'No se pudieron cargar las verticales de la tienda')
+    }
+  }, [form, normalizeStoreVerticals])
 
   useEffect(() => {
     form.resetFields()
@@ -24,9 +65,15 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
       parts: [],
       specs: {},
       ...data,
+      vertical: data?.vertical?._id || data?.vertical,
+      isNewArrival: data?.isNewArrival ?? data?.isNew ?? false,
       category: data?.category?._id || data?.category,
     })
   }, [form, data])
+
+  useEffect(() => {
+    loadStoreVerticals()
+  }, [loadStoreVerticals])
 
   const renderProductTypeFields = () => {
     if (productType === PRODUCT_TYPES.CONFIGURABLE_SET.value) {
@@ -45,7 +92,7 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
       <Row gutter={16}>
         <Col xs={24}>
           <ImageUploadField
-            label="Imágenes del producto"
+            label={translate('products.form.images')}
             name="images"
             folder={UPLOAD_FOLDERS.products.images}
             uploadRoute={UPLOAD_ROUTES.products.images}
@@ -57,37 +104,65 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
 
         <Col xs={24} md={12}>
           <Form.Item
-            label="Nombre"
+            label={translate('products.form.name')}
             name="name"
-            rules={[{ required: true, message: 'El nombre es obligatorio' }]}
+            rules={[{ required: true, message: translate('products.form.nameRequired') }]}
           >
-            <Input placeholder="Ej: Smartwatch 3" />
+            <Input placeholder={translate('products.form.namePlaceholder')} />
           </Form.Item>
         </Col>
 
         <Col xs={24} md={12}>
           <Form.Item
-            label="Categoría"
+            label={translate('products.form.vertical')}
+            name="vertical"
+            rules={[{ required: true, message: translate('products.form.verticalRequired') }]}
+          >
+            <Select
+              showSearch
+              optionFilterProp="label"
+              options={storeVerticals}
+              placeholder={translate('products.form.verticalPlaceholder')}
+              onChange={() => form.setFieldValue('category', undefined)}
+            />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item
+            label={translate('products.form.category')}
             name="category"
-            rules={[{ required: true, message: 'La categoría es obligatoria' }]}
+            rules={[{ required: true, message: translate('products.form.categoryRequired') }]}
           >
-            <SelectCategory />
+            <SelectCategory
+              disabled={!selectedVertical}
+              params={categoryParams}
+              placeholder={selectedVertical
+                ? translate('products.form.category')
+                : translate('products.form.categoryFirst')}
+            />
           </Form.Item>
         </Col>
 
         <Col xs={24} md={12}>
           <Form.Item
-            label="Tipo de producto"
+            label={translate('products.form.type')}
             name="productType"
-            rules={[{ required: true, message: 'El tipo de producto es obligatorio' }]}
+            rules={[{ required: true, message: translate('products.form.typeRequired') }]}
           >
             <SelectProductType />
           </Form.Item>
         </Col>
 
+        <Col xs={24} md={12}>
+          <Form.Item label={translate('products.form.newProduct')} name="isNewArrival" valuePropName="checked">
+            <Switch />
+          </Form.Item>
+        </Col>
+
         <Col xs={24}>
-          <Form.Item label="Descripción" name="description">
-            <Input.TextArea rows={4} placeholder="Describe el producto" />
+          <Form.Item label={translate('products.form.description')} name="description">
+            <Input.TextArea rows={4} placeholder={translate('products.form.descriptionPlaceholder')} />
           </Form.Item>
         </Col>
 
@@ -95,10 +170,10 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
       </Row>
 
       <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-        <Button onClick={onCancel}>Cancelar</Button>
+        <Button onClick={onCancel}>{translate('cancel')}</Button>
 
         <Button type="primary" htmlType="submit" loading={loading}>
-          Guardar
+          {translate('save')}
         </Button>
       </Space>
     </Form>

@@ -5,6 +5,15 @@ import { PlusOutlined } from '@ant-design/icons'
 import { uploadService } from '../../../services/uploadService'
 import { getUploadUrl } from '../../../constants/uploadRoutes'
 
+const normalizeValue = value => {
+  if (Array.isArray(value)) return value.filter(Boolean)
+  return value ? [value] : []
+}
+
+const getOutputValue = (images, multiple) => {
+  return multiple ? images : images[0] || ''
+}
+
 const buildFileList = (images = [], uploadRoute) => {
   return images.map((fileName, index) => ({
     uid: fileName || String(index),
@@ -23,10 +32,7 @@ const getFileNameFromResponse = response => {
   )
 }
 
-const getImagesKey = images => {
-  if (!Array.isArray(images)) return ''
-  return images.join('|')
-}
+const getImagesKey = images => normalizeValue(images).join('|')
 
 const ImageUploadInput = ({
   value,
@@ -40,7 +46,7 @@ const ImageUploadInput = ({
   const [fileList, setFileList] = useState([])
 
   useEffect(() => {
-    const images = Array.isArray(value) ? value : []
+    const images = normalizeValue(value)
     const currentImages = fileList
       .map(file => file.fileName)
       .filter(Boolean)
@@ -60,7 +66,7 @@ const ImageUploadInput = ({
       .map(file => file.fileName)
       .filter(Boolean)
 
-    onChange?.(images)
+    onChange?.(getOutputValue(images, multiple))
   }
 
   const handleUpload = async ({ file, onSuccess, onError, onProgress }) => {
@@ -125,7 +131,7 @@ const ImageUploadInput = ({
 }
 
 const ImageUploadField = ({
-  label = 'Imágenes',
+  label = 'Imagenes',
   name = 'images',
   folder,
   uploadRoute,

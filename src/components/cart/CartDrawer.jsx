@@ -6,7 +6,9 @@ import { ROUTES } from '../../constants/routes'
 import {
   closeCartDrawer,
   removeCartItem,
+  selectCartDiscount,
   selectCartItems,
+  selectCartSubtotal,
   selectCartTotal,
   selectCartUpdating,
   updateCartItemQuantity,
@@ -22,6 +24,8 @@ const CartDrawer = () => {
 
   const open = useSelector(state => state.cart.drawerOpen)
   const items = useSelector(selectCartItems)
+  const subtotal = useSelector(selectCartSubtotal)
+  const discount = useSelector(selectCartDiscount)
   const total = useSelector(selectCartTotal)
   const updating = useSelector(selectCartUpdating)
 
@@ -51,7 +55,7 @@ const CartDrawer = () => {
       title="Carrito"
       open={open}
       onClose={() => dispatch(closeCartDrawer())}
-      width={420}
+      size="default"
       styles={{
         body: {
           display: 'flex',
@@ -78,6 +82,8 @@ const CartDrawer = () => {
 
           <CartFooter>
             <CartSummary
+              subtotal={subtotal}
+              discount={discount}
               total={total}
               buttonText="Ver carrito y pagar"
               onContinue={handleGoToCart}

@@ -1,4 +1,5 @@
-import { Empty, Image, Space, Table, Tag } from 'antd'
+import { Button, Empty, Image, Space, Table, Tag } from 'antd'
+import { EditOutlined } from '@ant-design/icons'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../../constants/uploadRoutes'
 
 
@@ -9,13 +10,14 @@ const formatAttributes = attributes => {
     .join(' / ')
 }
 
-const ProductVariantsTab = ({ product }) => {
+const ProductVariantsTab = ({ product, onEdit }) => {
   const variants = product.variants || []
 
   const columns = [
     {
-      title: 'SKU',
-      dataIndex: 'sku',
+      title: 'Referencia',
+      dataIndex: 'variantReference',
+      render: value => value || '-',
     },
     {
       title: 'Atributos',
@@ -68,6 +70,20 @@ const ProductVariantsTab = ({ product }) => {
         <Tag color={value ? 'green' : 'red'}>
           {value ? 'Activa' : 'Inactiva'}
         </Tag>
+      ),
+    },
+    {
+      title: 'Acciones',
+      key: 'actions',
+      align: 'right',
+      render: (_, record) => (
+        <Button
+          type="text"
+          icon={<EditOutlined />}
+          onClick={() => onEdit?.(record)}
+        >
+          Editar
+        </Button>
       ),
     },
   ]

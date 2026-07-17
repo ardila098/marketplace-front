@@ -1,7 +1,7 @@
 import { env } from '../config/env'
 
 const buildUploadRoute = path => {
-  const baseUrl = env.publicAssetsUrl || env.apiBaseUrl
+  const baseUrl = String(env.publicAssetsUrl || env.apiBaseUrl || '').replace(/\/$/, '')
   return `${baseUrl}${path}`
 }
 
@@ -43,6 +43,7 @@ export const UPLOAD_ROUTES = Object.freeze({
   categories: {
     icons: buildUploadRoute('/uploads/categories/icons'),
     banners: buildUploadRoute('/uploads/categories/banners'),
+    legacy: buildUploadRoute('/uploads/categorys'),
   },
   users: {
     avatars: buildUploadRoute('/uploads/users/avatars'),
@@ -52,5 +53,16 @@ export const UPLOAD_ROUTES = Object.freeze({
 export const getUploadUrl = (uploadRoute, fileName) => {
   if (!fileName) return ''
 
-  return `${uploadRoute}/${fileName}`
+  const value = String(fileName).trim()
+
+  if (/^(https?:)?\/\//i.test(value) || value.startsWith('data:')) {
+    return value
+  }
+
+  if (value.startsWith('/uploads/')) {
+    const baseUrl = String(env.publicAssetsUrl || env.apiBaseUrl || '').replace(/\/$/, '')
+    return `${baseUrl}${value}`
+  }
+
+  return `${uploadRoute}/${value.replace(/^\/+/, '')}`
 }

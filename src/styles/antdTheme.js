@@ -8,7 +8,7 @@ export const createAntdTheme = (theme = neutralTheme) => ({
     colorBgLayout: theme.backgroundColor,
     colorBgContainer: '#ffffff',
     borderRadius: theme.borderRadius,
-    fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    fontFamily: "Nunito, Aptos, 'Segoe UI Variable', 'Segoe UI', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif"
   },
   components: {
     Button: {

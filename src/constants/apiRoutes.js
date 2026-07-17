@@ -6,13 +6,24 @@ export const API_ROUTES = {
     logout: '/auth/logout',
   },
 
+  users: {
+    base: '/users',
+  },
+
   stores: {
     base: '/stores',
     byId: id => `/stores/${id}`,
+    admin: '/stores/admin',
+    domains: '/stores/domains',
+    myStore: '/stores/my-store',
+    resolve: '/stores/resolve',
     bySlug: slug => `/stores/slug/${slug}`,
+    products: slug => `/stores/${slug}/products`,
+    productBySlug: (slug, productSlug) => `/stores/${slug}/products/${productSlug}`,
+    categories: slug => `/stores/${slug}/categories`,
+    storefront: id => `/stores/${id}/storefront`,
+    domainStatus: id => `/stores/${id}/domain/status`,
     approve: id => `/stores/${id}/approve`,
-    reject: id => `/stores/${id}/reject`,
-    theme: id => `/stores/${id}/theme`,
   },
 
   products: {
@@ -25,9 +36,14 @@ export const API_ROUTES = {
     reject: id => `/products/${id}/reject`,
     sellerById: id => `/products/seller/${id}`,
     addVariant: id => `/products/${id}/variants`,
+    updateVariant: (id, variantId) => `/products/${id}/variants/${variantId}`,
+    adjustVariantStock: (id, variantId) => `/products/${id}/variants/${variantId}/adjust-stock`,
     addPiece: id => `/products/${id}/pieces`,
     addInventoryItem: id => `/products/${id}/inventory-items`,
+    updateInventoryItem: (id, inventoryItemId) => `/products/${id}/inventory-items/${inventoryItemId}`,
+    adjustInventoryItemStock: (id, inventoryItemId) => `/products/${id}/inventory-items/${inventoryItemId}/adjust-stock`,
     addReference: id => `/products/${id}/references`,
+    updateReference: (id, referenceId) => `/products/${id}/references/${referenceId}`,
     sellerDetail: id => `/products/seller/${id}/detail`,
   },
 
@@ -36,19 +52,35 @@ export const API_ROUTES = {
     addItem: '/cart/items',
     updateItem: itemId => `/cart/items/${itemId}`,
     removeItem: itemId => `/cart/items/${itemId}`,
-    clear: '/cart/clear',
+    coupon: '/cart/coupon',
   },
 
   orders: {
     base: '/orders',
     byId: id => `/orders/${id}`,
     lookup: '/orders/lookup',
-    dispatch: id => `/orders/${id}/dispatch`,
+    paymentResult: '/orders/payment-result',
+    pendingPayouts: '/orders/payouts/pending',
+    payoutSummary: '/orders/payouts/summary',
+    payouts: '/orders/payouts',
+    payPayout: id => `/orders/payouts/${id}/pay`,
+    storeOrderSentToPlatform: id => `/orders/store-orders/${id}/sent-to-platform`,
+    storeOrderReceivedByPlatform: id => `/orders/store-orders/${id}/received-by-platform`,
   },
 
   categories: {
     base: '/categories',
+    admin: '/categories/admin',
     byId: id => `/categories/${id}`,
+  },
+
+  coupons: {
+    base: '/coupons',
+    byId: id => `/coupons/${id}`,
+  },
+
+  newsletter: {
+    base: '/newsletter',
   },
 
   uploads: {

@@ -1,5 +1,5 @@
 export const getItemId = item => {
-  return item?._id || item?.itemId
+  return item?.itemId || item?._id
 }
 
 export const getItemImage = item => {

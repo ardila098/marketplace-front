@@ -36,7 +36,7 @@ const getCarouselSettings = items => ({
   ],
 })
 
-const CardCarouselITem = ({ title, items = [] }) => {
+const CardCarouselITem = ({ title, items = [], storeSlug }) => {
   const carouselSettings = useMemo(() => getCarouselSettings(items.length), [items.length])
 
   if (!items.length) return null
@@ -47,7 +47,7 @@ const CardCarouselITem = ({ title, items = [] }) => {
 
       <CarouselWrapper {...carouselSettings}>
         {items.map(item => (
-          <ProductCard product={item} />
+          <ProductCard key={item._id} product={item} storeSlug={storeSlug} />
         ))}
       </CarouselWrapper>
     </Section>

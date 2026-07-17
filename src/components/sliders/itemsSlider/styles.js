@@ -4,8 +4,7 @@ import { Carousel } from 'antd'
 export const Section = styled.section`
   width: 100%;
   padding: 32px 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: var(--app-font-family);
 
   @media (max-width: 576px) {
     padding: 24px 0;

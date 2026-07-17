@@ -1,5 +1,5 @@
-import { Spin } from 'antd'
-import { UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
+import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'
 import {
   BannerContainer,
   BannerOverlay,
@@ -11,10 +11,12 @@ import {
 } from '../styles/styleVerticalPage'
 
 const VerticalHeader = ({ dataVertical, loadingProducts, productsCount }) => {
+  const { translate } = useDictionaryTranslation()
+
   if (!dataVertical) return null
 
-  const bannerUrl = `${UPLOAD_ROUTES.verticals.banners}/${dataVertical.banner}`
-  const iconUrl = `${UPLOAD_ROUTES.verticals.icons}/${dataVertical.icon}`
+  const bannerUrl = getUploadUrl(UPLOAD_ROUTES.verticals.banners, dataVertical.banner)
+  const iconUrl = getUploadUrl(UPLOAD_ROUTES.verticals.icons, dataVertical.icon)
 
   return (
     <BannerContainer $bgImage={bannerUrl}>
@@ -26,7 +28,9 @@ const VerticalHeader = ({ dataVertical, loadingProducts, productsCount }) => {
           <TitleSection>
             <BannerTitle>{dataVertical.name}</BannerTitle>
             <BannerSubtitle>
-              {loadingProducts ? 'Buscando productos...' : `${productsCount} productos disponibles`}
+              {loadingProducts
+                ? translate('loading')
+                : `${productsCount} ${translate('catalog.productsCount')}`}
             </BannerSubtitle>
           </TitleSection>
         </BannerContent>

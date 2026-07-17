@@ -25,7 +25,7 @@ const TabButton = styled.button`
   border: none;
   padding: 12px 4px;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 560;
   color: ${({ $active }) => ($active ? '#111827' : '#9ca3af')};
   border-bottom: 2px solid ${({ $active }) => ($active ? '#111827' : 'transparent')};
   cursor: pointer;
@@ -58,7 +58,7 @@ const SpecsTable = styled.table`
   }
 
   td.label {
-    font-weight: 600;
+    font-weight: 560;
     color: #111827;
     width: 250px;
     background: #f9fafb;
@@ -92,7 +92,7 @@ const ReviewHeader = styled.div`
 `
 
 const ReviewUser = styled.span`
-  font-weight: 600;
+  font-weight: 560;
   color: #111827;
   font-size: 14px;
 `

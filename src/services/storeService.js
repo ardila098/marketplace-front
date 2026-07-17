@@ -8,13 +8,43 @@ export const storeService = {
     return normalizeListResponse(response)
   },
 
+  adminList: async params => {
+    const response = await DataService.get(API_ROUTES.stores.admin, params)
+    return normalizeListResponse(response)
+  },
+
+  domainRequests: async params => {
+    const response = await DataService.get(API_ROUTES.stores.domains, params)
+    return normalizeListResponse(response)
+  },
+
+  getMyStore: async () => {
+    const response = await DataService.get(API_ROUTES.stores.myStore)
+    return normalizeItemResponse(response)
+  },
+
   getBySlug: async slug => {
     const response = await DataService.get(API_ROUTES.stores.bySlug(slug))
     return normalizeItemResponse(response)
   },
 
-  getMine: async () => {
-    const response = await DataService.get(API_ROUTES.stores.mine)
+  resolve: async params => {
+    const response = await DataService.get(API_ROUTES.stores.resolve, params)
+    return normalizeItemResponse(response)
+  },
+
+  getProducts: async (slug, params) => {
+    const response = await DataService.get(API_ROUTES.stores.products(slug), params)
+    return normalizeListResponse(response)
+  },
+
+  getCategories: async slug => {
+    const response = await DataService.get(API_ROUTES.stores.categories(slug))
+    return normalizeListResponse(response)
+  },
+
+  getProductBySlug: async (slug, productSlug) => {
+    const response = await DataService.get(API_ROUTES.stores.productBySlug(slug, productSlug))
     return normalizeItemResponse(response)
   },
 
@@ -23,23 +53,23 @@ export const storeService = {
     return normalizeItemResponse(response, 'Tienda creada correctamente')
   },
 
-  updateMine: async payload => {
-    const response = await DataService.put(API_ROUTES.stores.mine, payload)
+  update: async (id, payload) => {
+    const response = await DataService.patch(API_ROUTES.stores.byId(id), payload)
     return normalizeItemResponse(response, 'Tienda actualizada correctamente')
   },
 
-  updateTheme: async payload => {
-    const response = await DataService.put(API_ROUTES.stores.myTheme, payload)
-    return normalizeItemResponse(response, 'Diseño de tienda actualizado correctamente')
+  updateStorefront: async (id, payload) => {
+    const response = await DataService.patch(API_ROUTES.stores.storefront(id), payload)
+    return normalizeItemResponse(response, 'Storefront actualizado correctamente')
+  },
+
+  updateDomainStatus: async (id, payload) => {
+    const response = await DataService.patch(API_ROUTES.stores.domainStatus(id), payload)
+    return normalizeItemResponse(response, 'Dominio actualizado correctamente')
   },
 
   approve: async id => {
     const response = await DataService.patch(API_ROUTES.stores.approve(id))
     return normalizeItemResponse(response, 'Tienda aprobada correctamente')
-  },
-
-  reject: async (id, payload) => {
-    const response = await DataService.patch(API_ROUTES.stores.reject(id), payload)
-    return normalizeItemResponse(response, 'Tienda rechazada correctamente')
   },
 }

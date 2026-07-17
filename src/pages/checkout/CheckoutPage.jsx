@@ -1,7 +1,8 @@
-import { Button, Empty, Form, Input, message, Radio, Result } from 'antd'
+import { Button, Empty, Form, Input, message } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
+import { PAYMENT_METHODS } from '../../constants/orderConstants'
 import { ROUTES } from '../../constants/routes'
 import { formatPrice } from '../../helpers/formatPrice'
 import {
@@ -9,16 +10,19 @@ import {
   getCartItemName,
   getCartItemSubtotal,
 } from '../../helpers/cartItem'
-
-import { clearCartState, selectCartItems, selectCartTotal } from '../../store/slices/cartSlice'
-
+import {
+  clearCartState,
+  selectCartCouponCode,
+  selectCartDiscount,
+  selectCartItems,
+  selectCartSubtotal,
+  selectCartTotal,
+} from '../../store/slices/cartSlice'
 import {
   createOrderFromCart,
   resetCheckoutState,
   selectCheckoutSubmitting,
-  selectCreatedOrder,
 } from '../../store/slices/checkoutSlice'
-
 import {
   CheckoutContainer,
   CheckoutTitle,
@@ -33,24 +37,42 @@ import {
   SummaryTotal,
 } from './styles'
 
+const getCreatedOrder = response => response?.data?.data || response?.data || response || null
+
 const CheckoutPage = () => {
   const [form] = Form.useForm()
-
   const dispatch = useDispatch()
   const navigate = useNavigate()
-
   const items = useSelector(selectCartItems)
+  const subtotal = useSelector(selectCartSubtotal)
+  const discount = useSelector(selectCartDiscount)
   const total = useSelector(selectCartTotal)
+  const couponCode = useSelector(selectCartCouponCode)
   const submitting = useSelector(selectCheckoutSubmitting)
-  const order = useSelector(selectCreatedOrder)
 
   const handleSubmit = async values => {
     try {
-      await dispatch(createOrderFromCart(values)).unwrap()
+      const response = await dispatch(createOrderFromCart(values)).unwrap()
+      const createdOrder = getCreatedOrder(response)
+      const reference = createdOrder?.paymentReference
+      const paymentUrl = createdOrder?.paymentCheckout?.paymentUrl || createdOrder?.paymentUrl
 
       dispatch(clearCartState())
 
-      message.success('Orden creada correctamente')
+      if (reference) {
+        sessionStorage.setItem('lastCheckoutReference', reference)
+      }
+
+      if (createdOrder?.orderNumber) {
+        sessionStorage.setItem('lastCheckoutOrderNumber', createdOrder.orderNumber)
+      }
+
+      if (paymentUrl) {
+        window.location.assign(paymentUrl)
+        return
+      }
+
+      navigate(`${ROUTES.CHECKOUT_RESULT}${reference ? `?reference=${reference}` : ''}`)
     } catch (error) {
       message.error(error || 'No se pudo crear la orden')
     }
@@ -59,25 +81,6 @@ const CheckoutPage = () => {
   const handleContinueShopping = () => {
     dispatch(resetCheckoutState())
     navigate(ROUTES.HOME)
-  }
-
-  if (order) {
-    return (
-      <CheckoutContainer>
-        <CheckoutCard>
-          <Result
-            status="success"
-            title="Orden creada correctamente"
-            subTitle={`Número de orden: ${order.orderNumber}`}
-            extra={[
-              <Button key="home" type="primary" onClick={handleContinueShopping}>
-                Continuar comprando
-              </Button>,
-            ]}
-          />
-        </CheckoutCard>
-      </CheckoutContainer>
-    )
   }
 
   if (!items.length) {
@@ -104,21 +107,20 @@ const CheckoutPage = () => {
             form={form}
             layout="vertical"
             initialValues={{
-              paymentMethod: '1',
+              paymentMethod: PAYMENT_METHODS.WOMPI.value,
             }}
             onFinish={handleSubmit}
           >
+            <Form.Item name="paymentMethod" hidden>
+              <Input />
+            </Form.Item>
+
             <SectionTitle>Datos del cliente</SectionTitle>
 
             <Form.Item
               label="Nombre completo"
               name={['customer', 'name']}
-              rules={[
-                {
-                  required: true,
-                  message: 'Ingresa tu nombre',
-                },
-              ]}
+              rules={[{ required: true, message: 'Ingresa tu nombre' }]}
             >
               <Input placeholder="Ej: Jhonatan Alvarez" />
             </Form.Item>
@@ -127,14 +129,8 @@ const CheckoutPage = () => {
               label="Correo electrónico"
               name={['customer', 'email']}
               rules={[
-                {
-                  required: true,
-                  message: 'Ingresa tu correo',
-                },
-                {
-                  type: 'email',
-                  message: 'Ingresa un correo válido',
-                },
+                { required: true, message: 'Ingresa tu correo' },
+                { type: 'email', message: 'Ingresa un correo válido' },
               ]}
             >
               <Input placeholder="correo@ejemplo.com" />
@@ -143,12 +139,7 @@ const CheckoutPage = () => {
             <Form.Item
               label="Teléfono"
               name={['customer', 'phone']}
-              rules={[
-                {
-                  required: true,
-                  message: 'Ingresa tu teléfono',
-                },
-              ]}
+              rules={[{ required: true, message: 'Ingresa tu teléfono' }]}
             >
               <Input placeholder="Ej: 3127164121" />
             </Form.Item>
@@ -158,12 +149,7 @@ const CheckoutPage = () => {
             <Form.Item
               label="Departamento"
               name={['shippingAddress', 'department']}
-              rules={[
-                {
-                  required: true,
-                  message: 'Ingresa el departamento',
-                },
-              ]}
+              rules={[{ required: true, message: 'Ingresa el departamento' }]}
             >
               <Input placeholder="Ej: Antioquia" />
             </Form.Item>
@@ -171,12 +157,7 @@ const CheckoutPage = () => {
             <Form.Item
               label="Ciudad"
               name={['shippingAddress', 'city']}
-              rules={[
-                {
-                  required: true,
-                  message: 'Ingresa la ciudad',
-                },
-              ]}
+              rules={[{ required: true, message: 'Ingresa la ciudad' }]}
             >
               <Input placeholder="Ej: Medellín" />
             </Form.Item>
@@ -184,12 +165,7 @@ const CheckoutPage = () => {
             <Form.Item
               label="Dirección"
               name={['shippingAddress', 'address']}
-              rules={[
-                {
-                  required: true,
-                  message: 'Ingresa la dirección',
-                },
-              ]}
+              rules={[{ required: true, message: 'Ingresa la dirección' }]}
             >
               <Input placeholder="Ej: Calle 123 #45-67" />
             </Form.Item>
@@ -202,24 +178,8 @@ const CheckoutPage = () => {
               <Input.TextArea rows={3} placeholder="Apartamento, indicaciones, horarios, etc." />
             </Form.Item>
 
-            <SectionTitle>Método de pago</SectionTitle>
-
-            <Form.Item
-              name="paymentMethod"
-              rules={[
-                {
-                  required: true,
-                  message: 'Selecciona un método de pago',
-                },
-              ]}
-            >
-              <Radio.Group>
-                <Radio value="1">Pago manual</Radio>
-              </Radio.Group>
-            </Form.Item>
-
             <Button type="primary" htmlType="submit" size="large" block loading={submitting}>
-              Confirmar compra
+              Pagar con Wompi
             </Button>
           </Form>
         </CheckoutCard>
@@ -236,9 +196,7 @@ const CheckoutPage = () => {
               <SummaryItem key={item._id}>
                 <div>
                   <SummaryItemName>{name}</SummaryItemName>
-
                   {description && <SummaryItemMeta>{description}</SummaryItemMeta>}
-
                   <SummaryItemMeta>Cantidad: {item.quantity}</SummaryItemMeta>
                 </div>
 
@@ -246,6 +204,20 @@ const CheckoutPage = () => {
               </SummaryItem>
             )
           })}
+
+          {discount > 0 && (
+            <>
+              <SummaryTotal>
+                <span>Subtotal</span>
+                <span>{formatPrice(subtotal)}</span>
+              </SummaryTotal>
+
+              <SummaryTotal>
+                <span>Descuento{couponCode ? ` (${couponCode})` : ''}</span>
+                <span>-{formatPrice(discount)}</span>
+              </SummaryTotal>
+            </>
+          )}
 
           <SummaryTotal>
             <span>Total</span>

@@ -1,11 +1,15 @@
-import { Button, Empty } from 'antd'
+import { Button, Empty, message } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import { ROUTES } from '../../constants/routes'
 import {
   removeCartItem,
+  applyCartCoupon,
+  selectCartCouponCode,
+  selectCartDiscount,
   selectCartItems,
+  selectCartSubtotal,
   selectCartTotal,
   selectCartUpdating,
   updateCartItemQuantity,
@@ -28,7 +32,10 @@ const CartPage = () => {
   const navigate = useNavigate()
 
   const items = useSelector(selectCartItems)
+  const subtotal = useSelector(selectCartSubtotal)
+  const discount = useSelector(selectCartDiscount)
   const total = useSelector(selectCartTotal)
+  const couponCode = useSelector(selectCartCouponCode)
   const updating = useSelector(selectCartUpdating)
 
   const handleUpdateQuantity = (itemId, quantity) => {
@@ -52,6 +59,17 @@ const CartPage = () => {
 
   const handleCheckout = () => {
     navigate(ROUTES.CHECKOUT)
+  }
+
+  const handleApplyCoupon = async code => {
+    const result = await dispatch(applyCartCoupon(code))
+
+    if (applyCartCoupon.fulfilled.match(result)) {
+      message.success(code ? 'Cupon aplicado' : 'Cupon removido')
+      return
+    }
+
+    message.error(result.payload || 'No se pudo aplicar el cupon')
   }
 
   if (!items.length) {
@@ -92,8 +110,13 @@ const CartPage = () => {
 
         <CartSummaryCard>
           <CartSummary
+            subtotal={subtotal}
+            discount={discount}
             total={total}
+            couponCode={couponCode}
+            loading={updating}
             buttonText="Continuar al checkout"
+            onApplyCoupon={handleApplyCoupon}
             onContinue={handleCheckout}
           />
         </CartSummaryCard>

@@ -1,51 +1,41 @@
-import { Button, Empty, Form, Input, message } from 'antd'
-import { useState } from 'react'
+import { Button, Empty, Form, Image, Input, message } from 'antd'
+import { Package } from 'lucide-react'
+import { useMemo, useState } from 'react'
 
+import StatusTag from '../../../components/common/StatusTag'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 import { formatPrice } from '../../../helpers/formatPrice'
+import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'
 import { orderService } from '../../../services/orderService'
 
 import {
-  OrderLookupContainer,
-  OrderLookupHero,
-  OrderLookupTitle,
-  OrderLookupText,
-  OrderLookupLayout,
+  AddressText,
   OrderCard,
   OrderCardTitle,
-  OrderResultHeader,
-  OrderNumber,
   OrderDate,
-  StatusGroup,
-  StatusBadge,
+  OrderItem,
+  OrderItemImage,
+  OrderItemMeta,
+  OrderItemName,
+  OrderItemPrice,
+  OrderLookupContainer,
+  OrderLookupHero,
+  OrderLookupLayout,
+  OrderLookupText,
+  OrderLookupTitle,
+  OrderNumber,
+  OrderResultHeader,
   OrderSection,
   OrderSectionTitle,
-  OrderItem,
-  OrderItemName,
-  OrderItemMeta,
-  OrderItemPrice,
+  StatusBadge,
+  StatusGroup,
+  StoreOrderBlock,
+  StoreOrderHeader,
+  StoreOrderTitle,
+  SummaryGrid,
+  SummaryRow,
   TotalRow,
-  AddressText,
 } from '../styles'
-
-const STATUS_LABELS = {
-  pending: 'Pendiente',
-  confirmed: 'Confirmada',
-  completed: 'Completada',
-  cancelled: 'Cancelada',
-  paid: 'Pagado',
-  failed: 'Fallido',
-  refunded: 'Reembolsado',
-  processing: 'En preparación',
-  ready_to_ship: 'Lista para enviar',
-  shipped: 'Enviada',
-  delivered: 'Entregada',
-  manual: 'Manual',
-  wompi: 'Wompi',
-}
-
-const getLabel = value => {
-  return STATUS_LABELS[value] || value || 'Sin estado'
-}
 
 const getOrderFromResponse = response => {
   return response?.data?.data || response?.data || response || null
@@ -61,32 +51,52 @@ const formatDate = value => {
   })
 }
 
-const getItemName = item => {
-  return item.productNameSnapshot || item.productName || 'Producto'
+const getStoreName = (storeOrder, translate) => {
+  return storeOrder?.store?.name || storeOrder?.storeNameSnapshot || translate('orders.lookup.storeFallback')
 }
 
-const getItemDescription = item => {
-  return item.itemNameSnapshot || ''
+const getItemName = (item, translate) => {
+  return item.productNameSnapshot || item.productName || translate('orders.lookup.productFallback')
+}
+
+const getItemDescription = (item, translate) => {
+  return item.itemNameSnapshot || item.referenceSnapshot?.name || translate('orders.lookup.itemFallback')
+}
+
+const getOrderStoreOrders = order => {
+  return Array.isArray(order?.storeOrders) ? order.storeOrders : []
+}
+
+const getOrderProductsCount = order => {
+  return getOrderStoreOrders(order).reduce((total, storeOrder) => {
+    return total + (storeOrder.items || []).reduce((sum, item) => sum + Number(item.quantity || 0), 0)
+  }, 0)
 }
 
 const OrderLookupPage = () => {
+  const { translate } = useDictionaryTranslation()
   const [form] = Form.useForm()
 
   const [order, setOrder] = useState(null)
   const [loading, setLoading] = useState(false)
+  const storeOrders = useMemo(() => getOrderStoreOrders(order), [order])
+  const productsCount = useMemo(() => getOrderProductsCount(order), [order])
 
   const handleSearch = async values => {
     setLoading(true)
 
     try {
-      const response = await orderService.lookupOrder(values)
+      const response = await orderService.lookupOrder({
+        orderNumber: values.orderNumber?.trim(),
+        email: values.email?.trim(),
+      })
       const foundOrder = getOrderFromResponse(response)
 
       setOrder(foundOrder)
-      message.success('Orden encontrada')
+      message.success(translate('orders.lookup.success'))
     } catch (error) {
       setOrder(null)
-      message.error(error?.message || 'No se pudo consultar la orden')
+      message.error(error?.message || translate('orders.lookup.error'))
     } finally {
       setLoading(false)
     }
@@ -95,106 +105,161 @@ const OrderLookupPage = () => {
   return (
     <OrderLookupContainer>
       <OrderLookupHero>
-        <OrderLookupTitle>Consulta tu orden</OrderLookupTitle>
+        <OrderLookupTitle>{translate('orders.lookup.title')}</OrderLookupTitle>
 
         <OrderLookupText>
-          Ingresa el número de orden y el correo usado en la compra para consultar el estado de tu
-          pedido.
+          {translate('orders.lookup.subtitle')}
         </OrderLookupText>
       </OrderLookupHero>
 
       <OrderLookupLayout>
         <OrderCard>
-          <OrderCardTitle>Datos de consulta</OrderCardTitle>
+          <OrderCardTitle>{translate('orders.lookup.formTitle')}</OrderCardTitle>
 
           <Form form={form} layout="vertical" onFinish={handleSearch}>
             <Form.Item
-              label="Número de orden"
+              label={translate('orders.lookup.orderNumber')}
               name="orderNumber"
               rules={[
                 {
                   required: true,
-                  message: 'Ingresa el número de orden',
+                  message: translate('orders.lookup.orderNumberRequired'),
                 },
               ]}
             >
-              <Input placeholder="Ej: ORD-1781453077630-BFDFA8" />
+              <Input placeholder={translate('orders.lookup.orderNumberPlaceholder')} />
             </Form.Item>
 
             <Form.Item
-              label="Correo electrónico"
+              label={translate('orders.lookup.email')}
               name="email"
               rules={[
                 {
                   required: true,
-                  message: 'Ingresa tu correo',
+                  message: translate('orders.lookup.emailRequired'),
                 },
                 {
                   type: 'email',
-                  message: 'Ingresa un correo válido',
+                  message: translate('orders.lookup.emailInvalid'),
                 },
               ]}
             >
-              <Input placeholder="correo@ejemplo.com" />
+              <Input placeholder={translate('orders.lookup.emailPlaceholder')} />
             </Form.Item>
 
             <Button type="primary" htmlType="submit" block size="large" loading={loading}>
-              Consultar orden
+              {translate('orders.lookup.submit')}
             </Button>
           </Form>
         </OrderCard>
 
         <OrderCard>
           {!order ? (
-            <Empty description="Aquí aparecerá la información de tu orden" />
+            <Empty description={translate('orders.lookup.empty')} />
           ) : (
             <>
               <OrderResultHeader>
                 <div>
                   <OrderNumber>{order.orderNumber}</OrderNumber>
 
-                  <OrderDate>Creada el {formatDate(order.createdAt)}</OrderDate>
+                  <OrderDate>
+                    {translate('orders.lookup.createdAt')} {formatDate(order.createdAt)}
+                  </OrderDate>
                 </div>
 
                 <StatusGroup>
-                  <StatusBadge>Orden: {getLabel(order.status)}</StatusBadge>
-
-                  <StatusBadge>Pago: {getLabel(order.paymentStatus)}</StatusBadge>
-
-                  <StatusBadge>Envío: {getLabel(order.fulfillmentStatus)}</StatusBadge>
+                  <StatusBadge>
+                    {translate('orders.lookup.orderStatus')}: <StatusTag status={order.status} />
+                  </StatusBadge>
+                  <StatusBadge>
+                    {translate('orders.lookup.paymentStatus')}: <StatusTag status={order.paymentStatus} />
+                  </StatusBadge>
+                  <StatusBadge>
+                    {translate('orders.lookup.shippingStatus')}: <StatusTag status={order.fulfillmentStatus} />
+                  </StatusBadge>
                 </StatusGroup>
               </OrderResultHeader>
 
               <OrderSection>
-                <OrderSectionTitle>Productos</OrderSectionTitle>
-
-                {(order.items || []).map(item => {
-                  const name = getItemName(item)
-                  const description = getItemDescription(item)
-
-                  return (
-                    <OrderItem key={item._id}>
-                      <div>
-                        <OrderItemName>{name}</OrderItemName>
-
-                        {description && <OrderItemMeta>{description}</OrderItemMeta>}
-
-                        <OrderItemMeta>Cantidad: {item.quantity}</OrderItemMeta>
-                      </div>
-
-                      <OrderItemPrice>{formatPrice(item.subtotal)}</OrderItemPrice>
-                    </OrderItem>
-                  )
-                })}
-
+                <OrderSectionTitle>{translate('orders.lookup.summary')}</OrderSectionTitle>
+                <SummaryGrid>
+                  <SummaryRow>
+                    <span>{translate('products')}</span>
+                    <strong>{productsCount}</strong>
+                  </SummaryRow>
+                  <SummaryRow>
+                    <span>{translate('subtotal')}</span>
+                    <strong>{formatPrice(order.subtotal)}</strong>
+                  </SummaryRow>
+                  {Number(order.discountTotal || 0) > 0 && (
+                    <SummaryRow>
+                      <span>{translate('discount')}</span>
+                      <strong>-{formatPrice(order.discountTotal)}</strong>
+                    </SummaryRow>
+                  )}
+                  <SummaryRow>
+                    <span>{translate('shipping')}</span>
+                    <strong>{formatPrice(order.shippingTotal)}</strong>
+                  </SummaryRow>
+                  <SummaryRow>
+                    <span>{translate('orders.lookup.paymentMethod')}</span>
+                    <strong>{order.paymentProvider || order.paymentMethod || translate('orders.payment.wompi')}</strong>
+                  </SummaryRow>
+                </SummaryGrid>
                 <TotalRow>
-                  <span>Total</span>
-                  <span>{formatPrice(order.total)}</span>
+                  <span>{translate('total')}</span>
+                  <span>{formatPrice(order.totalPaid || order.total)}</span>
                 </TotalRow>
               </OrderSection>
 
               <OrderSection>
-                <OrderSectionTitle>Datos de envío</OrderSectionTitle>
+                <OrderSectionTitle>{translate('orders.lookup.storeOrders')}</OrderSectionTitle>
+
+                {!storeOrders.length ? (
+                  <Empty description={translate('orders.lookup.noProducts')} />
+                ) : (
+                  storeOrders.map(storeOrder => (
+                    <StoreOrderBlock key={storeOrder._id || storeOrder.storeOrderNumber}>
+                      <StoreOrderHeader>
+                        <div>
+                          <StoreOrderTitle>{getStoreName(storeOrder, translate)}</StoreOrderTitle>
+                          <OrderItemMeta>{storeOrder.storeOrderNumber}</OrderItemMeta>
+                        </div>
+                        <StatusTag status={storeOrder.status} />
+                      </StoreOrderHeader>
+
+                      {(storeOrder.items || []).map(item => {
+                        const imageUrl = getUploadUrl(UPLOAD_ROUTES.products.images, item.imageSnapshot)
+
+                        return (
+                          <OrderItem key={item._id}>
+                            <OrderItemImage>
+                              {imageUrl ? (
+                                <Image src={imageUrl} alt={getItemName(item, translate)} preview={false} />
+                              ) : (
+                                <Package size={22} />
+                              )}
+                            </OrderItemImage>
+
+                            <div>
+                              <OrderItemName>{getItemName(item, translate)}</OrderItemName>
+                              <OrderItemMeta>{getItemDescription(item, translate)}</OrderItemMeta>
+                              <OrderItemMeta>
+                                {translate('orders.lookup.quantity')}: {item.quantity}
+                              </OrderItemMeta>
+                            </div>
+
+                            <OrderItemPrice>{formatPrice(item.subtotal)}</OrderItemPrice>
+                          </OrderItem>
+                        )
+                      })}
+                    </StoreOrderBlock>
+                  ))
+                )}
+              </OrderSection>
+
+              <OrderSection>
+                <OrderSectionTitle>{translate('orders.lookup.shippingData')}</OrderSectionTitle>
 
                 <AddressText>
                   <div>{order.customer?.name}</div>
@@ -210,7 +275,9 @@ const OrderLookupPage = () => {
                   <div>
                     {order.shippingAddress?.city}, {order.shippingAddress?.department}
                   </div>
-                  {order.shippingAddress?.notes && <div>Notas: {order.shippingAddress.notes}</div>}
+                  {order.shippingAddress?.notes && (
+                    <div>{translate('orders.lookup.notes')}: {order.shippingAddress.notes}</div>
+                  )}
                 </AddressText>
               </OrderSection>
             </>
