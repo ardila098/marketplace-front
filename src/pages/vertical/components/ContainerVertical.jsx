@@ -46,13 +46,13 @@ const ContainerVertical = () => {
 
   return (
     <>
-      <PageContainer>
-        <VerticalHeader
-          dataVertical={dataVertical}
-          loadingProducts={loading}
-          productsCount={data?.length}
-        />
+      <VerticalHeader
+        dataVertical={dataVertical}
+        loadingProducts={loading}
+        productsCount={data?.length}
+      />
 
+      <PageContainer>
         <CategorySlider
           categories={categories}
           title={translate('catalog.verticalCategorySliderTitle')}

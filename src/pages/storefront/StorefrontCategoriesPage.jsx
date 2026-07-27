@@ -76,7 +76,7 @@ const CategoryDescription = styled.p`
 
 const getCategoryImage = category => {
   if (category.image) {
-    return getUploadUrl(UPLOAD_ROUTES.categories.legacy, category.image)
+    return getUploadUrl(UPLOAD_ROUTES.categories.icons, category.image)
   }
 
   if (category.banner) {

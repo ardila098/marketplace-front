@@ -124,7 +124,7 @@ const ImageLayer = styled.div`
   background:
     linear-gradient(180deg, rgba(17, 24, 39, 0.02), rgba(17, 24, 39, 0.2)),
     ${({ $image }) =>
-      $image ? `url(${$image}) center/cover` : 'linear-gradient(135deg, #f6f7f9, #dfe4ea)'};
+      $image ? `url(${$image}) center/cover` : 'linear-gradient(135deg, #dfe4ea, #dfe4ea)'};
   transition: transform 0.32s ease;
 
   ${Card}:hover & {
@@ -152,7 +152,7 @@ const Name = styled.h3`
 
 const getCategoryImage = category => {
   if (category?.image) {
-    return getUploadUrl(UPLOAD_ROUTES.categories.legacy, category.image)
+    return getUploadUrl(UPLOAD_ROUTES.categories.icons, category.image)
   }
 
   if (category?.banner) {
