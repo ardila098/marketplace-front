@@ -49,6 +49,7 @@ const SellerProductManagePage = createLazyPage(
 
 const AdminDashboardPage = createLazyPage(() => import('../pages/admin/AdminDashboardPage'))
 const AdminStoresPage = createLazyPage(() => import('../pages/admin/AdminStoresPage'))
+const AdminVerticalsPage = createLazyPage(() => import('../pages/admin/AdminVerticalsPage'))
 const AdminProductsPage = createLazyPage(() => import('../pages/admin/AdminProductsPage'))
 const AdminCategoriesPage = createLazyPage(() => import('../pages/admin/AdminCategoriesPage'))
 const AdminUsersPage = createLazyPage(() => import('../pages/admin/AdminUsersPage'))
@@ -145,6 +146,7 @@ export const router = createBrowserRouter([
         children: [
           { path: ROUTES.ADMIN_DASHBOARD, element: <AdminDashboardPage /> },
           { path: ROUTES.ADMIN_STORES, element: <AdminStoresPage /> },
+          { path: ROUTES.ADMIN_VERTICALS, element: <AdminVerticalsPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },
           { path: ROUTES.ADMIN_CATEGORIES, element: <AdminCategoriesPage /> },
           { path: ROUTES.ADMIN_COUPONS, element: <CouponsPage /> },

@@ -5,6 +5,7 @@ import {
   Brush,
   ClipboardList,
   Home,
+  Layers,
   LayoutDashboard,
   Package,
   Percent,
@@ -115,6 +116,13 @@ export const adminMenu = [
     path: ROUTES.ADMIN_STORES,
     icon: Store,
     permission: PERMISSIONS.ADMIN_STORES_MANAGE,
+  },
+  {
+    key: ROUTES.ADMIN_VERTICALS,
+    label: 'Verticales',
+    path: ROUTES.ADMIN_VERTICALS,
+    icon: Layers,
+    permission: PERMISSIONS.ADMIN_VERTICALS_MANAGE,
   },
   {
     key: ROUTES.ADMIN_PRODUCTS,

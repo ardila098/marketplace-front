@@ -3,6 +3,7 @@ import { ROLES } from './roles'
 export const PERMISSIONS = {
   ADMIN_DASHBOARD_VIEW: 'admin.dashboard.view',
   ADMIN_STORES_MANAGE: 'admin.stores.manage',
+  ADMIN_VERTICALS_MANAGE: 'admin.verticals.manage',
   ADMIN_PRODUCTS_MANAGE: 'admin.products.manage',
   ADMIN_CATEGORIES_MANAGE: 'admin.categories.manage',
   ADMIN_COUPONS_MANAGE: 'admin.coupons.manage',
@@ -28,6 +29,7 @@ export const ROLE_PERMISSIONS = {
   [ROLES.ADMIN.value]: [
     PERMISSIONS.ADMIN_DASHBOARD_VIEW,
     PERMISSIONS.ADMIN_STORES_MANAGE,
+    PERMISSIONS.ADMIN_VERTICALS_MANAGE,
     PERMISSIONS.ADMIN_PRODUCTS_MANAGE,
     PERMISSIONS.ADMIN_CATEGORIES_MANAGE,
     PERMISSIONS.ADMIN_COUPONS_MANAGE,

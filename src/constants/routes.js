@@ -38,6 +38,7 @@ export const ROUTES = {
 
   ADMIN_DASHBOARD: '/admin',
   ADMIN_STORES: '/admin/stores',
+  ADMIN_VERTICALS: '/admin/verticals',
   ADMIN_PRODUCTS: '/admin/products',
   ADMIN_CATEGORIES: '/admin/categories',
   ADMIN_USERS: '/admin/users',

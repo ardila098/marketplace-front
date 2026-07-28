@@ -41,7 +41,7 @@ const StoreFormPage = () => {
     try {
       const [storeResponse, verticalsResponse] = await Promise.all([
         storeService.getMyStore(),
-        verticalsServices.list(),
+        verticalsServices.list({ active: true }),
       ])
 
       const currentStore = storeResponse.data

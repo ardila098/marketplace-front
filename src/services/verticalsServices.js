@@ -15,11 +15,21 @@ export const verticalsServices = {
 
   create: async payload => {
     const response = await DataService.post(API_ROUTES.verticals.base, payload)
-    return normalizeItemResponse(response, 'Tienda creada correctamente')
+    return normalizeItemResponse(response, 'Vertical creada correctamente')
   },
 
-  updateVertical: async payload => {
-    const response = await DataService.put(API_ROUTES.verticals.updateItem, payload)
-    return normalizeItemResponse(response, 'Tienda actualizada correctamente')
+  update: async (id, payload) => {
+    const response = await DataService.put(API_ROUTES.verticals.byId(id), payload)
+    return normalizeItemResponse(response, 'Vertical actualizada correctamente')
+  },
+
+  updateVertical: async (id, payload) => {
+    const response = await DataService.put(API_ROUTES.verticals.byId(id), payload)
+    return normalizeItemResponse(response, 'Vertical actualizada correctamente')
+  },
+
+  toggleStatus: async id => {
+    const response = await DataService.patch(API_ROUTES.verticals.status(id))
+    return normalizeItemResponse(response, 'Estado actualizado correctamente')
   },
 }

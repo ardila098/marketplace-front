@@ -11,7 +11,7 @@ const useVerticals = () => {
   const getVerticals = useCallback(async () => {
     setLoading(true)
     try {
-      const newData = await verticalsServices.list()
+      const newData = await verticalsServices.list({ active: true })
       setData(newData.data || [])
     } catch (error) {
       console.error(error)
