@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Form, Upload } from 'antd'
+import { Form, Upload, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { uploadService } from '../../../services/uploadService'
 import { getUploadUrl } from '../../../constants/uploadRoutes'
+
+const MAX_IMAGE_SIZE_MB = 8
+const MAX_IMAGE_SIZE_BYTES = MAX_IMAGE_SIZE_MB * 1024 * 1024
 
 const normalizeValue = value => {
   if (Array.isArray(value)) return value.filter(Boolean)
@@ -46,6 +49,13 @@ const ImageUploadInput = ({
   disabled = false,
 }) => {
   const [fileList, setFileList] = useState([])
+
+  const validateFile = file => {
+    if (file.size <= MAX_IMAGE_SIZE_BYTES) return true
+
+    message.error(`La imagen no puede pesar mas de ${MAX_IMAGE_SIZE_MB} MB`)
+    return Upload.LIST_IGNORE
+  }
 
   useEffect(() => {
     const images = normalizeValue(value)
@@ -96,6 +106,7 @@ const ImageUploadInput = ({
 
       onSuccess?.(response)
     } catch (error) {
+      message.error(error?.message || 'No se pudo subir la imagen')
       onError?.(error)
     }
   }
@@ -126,6 +137,7 @@ const ImageUploadInput = ({
       fileList={fileList}
       customRequest={handleUpload}
       onChange={handleChange}
+      beforeUpload={validateFile}
       maxCount={maxCount}
       multiple={multiple}
       accept="image/jpeg,image/png,image/webp"
