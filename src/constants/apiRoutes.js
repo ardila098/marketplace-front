@@ -8,6 +8,7 @@ export const API_ROUTES = {
 
   users: {
     base: '/users',
+    byId: id => `/users/${id}`,
   },
 
   stores: {
