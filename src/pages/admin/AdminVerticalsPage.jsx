@@ -37,7 +37,16 @@ const AdminVerticalsPage = () => {
   const [saving, setSaving] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [editingVertical, setEditingVertical] = useState(null)
+  const [uploadingFields, setUploadingFields] = useState({})
   const [search, setSearch] = useState('')
+  const isUploading = Object.values(uploadingFields).some(Boolean)
+
+  const setFieldUploading = useCallback((field, uploading) => {
+    setUploadingFields(current => ({
+      ...current,
+      [field]: uploading,
+    }))
+  }, [])
 
   const loadVerticals = useCallback(async () => {
     setLoading(true)
@@ -77,6 +86,7 @@ const AdminVerticalsPage = () => {
       sortOrder: 0,
       isActive: true,
     })
+    setUploadingFields({})
     setModalOpen(true)
   }
 
@@ -91,16 +101,23 @@ const AdminVerticalsPage = () => {
       sortOrder: vertical.sortOrder || 0,
       isActive: vertical.isActive !== false,
     })
+    setUploadingFields({})
     setModalOpen(true)
   }, [form])
 
   const closeModal = () => {
     setModalOpen(false)
     setEditingVertical(null)
+    setUploadingFields({})
     form.resetFields()
   }
 
   const handleSubmit = async values => {
+    if (isUploading) {
+      message.warning('Espera a que terminen de subir las imagenes')
+      return
+    }
+
     setSaving(true)
 
     try {
@@ -290,6 +307,7 @@ const AdminVerticalsPage = () => {
               maxCount={1}
               multiple={false}
               disabled={saving}
+              onUploadingChange={uploading => setFieldUploading('icon', uploading)}
             />
 
             <ImageUploadField
@@ -300,6 +318,7 @@ const AdminVerticalsPage = () => {
               maxCount={1}
               multiple={false}
               disabled={saving}
+              onUploadingChange={uploading => setFieldUploading('banner', uploading)}
             />
           </Space>
 
@@ -311,7 +330,7 @@ const AdminVerticalsPage = () => {
             <Switch />
           </Form.Item>
 
-          <Button type="primary" htmlType="submit" block loading={saving}>
+          <Button type="primary" htmlType="submit" block loading={saving || isUploading}>
             Guardar vertical
           </Button>
         </Form>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Form, Upload } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
@@ -37,6 +37,8 @@ const getImagesKey = images => normalizeValue(images).join('|')
 const ImageUploadInput = ({
   value,
   onChange,
+  onValueChange,
+  onUploadingChange,
   folder,
   uploadRoute,
   maxCount = 5,
@@ -47,17 +49,23 @@ const ImageUploadInput = ({
 
   useEffect(() => {
     const images = normalizeValue(value)
-    const currentImages = fileList
-      .map(file => file.fileName)
-      .filter(Boolean)
 
-    if (getImagesKey(images) === getImagesKey(currentImages)) return
+    setFileList(currentFileList => {
+      const currentImages = currentFileList
+        .map(file => file.fileName)
+        .filter(Boolean)
 
-    setFileList(buildFileList(images, uploadRoute))
-  }, [value, uploadRoute, fileList])
+      if (getImagesKey(images) === getImagesKey(currentImages)) {
+        return currentFileList
+      }
+
+      return buildFileList(images, uploadRoute)
+    })
+  }, [value, uploadRoute])
 
   const syncImages = nextFileList => {
     const hasUploading = nextFileList.some(file => file.status === 'uploading')
+    onUploadingChange?.(hasUploading)
 
     if (hasUploading) return
 
@@ -66,7 +74,10 @@ const ImageUploadInput = ({
       .map(file => file.fileName)
       .filter(Boolean)
 
-    onChange?.(getOutputValue(images, multiple))
+    const outputValue = getOutputValue(images, multiple)
+
+    onChange?.(outputValue)
+    onValueChange?.(outputValue)
   }
 
   const handleUpload = async ({ file, onSuccess, onError, onProgress }) => {
@@ -139,7 +150,13 @@ const ImageUploadField = ({
   multiple = true,
   disabled = false,
   rules = [],
+  onUploadingChange,
 }) => {
+  const form = Form.useFormInstance()
+  const handleValueChange = useCallback(value => {
+    form.setFieldValue(name, value)
+  }, [form, name])
+
   return (
     <Form.Item
       label={label}
@@ -152,6 +169,8 @@ const ImageUploadField = ({
         maxCount={maxCount}
         multiple={multiple}
         disabled={disabled}
+        onValueChange={handleValueChange}
+        onUploadingChange={onUploadingChange}
       />
     </Form.Item>
   )
