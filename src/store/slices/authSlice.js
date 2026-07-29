@@ -21,6 +21,14 @@ export const login = createAsyncThunk('auth/login', async payload => {
   return response
 })
 
+export const register = createAsyncThunk('auth/register', async payload => {
+  const response = await authService.register(payload)
+
+  localStorage.setItem(TOKEN_KEY, response.token)
+
+  return response
+})
+
 export const loadSession = createAsyncThunk('auth/loadSession', async () => {
   const token = getStoredToken()
 
@@ -71,7 +79,24 @@ const authSlice = createSlice({
 
       .addCase(login.rejected, (state, action) => {
         state.loading = false
-        state.error = action.error.message || 'No se pudo iniciar sesión'
+        state.error = action.error.message || 'No se pudo iniciar sesion'
+      })
+
+      .addCase(register.pending, state => {
+        state.loading = true
+        state.error = null
+      })
+
+      .addCase(register.fulfilled, (state, action) => {
+        state.loading = false
+        state.initialized = true
+        state.user = action.payload.user
+        state.token = action.payload.token
+      })
+
+      .addCase(register.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.error.message || 'No se pudo crear la cuenta'
       })
 
       .addCase(loadSession.pending, state => {

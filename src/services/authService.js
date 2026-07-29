@@ -8,11 +8,13 @@ import {
 export const authService = {
   login: async payload => {
     const response = await DataService.post(API_ROUTES.auth.login, payload)
-    return normalizeAuthResponse(response, 'Inicio de sesión correcto')
+
+    return normalizeAuthResponse(response, 'Inicio de sesion correcto')
   },
 
   register: async payload => {
     const response = await DataService.post(API_ROUTES.auth.register, payload)
+
     return normalizeAuthResponse(response, 'Registro creado correctamente')
   },
 
@@ -27,6 +29,7 @@ export const authService = {
 
   logout: async () => {
     localStorage.removeItem('accessToken')
-    return normalizeItemResponse({ data: true }, 'Sesión cerrada correctamente')
+
+    return normalizeItemResponse({ data: true }, 'Sesion cerrada correctamente')
   },
 }
