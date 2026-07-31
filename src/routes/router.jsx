@@ -20,7 +20,11 @@ const StorefrontCategoriesPage = createLazyPage(() => import('../pages/storefron
 const StorefrontProductDetailPage = createLazyPage(
   () => import('../pages/storefront/StorefrontProductDetailPage')
 )
+const StorefrontAgencyItemDetailPage = createLazyPage(
+  () => import('../pages/storefront/StorefrontAgencyItemDetailPage')
+)
 const StoresPage = createLazyPage(() => import('../pages/stores/StoresPage'))
+const BrokerPublicPage = createLazyPage(() => import('../pages/brokers/BrokerPublicPage'))
 
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const CheckoutPage = createLazyPage(() => import('../pages/checkout/CheckoutPage'))
@@ -38,9 +42,11 @@ const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesign
 const SellerProductsPage = createLazyPage(
   () => import('../pages/seller/components/SellerProducts/SellerProductsPage')
 )
+const AgencyItemsPage = createLazyPage(() => import('../pages/seller/AgencyItemsPage'))
 const CouponsPage = createLazyPage(() => import('../pages/coupons/CouponsPage'))
 const CustomersPage = createLazyPage(() => import('../pages/customers/CustomersPage'))
 const PayoutsPage = createLazyPage(() => import('../pages/payouts/PayoutsPage'))
+const CreditApplicationsPage = createLazyPage(() => import('../pages/creditApplications/CreditApplicationsPage'))
 const SellerOrdersPage = createLazyPage(() => import('../pages/orders/OrdersPage'))
 const OrderDetailPage = createLazyPage(() => import('../pages/orders/components/OrdersDetails'))
 const SellerProductManagePage = createLazyPage(
@@ -55,6 +61,8 @@ const AdminCategoriesPage = createLazyPage(() => import('../pages/admin/AdminCat
 const AdminUsersPage = createLazyPage(() => import('../pages/admin/AdminUsersPage'))
 const AdminSettingsPage = createLazyPage(() => import('../pages/admin/AdminSettingsPage'))
 const AdminOrdersPage = createLazyPage(() => import('../pages/orders/OrdersPage'))
+const BrokerDashboardPage = createLazyPage(() => import('../pages/broker/BrokerDashboardPage'))
+const BrokerProfilePage = createLazyPage(() => import('../pages/broker/BrokerProfilePage'))
 
 const UnauthorizedPage = createLazyPage(() => import('../pages/system/UnauthorizedPage'))
 
@@ -67,6 +75,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.VERTICALS, element: <VerticalsPage /> },
       { path: ROUTES.MARKETPLACE, element: <ProductListPage /> },
       { path: ROUTES.STORES, element: <StoresPage /> },
+      { path: ROUTES.BROKER_PUBLIC_PROFILE, element: <BrokerPublicPage /> },
       { path: ROUTES.VERTICAL_PRODUCT_DETAIL, element: <ItemDetailPage /> },
       { path: ROUTES.LOGIN, element: <LoginPage /> },
       { path: ROUTES.REGISTER, element: <RegisterPage /> },
@@ -86,6 +95,7 @@ export const router = createBrowserRouter([
               { path: '/categories', element: <StorefrontCategoriesPage /> },
               { path: '/outlet', element: <StorefrontProductsPage /> },
               { path: '/products/:productSlug', element: <StorefrontProductDetailPage /> },
+              { path: '/agency-items/:itemSlug', element: <StorefrontAgencyItemDetailPage /> },
             ],
           },
         ],
@@ -103,6 +113,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.STOREFRONT_CATEGORIES, element: <StorefrontCategoriesPage /> },
           { path: ROUTES.STOREFRONT_OUTLET, element: <StorefrontProductsPage /> },
           { path: ROUTES.STOREFRONT_PRODUCT_DETAIL, element: <StorefrontProductDetailPage /> },
+          { path: ROUTES.STOREFRONT_AGENCY_ITEM_DETAIL, element: <StorefrontAgencyItemDetailPage /> },
         ],
       },
     ],
@@ -129,11 +140,26 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_STORE, element: <StoreFormPage /> },
           { path: ROUTES.SELLER_DESIGN, element: <StoreDesignPage /> },
           { path: ROUTES.SELLER_PRODUCTS, element: <SellerProductsPage /> },
+          { path: ROUTES.SELLER_AGENCY_ITEMS, element: <AgencyItemsPage /> },
           { path: ROUTES.SELLER_COUPONS, element: <CouponsPage /> },
           { path: ROUTES.SELLER_CUSTOMERS, element: <CustomersPage /> },
           { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> },
           { path: ROUTES.SELLER_PAYOUTS, element: <PayoutsPage /> },
+          { path: ROUTES.SELLER_CREDIT_APPLICATIONS, element: <CreditApplicationsPage /> },
           { path: ROUTES.SELLER_PRODUCTS_MANAGE, element: <SellerProductManagePage /> },
+        ],
+      },
+    ],
+  },
+  {
+    element: <ProtectedRoute roles={[ROLES.BROKER.value]} />,
+    children: [
+      {
+        element: <DashboardLayout area="broker" />,
+        children: [
+          { path: ROUTES.BROKER_DASHBOARD, element: <BrokerDashboardPage /> },
+          { path: ROUTES.BROKER_PROFILE, element: <BrokerProfilePage /> },
+          { path: ROUTES.BROKER_CREDIT_APPLICATIONS, element: <CreditApplicationsPage /> },
         ],
       },
     ],
@@ -154,6 +180,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_USERS, element: <AdminUsersPage /> },
           { path: ROUTES.ADMIN_ORDERS, element: <AdminOrdersPage /> },
           { path: ROUTES.ADMIN_PAYOUTS, element: <PayoutsPage /> },
+          { path: ROUTES.ADMIN_CREDIT_APPLICATIONS, element: <CreditApplicationsPage /> },
           { path: ROUTES.ADMIN_SETTINGS, element: <AdminSettingsPage /> },
         ],
       },

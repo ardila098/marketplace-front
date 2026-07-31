@@ -11,6 +11,7 @@ import { PageShell } from '../../styles/layoutStyles'
 const redirectByRole = {
   [ROLES.ADMIN.value]: ROUTES.ADMIN_DASHBOARD,
   [ROLES.SELLER.value]: ROUTES.SELLER_DASHBOARD,
+  [ROLES.BROKER.value]: ROUTES.BROKER_DASHBOARD,
   [ROLES.CUSTOMER.value]: ROUTES.MARKETPLACE,
 }
 

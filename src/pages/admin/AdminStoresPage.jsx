@@ -2,6 +2,8 @@ import { Button, Drawer, Form, Input, InputNumber, Select, Space, Switch, Table,
 import { CheckOutlined, SettingOutlined } from '@ant-design/icons'
 import { useCallback, useEffect, useState } from 'react'
 import StatusTag from '../../components/common/StatusTag'
+import { STORE_BUSINESS_TYPE_OPTIONS, STORE_BUSINESS_TYPES } from '../../constants/businessTypes'
+import { brokerService } from '../../services/brokerService'
 import { storeService } from '../../services/storeService'
 
 const STORE_STATUS_OPTIONS = [
@@ -20,7 +22,9 @@ const DOMAIN_STATUS_OPTIONS = [
 const getFormValues = store => ({
   status: store?.status,
   isActive: store?.isActive,
+  businessType: store?.businessType || STORE_BUSINESS_TYPES.RETAIL.value,
   commissionRate: store?.commissionRate,
+  assignedBroker: store?.assignedBroker?._id || store?.assignedBroker || undefined,
   isPublished: store?.storefront?.isPublished !== false,
   seoTitle: store?.storefront?.seoTitle,
   seoDescription: store?.storefront?.seoDescription,
@@ -31,6 +35,7 @@ const getFormValues = store => ({
 const AdminStoresPage = () => {
   const [form] = Form.useForm()
   const [stores, setStores] = useState([])
+  const [brokers, setBrokers] = useState([])
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [selectedStore, setSelectedStore] = useState(null)
@@ -52,6 +57,12 @@ const AdminStoresPage = () => {
   useEffect(() => {
     loadStores()
   }, [loadStores])
+
+  useEffect(() => {
+    brokerService.adminList({ isActive: true })
+      .then(response => setBrokers(response.data || []))
+      .catch(() => setBrokers([]))
+  }, [])
 
   const openSettings = store => {
     setSelectedStore(store)
@@ -82,7 +93,9 @@ const AdminStoresPage = () => {
       await storeService.update(selectedStore._id, {
         status: values.status,
         isActive: values.isActive,
+        businessType: values.businessType,
         commissionRate: values.commissionRate,
+        assignedBroker: values.assignedBroker || null,
       })
 
       await storeService.updateStorefront(selectedStore._id, {
@@ -133,6 +146,17 @@ const AdminStoresPage = () => {
     {
       title: 'Vertical',
       render: (_, store) => store.vertical?.name || '-',
+    },
+    {
+      title: 'Tipo',
+      render: (_, store) => (
+        STORE_BUSINESS_TYPE_OPTIONS.find(type => type.value === store.businessType)?.label ||
+        STORE_BUSINESS_TYPES.RETAIL.label
+      ),
+    },
+    {
+      title: 'Broker',
+      render: (_, store) => store.assignedBroker?.name || '-',
     },
     {
       title: 'Comisión',
@@ -211,8 +235,23 @@ const AdminStoresPage = () => {
             <Switch />
           </Form.Item>
 
+          <Form.Item label="Tipo de negocio" name="businessType" rules={[{ required: true }]}>
+            <Select options={STORE_BUSINESS_TYPE_OPTIONS} />
+          </Form.Item>
+
           <Form.Item label="Comisión plataforma (%)" name="commissionRate">
             <InputNumber min={0} max={100} style={{ width: '100%' }} />
+          </Form.Item>
+
+          <Form.Item label="Broker asignado" name="assignedBroker">
+            <Select
+              allowClear
+              placeholder="Sin broker asignado"
+              options={brokers.map(profile => ({
+                label: profile.displayName || profile.user?.name,
+                value: profile.user?._id || profile.user?.id || profile.user,
+              }))}
+            />
           </Form.Item>
 
           <Form.Item label="Título SEO" name="seoTitle">

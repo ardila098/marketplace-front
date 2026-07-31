@@ -20,6 +20,7 @@ const ROLE_INPUT_OPTIONS = [
   { label: 'Admin', value: 1 },
   { label: 'Seller', value: 2 },
   { label: 'Cliente', value: 3 },
+  { label: 'Broker', value: 4 },
 ]
 
 const ROLE_OPTIONS = [
@@ -31,12 +32,14 @@ const roleLabels = {
   1: 'Admin',
   2: 'Seller',
   3: 'Cliente',
+  4: 'Broker',
 }
 
 const roleColors = {
   1: 'purple',
   2: 'blue',
   3: 'green',
+  4: 'gold',
 }
 
 const AdminUsersPage = () => {

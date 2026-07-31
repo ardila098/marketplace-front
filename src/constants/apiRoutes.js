@@ -27,6 +27,30 @@ export const API_ROUTES = {
     approve: id => `/stores/${id}/approve`,
   },
 
+  brokers: {
+    public: '/brokers/public',
+    publicBySlug: slug => `/brokers/public/${slug}`,
+    admin: '/brokers/admin',
+    me: '/brokers/me',
+  },
+
+  creditApplications: {
+    base: '/credit-applications',
+    status: id => `/credit-applications/${id}/status`,
+    notes: id => `/credit-applications/${id}/notes`,
+    assignBroker: id => `/credit-applications/${id}/assign-broker`,
+  },
+
+  agencyItems: {
+    base: '/agency-items',
+    byId: id => `/agency-items/${id}`,
+    status: id => `/agency-items/${id}/status`,
+    myStore: '/agency-items/my-store',
+    admin: '/agency-items/admin',
+    publicByStore: storeSlug => `/agency-items/store/${storeSlug}`,
+    publicBySlug: (storeSlug, itemSlug) => `/agency-items/store/${storeSlug}/${itemSlug}`,
+  },
+
   products: {
     base: '/products',
     myStoreProducts: '/products/my-store-products',

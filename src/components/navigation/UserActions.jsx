@@ -12,9 +12,10 @@ const dashboardByRole = {
   admin: ROUTES.ADMIN_DASHBOARD,
   seller: ROUTES.SELLER_DASHBOARD,
   customer: ROUTES.CUSTOMER_ORDERS,
+  broker: ROUTES.BROKER_DASHBOARD,
 }
 
-const UserActions = ({ compact = false, showAccount = true }) => {
+const UserActions = ({ compact = false, showAccount = true, showCart = true }) => {
   const dispatch = useDispatch()
   const cartCount = useSelector(selectCartCount)
   const { user, role } = useAuth()
@@ -36,15 +37,17 @@ const UserActions = ({ compact = false, showAccount = true }) => {
 
   return (
     <Space size="middle">
-      <Badge count={cartCount} size="small">
-        <ButtonCart
-          aria-label="Carrito"
-          icon={<ShoppingBag size={18} />}
-          onClick={() => dispatch(openCartDrawer())}
-        >
-          {compact ? null : ''}
-        </ButtonCart>
-      </Badge>
+      {showCart && (
+        <Badge count={cartCount} size="small">
+          <ButtonCart
+            aria-label="Carrito"
+            icon={<ShoppingBag size={18} />}
+            onClick={() => dispatch(openCartDrawer())}
+          >
+            {compact ? null : ''}
+          </ButtonCart>
+        </Badge>
+      )}
 
       {showAccount && user ? (
         <Dropdown menu={{ items: menuItems }} trigger={['click']}>

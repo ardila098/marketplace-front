@@ -2,6 +2,7 @@ import { Button, Card, Col, Form, Input, Row, Select, Space, Spin, Switch, Typog
 import { useCallback, useEffect, useState } from 'react'
 import StatusTag from '../../components/common/StatusTag'
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
+import { STORE_BUSINESS_TYPE_OPTIONS, STORE_BUSINESS_TYPES } from '../../constants/businessTypes'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { storeService } from '../../services/storeService'
 import { verticalsServices } from '../../services/verticalsServices'
@@ -9,6 +10,7 @@ import { verticalsServices } from '../../services/verticalsServices'
 const getStoreValues = store => ({
   name: store?.name,
   slug: store?.slug,
+  businessType: store?.businessType || STORE_BUSINESS_TYPES.RETAIL.value,
   verticals: store?.verticals?.length
     ? store.verticals.map(vertical => vertical?._id || vertical)
     : [store?.vertical?._id || store?.vertical].filter(Boolean),
@@ -162,6 +164,11 @@ const StoreFormPage = () => {
               <Col xs={24} md={12}>
                 <Form.Item label="Ruta de tienda" name="slug" rules={[{ required: true }]}>
                   <Input addonBefore="/stores/" />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item label="Tipo de negocio" name="businessType">
+                  <Select disabled options={STORE_BUSINESS_TYPE_OPTIONS} />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>

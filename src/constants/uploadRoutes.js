@@ -22,6 +22,9 @@ export const UPLOAD_FOLDERS = Object.freeze({
     icons: 'categories/icons',
     banners: 'categories/banners',
   },
+  agencyItems: {
+    images: 'agency-items/images',
+  },
   users: {
     avatars: 'users/avatars',
   },
@@ -44,6 +47,9 @@ export const UPLOAD_ROUTES = Object.freeze({
     icons: buildUploadRoute('/uploads/categories/icons'),
     banners: buildUploadRoute('/uploads/categories/banners'),
     legacy: buildUploadRoute('/uploads/categorys'),
+  },
+  agencyItems: {
+    images: buildUploadRoute('/uploads/agency-items/images'),
   },
   users: {
     avatars: buildUploadRoute('/uploads/users/avatars'),

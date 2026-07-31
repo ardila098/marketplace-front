@@ -15,6 +15,8 @@ export const ROUTES = {
   STOREFRONT_CATEGORIES: '/stores/:storeSlug/categories',
   STOREFRONT_OUTLET: '/stores/:storeSlug/outlet',
   STOREFRONT_PRODUCT_DETAIL: '/stores/:storeSlug/products/:productSlug',
+  STOREFRONT_AGENCY_ITEM_DETAIL: '/stores/:storeSlug/agency-items/:itemSlug',
+  BROKER_PUBLIC_PROFILE: '/brokers/:slug',
   ORDER_LOOKUP: '/order-lookup',
   ORDER_DETAIL: '/orderDetail/:id',
 
@@ -28,11 +30,17 @@ export const ROUTES = {
   SELLER_STORE: '/seller/store',
   SELLER_DESIGN: '/seller/design',
   SELLER_PRODUCTS: '/seller/products',
+  SELLER_AGENCY_ITEMS: '/seller/agency-items',
   SELLER_COUPONS: '/seller/coupons',
   SELLER_CUSTOMERS: '/seller/customers',
   SELLER_ORDERS: '/seller/orders',
   SELLER_PAYOUTS: '/seller/payouts',
+  SELLER_CREDIT_APPLICATIONS: '/seller/credit-applications',
   SELLER_PRODUCTS_MANAGE: '/seller/products/:id/manage',
+
+  BROKER_DASHBOARD: '/broker',
+  BROKER_PROFILE: '/broker/profile',
+  BROKER_CREDIT_APPLICATIONS: '/broker/credit-applications',
 
   
 
@@ -47,6 +55,7 @@ export const ROUTES = {
   ADMIN_PAYOUTS: '/admin/payouts',
   ADMIN_COUPONS: '/admin/coupons',
   ADMIN_CUSTOMERS: '/admin/customers',
+  ADMIN_CREDIT_APPLICATIONS: '/admin/credit-applications',
 
 }
 

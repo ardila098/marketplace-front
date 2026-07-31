@@ -8,6 +8,7 @@ import CartDrawer from '../components/cart/CartDrawer'
 import SiteFooter from '../components/layout/SiteFooter'
 import UserActions from '../components/navigation/UserActions'
 import StorefrontSearchDrawer from '../components/storefront/StorefrontSearchDrawer'
+import { isAgencyBusiness } from '../constants/businessTypes'
 import { buildRoute, ROUTES } from '../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../hooks/useDictionaryTranslation'
@@ -148,12 +149,18 @@ const StorefrontLayout = () => {
         : '/outlet'
   const storeTheme = buildStoreTheme(store)
   const logoUrl = getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
-  const navLinks = [
-    { to: homePath, label: translate('home') },
-    { to: productsPath, label: translate('products') },
-    { to: categoriesPath, label: translate('categories') },
-    { to: outletPath, label: translate('outlet') },
-  ]
+  const isAgencyStore = isAgencyBusiness(store?.businessType)
+  const navLinks = isAgencyStore
+    ? [
+        { to: homePath, label: translate('home') },
+        { to: `${homePath}#inventario`, label: 'Inventario' },
+      ]
+    : [
+        { to: homePath, label: translate('home') },
+        { to: productsPath, label: translate('products') },
+        { to: categoriesPath, label: translate('categories') },
+        { to: outletPath, label: translate('outlet') },
+      ]
 
   return (
     <ThemeProvider theme={storeTheme}>
@@ -175,17 +182,21 @@ const StorefrontLayout = () => {
 
           <DesktopNav size="middle" wrap>
             {navLinks.map(item => (
-              <NavLink key={item.to} to={item.to}>
+              <NavLink key={`${item.to}-${item.label}`} to={item.to}>
                 {item.label}
               </NavLink>
             ))}
-            <StorefrontSearchDrawer storeSlug={activeStoreSlug} resolutionMode={resolutionMode} />
-            <UserActions />
+            {!isAgencyStore && (
+              <StorefrontSearchDrawer storeSlug={activeStoreSlug} resolutionMode={resolutionMode} />
+            )}
+            <UserActions showCart={!isAgencyStore} />
           </DesktopNav>
 
           <MobileActions size={4}>
-            <StorefrontSearchDrawer storeSlug={activeStoreSlug} resolutionMode={resolutionMode} />
-            <UserActions compact showAccount={false} />
+            {!isAgencyStore && (
+              <StorefrontSearchDrawer storeSlug={activeStoreSlug} resolutionMode={resolutionMode} />
+            )}
+            <UserActions compact showAccount={false} showCart={!isAgencyStore} />
           </MobileActions>
         </HeaderBar>
 
@@ -198,11 +209,11 @@ const StorefrontLayout = () => {
         >
           <DrawerContent>
             {navLinks.map(item => (
-              <Link key={item.to} to={item.to} onClick={() => setDrawerOpen(false)}>
+              <Link key={`${item.to}-${item.label}`} to={item.to} onClick={() => setDrawerOpen(false)}>
                 {item.label}
               </Link>
             ))}
-            <UserActions compact={false} showAccount />
+            <UserActions compact={false} showAccount showCart={!isAgencyStore} />
           </DrawerContent>
         </Drawer>
 

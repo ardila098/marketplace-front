@@ -3,7 +3,10 @@ import {
   Boxes,
   Tags,
   Brush,
+  Car,
+  BriefcaseBusiness,
   ClipboardList,
+  FileText,
   Home,
   Layers,
   LayoutDashboard,
@@ -73,6 +76,13 @@ export const sellerMenu = [
     permission: PERMISSIONS.SELLER_PRODUCTS_MANAGE,
   },
   {
+    key: ROUTES.SELLER_AGENCY_ITEMS,
+    label: 'Inventario agencia',
+    path: ROUTES.SELLER_AGENCY_ITEMS,
+    icon: Car,
+    permission: PERMISSIONS.SELLER_AGENCY_ITEMS_MANAGE,
+  },
+  {
     key: ROUTES.SELLER_COUPONS,
     label: 'Cupones',
     path: ROUTES.SELLER_COUPONS,
@@ -99,6 +109,37 @@ export const sellerMenu = [
     path: ROUTES.SELLER_PAYOUTS,
     icon: Wallet,
     permission: PERMISSIONS.SELLER_PAYOUTS_VIEW,
+  },
+  {
+    key: ROUTES.SELLER_CREDIT_APPLICATIONS,
+    label: 'Solicitudes',
+    path: ROUTES.SELLER_CREDIT_APPLICATIONS,
+    icon: FileText,
+    permission: PERMISSIONS.SELLER_CREDIT_APPLICATIONS_VIEW,
+  },
+]
+
+export const brokerMenu = [
+  {
+    key: ROUTES.BROKER_DASHBOARD,
+    label: 'Resumen',
+    path: ROUTES.BROKER_DASHBOARD,
+    icon: LayoutDashboard,
+    permission: PERMISSIONS.BROKER_DASHBOARD_VIEW,
+  },
+  {
+    key: ROUTES.BROKER_PROFILE,
+    label: 'Mi landing',
+    path: ROUTES.BROKER_PROFILE,
+    icon: BriefcaseBusiness,
+    permission: PERMISSIONS.BROKER_PROFILE_MANAGE,
+  },
+  {
+    key: ROUTES.BROKER_CREDIT_APPLICATIONS,
+    label: 'Solicitudes',
+    path: ROUTES.BROKER_CREDIT_APPLICATIONS,
+    icon: FileText,
+    permission: PERMISSIONS.BROKER_CREDIT_APPLICATIONS_MANAGE,
   },
 ]
 
@@ -160,6 +201,13 @@ export const adminMenu = [
     permission: PERMISSIONS.ADMIN_USERS_MANAGE,
   },
   {
+    key: ROUTES.ADMIN_CREDIT_APPLICATIONS,
+    label: 'Solicitudes',
+    path: ROUTES.ADMIN_CREDIT_APPLICATIONS,
+    icon: FileText,
+    permission: PERMISSIONS.ADMIN_CREDIT_APPLICATIONS_MANAGE,
+  },
+  {
     key: ROUTES.ADMIN_ORDERS,
     label: 'Ordenes',
     path: ROUTES.ADMIN_ORDERS,
@@ -185,5 +233,6 @@ export const adminMenu = [
 export const appMenuByArea = {
   customer: customerMenu,
   seller: sellerMenu,
+  broker: brokerMenu,
   admin: adminMenu,
 }
