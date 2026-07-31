@@ -2,6 +2,7 @@ import { Avatar, Badge, Button, Dropdown, Space } from 'antd'
 import { LogOut, ShoppingBag, User } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { ROLES } from '../../constants/roles'
 import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../hooks/useAuth'
 import { logout } from '../../store/slices/authSlice'
@@ -9,10 +10,10 @@ import { openCartDrawer, selectCartCount } from '../../store/slices/cartSlice'
 import { ButtonCart } from './style'
 
 const dashboardByRole = {
-  admin: ROUTES.ADMIN_DASHBOARD,
-  seller: ROUTES.SELLER_DASHBOARD,
-  customer: ROUTES.CUSTOMER_ORDERS,
-  broker: ROUTES.BROKER_DASHBOARD,
+  [ROLES.ADMIN.value]: ROUTES.ADMIN_DASHBOARD,
+  [ROLES.SELLER.value]: ROUTES.SELLER_DASHBOARD,
+  [ROLES.CUSTOMER.value]: ROUTES.CUSTOMER_ORDERS,
+  [ROLES.BROKER.value]: ROUTES.BROKER_PROFILE,
 }
 
 const UserActions = ({ compact = false, showAccount = true, showCart = true }) => {
