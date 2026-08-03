@@ -5,14 +5,16 @@ import { Link, useParams } from 'react-router-dom'
 import AgencyItemCard from '../../components/agency/AgencyItemCard'
 import CategorySlider from '../../components/catalog/CategorySlider'
 import CreditApplicationForm from '../../components/credit/CreditApplicationForm'
+import ExperienceCard from '../../components/experiences/ExperienceCard'
 import NewsletterSignup from '../../components/newsletter/NewsletterSignup'
 import StorefrontHero from '../../components/storefront/StorefrontHero'
 import StorefrontProductGrid from '../../components/storefront/StorefrontProductGrid'
 import StorefrontTrustStrip from '../../components/storefront/StorefrontTrustStrip'
-import { isAgencyBusiness } from '../../constants/businessTypes'
+import { isAgencyBusiness, isExperienceBusiness } from '../../constants/businessTypes'
 import { buildRoute, ROUTES } from '../../constants/routes'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 import { agencyItemService } from '../../services/agencyItemService'
+import { experienceService } from '../../services/experienceService'
 import { PageShell } from '../../styles/layoutStyles'
 import useStoreCategories from './hooks/useStoreCategories'
 import useStoreProducts from './hooks/useStoreProducts'
@@ -24,8 +26,11 @@ const StorefrontHomePage = () => {
   const resolutionMode = useSelector(state => state.storefront.resolutionMode)
   const activeStoreSlug = storeSlug || store?.slug
   const isAgencyStore = isAgencyBusiness(store?.businessType)
+  const isExperienceStore = isExperienceBusiness(store?.businessType)
   const [agencyItems, setAgencyItems] = useState([])
   const [agencyLoading, setAgencyLoading] = useState(false)
+  const [experiences, setExperiences] = useState([])
+  const [experiencesLoading, setExperiencesLoading] = useState(false)
   const productsPath = resolutionMode === 'host'
     ? '/products'
     : activeStoreSlug
@@ -42,8 +47,8 @@ const StorefrontHomePage = () => {
       ? buildRoute(ROUTES.STOREFRONT_OUTLET, { storeSlug: activeStoreSlug })
       : '/outlet'
   const productFilters = useMemo(() => ({ limit: 6 }), [])
-  const { products, loading } = useStoreProducts(isAgencyStore ? null : activeStoreSlug, productFilters)
-  const { categories } = useStoreCategories(isAgencyStore ? null : activeStoreSlug)
+  const { products, loading } = useStoreProducts(isAgencyStore || isExperienceStore ? null : activeStoreSlug, productFilters)
+  const { categories } = useStoreCategories(isAgencyStore || isExperienceStore ? null : activeStoreSlug)
 
   useEffect(() => {
     if (!isAgencyStore || !activeStoreSlug) {
@@ -59,7 +64,67 @@ const StorefrontHomePage = () => {
       .finally(() => setAgencyLoading(false))
   }, [activeStoreSlug, isAgencyStore])
 
+  useEffect(() => {
+    if (!isExperienceStore || !activeStoreSlug) {
+      setExperiences([])
+      return
+    }
+
+    setExperiencesLoading(true)
+
+    experienceService.listPublicByStore(activeStoreSlug, { limit: 8 })
+      .then(response => setExperiences(response.data || []))
+      .catch(() => setExperiences([]))
+      .finally(() => setExperiencesLoading(false))
+  }, [activeStoreSlug, isExperienceStore])
+
   if (!store) return null
+
+  if (isExperienceStore) {
+    return (
+      <>
+        <StorefrontHero store={store} />
+        <StorefrontTrustStrip />
+
+        <PageShell>
+          <Space direction="vertical" size={28} style={{ width: '100%' }}>
+            <section id="experiencias">
+              <Row align="middle" justify="space-between" gutter={[16, 16]}>
+                <Col>
+                  <Typography.Text type="secondary">Experiencias</Typography.Text>
+                  <Typography.Title level={3} style={{ margin: 0, letterSpacing: 0 }}>
+                    Disponibles en {store.name}
+                  </Typography.Title>
+                </Col>
+              </Row>
+
+              <div style={{ marginTop: 18 }}>
+                {experiencesLoading ? (
+                  <Spin />
+                ) : experiences.length ? (
+                  <Row gutter={[18, 18]}>
+                    {experiences.map(experience => (
+                      <Col xs={24} sm={12} lg={8} key={experience._id}>
+                        <ExperienceCard experience={experience} storeSlug={activeStoreSlug} />
+                      </Col>
+                    ))}
+                  </Row>
+                ) : (
+                  <Empty description="Aun no hay experiencias publicadas" />
+                )}
+              </div>
+            </section>
+
+            <NewsletterSignup
+              source="storefront"
+              store={store}
+              storeSlug={activeStoreSlug}
+            />
+          </Space>
+        </PageShell>
+      </>
+    )
+  }
 
   if (isAgencyStore) {
     return (

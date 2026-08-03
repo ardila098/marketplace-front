@@ -11,6 +11,10 @@ export const STORE_BUSINESS_TYPES = Object.freeze({
     value: 'real_estate_agency',
     label: 'Agencia inmobiliaria',
   },
+  EXPERIENCE_PROVIDER: {
+    value: 'experience_provider',
+    label: 'Experiencias y reservas',
+  },
 })
 
 export const STORE_BUSINESS_TYPE_OPTIONS = Object.freeze(
@@ -26,4 +30,10 @@ export const AGENCY_BUSINESS_TYPES = Object.freeze([
 ])
 
 export const isAgencyBusiness = businessType => AGENCY_BUSINESS_TYPES.includes(businessType)
+
+export const EXPERIENCE_BUSINESS_TYPES = Object.freeze([
+  STORE_BUSINESS_TYPES.EXPERIENCE_PROVIDER.value,
+])
+
+export const isExperienceBusiness = businessType => EXPERIENCE_BUSINESS_TYPES.includes(businessType)
 

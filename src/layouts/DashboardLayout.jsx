@@ -1,12 +1,14 @@
 import { Avatar, Button, Drawer, Grid, Layout, Menu, Space, Typography } from 'antd'
 import { Menu as MenuIcon } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import CartDrawer from '../components/cart/CartDrawer'
 import UserActions from '../components/navigation/UserActions'
-import { appMenuByArea } from '../constants/menu'
+import { appMenuByArea, getSellerMenuByBusinessType, sellerBaseMenu } from '../constants/menu'
+import { ROLES } from '../constants/roles'
 import { useAuth } from '../hooks/useAuth'
+import { storeService } from '../services/storeService'
 import { filterMenuByRole } from '../utils/permissions'
 
 const { Sider, Content, Header } = Layout
@@ -33,13 +35,51 @@ const DashboardLayout = ({ area }) => {
   const location = useLocation()
   const screens = useBreakpoint()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [sellerStore, setSellerStore] = useState(null)
+  const [sellerStoreLoaded, setSellerStoreLoaded] = useState(false)
   const { role, user } = useAuth()
 
-  const items = useMemo(() => filterMenuByRole(appMenuByArea[area] || [], role).map(item => ({
-    key: item.path,
-    icon: item.icon ? <item.icon size={18} /> : null,
-    label: <Link to={item.path}>{item.label}</Link>
-  })), [area, role])
+  useEffect(() => {
+    if (area !== 'seller' || Number(role) !== ROLES.SELLER.value) {
+      setSellerStore(null)
+      setSellerStoreLoaded(false)
+      return
+    }
+
+    let mounted = true
+    setSellerStoreLoaded(false)
+
+    storeService.getMyStore()
+      .then(response => {
+        if (mounted) setSellerStore(response.data || null)
+      })
+      .catch(() => {
+        if (mounted) setSellerStore(null)
+      })
+      .finally(() => {
+        if (mounted) setSellerStoreLoaded(true)
+      })
+
+    return () => {
+      mounted = false
+    }
+  }, [area, role])
+
+  const items = useMemo(() => {
+    let baseMenu = appMenuByArea[area] || []
+
+    if (area === 'seller') {
+      baseMenu = sellerStoreLoaded && sellerStore
+        ? getSellerMenuByBusinessType(sellerStore.businessType)
+        : sellerBaseMenu
+    }
+
+    return filterMenuByRole(baseMenu, role).map(item => ({
+      key: item.path,
+      icon: item.icon ? <item.icon size={18} /> : null,
+      label: <Link to={item.path}>{item.label}</Link>
+    }))
+  }, [area, role, sellerStore, sellerStoreLoaded])
 
   const menu = <DashboardMenu items={items} selectedKey={location.pathname} onClick={() => setDrawerOpen(false)} />
 

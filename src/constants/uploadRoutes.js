@@ -25,6 +25,9 @@ export const UPLOAD_FOLDERS = Object.freeze({
   agencyItems: {
     images: 'agency-items/images',
   },
+  experiences: {
+    images: 'experiences/images',
+  },
   brokers: {
     profileImages: 'brokers/profile-images',
   },
@@ -53,6 +56,9 @@ export const UPLOAD_ROUTES = Object.freeze({
   },
   agencyItems: {
     images: buildUploadRoute('/uploads/agency-items/images'),
+  },
+  experiences: {
+    images: buildUploadRoute('/uploads/experiences/images'),
   },
   brokers: {
     profileImages: buildUploadRoute('/uploads/brokers/profile-images'),

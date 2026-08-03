@@ -8,7 +8,7 @@ import CartDrawer from '../components/cart/CartDrawer'
 import SiteFooter from '../components/layout/SiteFooter'
 import UserActions from '../components/navigation/UserActions'
 import StorefrontSearchDrawer from '../components/storefront/StorefrontSearchDrawer'
-import { isAgencyBusiness } from '../constants/businessTypes'
+import { isAgencyBusiness, isExperienceBusiness } from '../constants/businessTypes'
 import { buildRoute, ROUTES } from '../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../hooks/useDictionaryTranslation'
@@ -150,11 +150,18 @@ const StorefrontLayout = () => {
   const storeTheme = buildStoreTheme(store)
   const logoUrl = getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
   const isAgencyStore = isAgencyBusiness(store?.businessType)
+  const isExperienceStore = isExperienceBusiness(store?.businessType)
+  const isNonCommerceStore = isAgencyStore || isExperienceStore
   const navLinks = isAgencyStore
     ? [
         { to: homePath, label: translate('home') },
         { to: `${homePath}#inventario`, label: 'Inventario' },
       ]
+    : isExperienceStore
+      ? [
+          { to: homePath, label: translate('home') },
+          { to: `${homePath}#experiencias`, label: 'Experiencias' },
+        ]
     : [
         { to: homePath, label: translate('home') },
         { to: productsPath, label: translate('products') },
@@ -186,17 +193,17 @@ const StorefrontLayout = () => {
                 {item.label}
               </NavLink>
             ))}
-            {!isAgencyStore && (
+            {!isNonCommerceStore && (
               <StorefrontSearchDrawer storeSlug={activeStoreSlug} resolutionMode={resolutionMode} />
             )}
-            <UserActions showCart={!isAgencyStore} />
+            <UserActions showCart={!isNonCommerceStore} />
           </DesktopNav>
 
           <MobileActions size={4}>
-            {!isAgencyStore && (
+            {!isNonCommerceStore && (
               <StorefrontSearchDrawer storeSlug={activeStoreSlug} resolutionMode={resolutionMode} />
             )}
-            <UserActions compact showAccount={false} showCart={!isAgencyStore} />
+            <UserActions compact showAccount={false} showCart={!isNonCommerceStore} />
           </MobileActions>
         </HeaderBar>
 
@@ -213,7 +220,7 @@ const StorefrontLayout = () => {
                 {item.label}
               </Link>
             ))}
-            <UserActions compact={false} showAccount showCart={!isAgencyStore} />
+            <UserActions compact={false} showAccount showCart={!isNonCommerceStore} />
           </DrawerContent>
         </Drawer>
 

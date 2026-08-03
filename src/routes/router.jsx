@@ -23,6 +23,9 @@ const StorefrontProductDetailPage = createLazyPage(
 const StorefrontAgencyItemDetailPage = createLazyPage(
   () => import('../pages/storefront/StorefrontAgencyItemDetailPage')
 )
+const StorefrontExperienceDetailPage = createLazyPage(
+  () => import('../pages/storefront/StorefrontExperienceDetailPage')
+)
 const StoresPage = createLazyPage(() => import('../pages/stores/StoresPage'))
 const BrokerPublicPage = createLazyPage(() => import('../pages/brokers/BrokerPublicPage'))
 
@@ -44,8 +47,11 @@ const SellerProductsPage = createLazyPage(
 )
 const AgencyItemsPage = createLazyPage(() => import('../pages/seller/AgencyItemsPage'))
 const AgencyLeadsPage = createLazyPage(() => import('../pages/agency/AgencyLeadsPage'))
+const ExperienceListingsPage = createLazyPage(() => import('../pages/seller/ExperienceListingsPage'))
+const ExperienceBookingsPage = createLazyPage(() => import('../pages/experiences/ExperienceBookingsPage'))
 const CouponsPage = createLazyPage(() => import('../pages/coupons/CouponsPage'))
 const CustomersPage = createLazyPage(() => import('../pages/customers/CustomersPage'))
+const CustomerContactsPage = createLazyPage(() => import('../pages/contacts/CustomerContactsPage'))
 const PayoutsPage = createLazyPage(() => import('../pages/payouts/PayoutsPage'))
 const CreditApplicationsPage = createLazyPage(() => import('../pages/creditApplications/CreditApplicationsPage'))
 const SellerOrdersPage = createLazyPage(() => import('../pages/orders/OrdersPage'))
@@ -101,6 +107,7 @@ export const router = createBrowserRouter([
               { path: '/outlet', element: <StorefrontProductsPage /> },
               { path: '/products/:productSlug', element: <StorefrontProductDetailPage /> },
               { path: '/agency-items/:itemSlug', element: <StorefrontAgencyItemDetailPage /> },
+              { path: '/experiences/:experienceSlug', element: <StorefrontExperienceDetailPage /> },
             ],
           },
         ],
@@ -119,6 +126,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.STOREFRONT_OUTLET, element: <StorefrontProductsPage /> },
           { path: ROUTES.STOREFRONT_PRODUCT_DETAIL, element: <StorefrontProductDetailPage /> },
           { path: ROUTES.STOREFRONT_AGENCY_ITEM_DETAIL, element: <StorefrontAgencyItemDetailPage /> },
+          { path: ROUTES.STOREFRONT_EXPERIENCE_DETAIL, element: <StorefrontExperienceDetailPage /> },
         ],
       },
     ],
@@ -147,6 +155,9 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_PRODUCTS, element: <SellerProductsPage /> },
           { path: ROUTES.SELLER_AGENCY_ITEMS, element: <AgencyItemsPage /> },
           { path: ROUTES.SELLER_AGENCY_LEADS, element: <AgencyLeadsPage /> },
+          { path: ROUTES.SELLER_EXPERIENCES, element: <ExperienceListingsPage /> },
+          { path: ROUTES.SELLER_EXPERIENCE_BOOKINGS, element: <ExperienceBookingsPage /> },
+          { path: ROUTES.SELLER_CONTACTS, element: <CustomerContactsPage /> },
           { path: ROUTES.SELLER_COUPONS, element: <CouponsPage /> },
           { path: ROUTES.SELLER_CUSTOMERS, element: <CustomersPage /> },
           { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> },
@@ -193,6 +204,8 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_STORES, element: <AdminStoresPage /> },
           { path: ROUTES.ADMIN_ADVISORS, element: <AdminAdvisorsPage /> },
           { path: ROUTES.ADMIN_AGENCY_LEADS, element: <AgencyLeadsPage /> },
+          { path: ROUTES.ADMIN_EXPERIENCE_BOOKINGS, element: <ExperienceBookingsPage /> },
+          { path: ROUTES.ADMIN_CONTACTS, element: <CustomerContactsPage /> },
           { path: ROUTES.ADMIN_VERTICALS, element: <AdminVerticalsPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },
           { path: ROUTES.ADMIN_CATEGORIES, element: <AdminCategoriesPage /> },

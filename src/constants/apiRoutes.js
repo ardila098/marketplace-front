@@ -71,6 +71,23 @@ export const API_ROUTES = {
     notes: id => `/agency-leads/${id}/notes`,
   },
 
+  contacts: {
+    base: '/contacts',
+  },
+
+  experiences: {
+    base: '/experiences',
+    byId: id => `/experiences/${id}`,
+    status: id => `/experiences/${id}/status`,
+    myStore: '/experiences/my-store',
+    admin: '/experiences/admin',
+    bookings: '/experiences/bookings',
+    bookingById: id => `/experiences/bookings/${id}`,
+    bookingNotes: id => `/experiences/bookings/${id}/notes`,
+    publicByStore: storeSlug => `/experiences/store/${storeSlug}`,
+    publicBySlug: (storeSlug, experienceSlug) => `/experiences/store/${storeSlug}/${experienceSlug}`,
+  },
+
   products: {
     base: '/products',
     myStoreProducts: '/products/my-store-products',

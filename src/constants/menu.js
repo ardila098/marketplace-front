@@ -3,6 +3,7 @@ import {
   Boxes,
   Tags,
   Brush,
+  CalendarCheck,
   Car,
   BriefcaseBusiness,
   ClipboardList,
@@ -18,7 +19,9 @@ import {
   Store,
   Wallet,
   Users,
+  Sparkles,
 } from 'lucide-react'
+import { isAgencyBusiness, isExperienceBusiness } from './businessTypes'
 import { PERMISSIONS } from './permissions'
 import { ROUTES } from './routes'
 
@@ -46,7 +49,7 @@ export const customerMenu = [
   },
 ]
 
-export const sellerMenu = [
+export const sellerBaseMenu = [
   {
     key: ROUTES.SELLER_DASHBOARD,
     label: 'Resumen',
@@ -68,26 +71,16 @@ export const sellerMenu = [
     icon: Brush,
     permission: PERMISSIONS.SELLER_DESIGN_MANAGE,
   },
+]
+
+const sellerRetailMenu = [
+  ...sellerBaseMenu,
   {
     key: ROUTES.SELLER_PRODUCTS,
     label: 'Productos',
     path: ROUTES.SELLER_PRODUCTS,
     icon: Package,
     permission: PERMISSIONS.SELLER_PRODUCTS_MANAGE,
-  },
-  {
-    key: ROUTES.SELLER_AGENCY_ITEMS,
-    label: 'Inventario agencia',
-    path: ROUTES.SELLER_AGENCY_ITEMS,
-    icon: Car,
-    permission: PERMISSIONS.SELLER_AGENCY_ITEMS_MANAGE,
-  },
-  {
-    key: ROUTES.SELLER_AGENCY_LEADS,
-    label: 'Leads agencia',
-    path: ROUTES.SELLER_AGENCY_LEADS,
-    icon: Users,
-    permission: PERMISSIONS.SELLER_AGENCY_LEADS_MANAGE,
   },
   {
     key: ROUTES.SELLER_COUPONS,
@@ -117,14 +110,80 @@ export const sellerMenu = [
     icon: Wallet,
     permission: PERMISSIONS.SELLER_PAYOUTS_VIEW,
   },
+]
+
+const sellerAgencyMenu = [
+  ...sellerBaseMenu,
+  {
+    key: ROUTES.SELLER_AGENCY_ITEMS,
+    label: 'Inventario agencia',
+    path: ROUTES.SELLER_AGENCY_ITEMS,
+    icon: Car,
+    permission: PERMISSIONS.SELLER_AGENCY_ITEMS_MANAGE,
+  },
+  {
+    key: ROUTES.SELLER_AGENCY_LEADS,
+    label: 'Leads agencia',
+    path: ROUTES.SELLER_AGENCY_LEADS,
+    icon: Users,
+    permission: PERMISSIONS.SELLER_AGENCY_LEADS_MANAGE,
+  },
+  {
+    key: ROUTES.SELLER_CONTACTS,
+    label: 'Contactos',
+    path: ROUTES.SELLER_CONTACTS,
+    icon: Mail,
+    permission: PERMISSIONS.SELLER_CONTACTS_VIEW,
+  },
   {
     key: ROUTES.SELLER_CREDIT_APPLICATIONS,
-    label: 'Solicitudes',
+    label: 'Solicitudes credito',
     path: ROUTES.SELLER_CREDIT_APPLICATIONS,
     icon: FileText,
     permission: PERMISSIONS.SELLER_CREDIT_APPLICATIONS_VIEW,
   },
 ]
+
+const sellerExperienceMenu = [
+  ...sellerBaseMenu,
+  {
+    key: ROUTES.SELLER_EXPERIENCES,
+    label: 'Experiencias',
+    path: ROUTES.SELLER_EXPERIENCES,
+    icon: Sparkles,
+    permission: PERMISSIONS.SELLER_EXPERIENCES_MANAGE,
+  },
+  {
+    key: ROUTES.SELLER_EXPERIENCE_BOOKINGS,
+    label: 'Reservas',
+    path: ROUTES.SELLER_EXPERIENCE_BOOKINGS,
+    icon: CalendarCheck,
+    permission: PERMISSIONS.SELLER_EXPERIENCE_BOOKINGS_MANAGE,
+  },
+  {
+    key: ROUTES.SELLER_CONTACTS,
+    label: 'Contactos',
+    path: ROUTES.SELLER_CONTACTS,
+    icon: Mail,
+    permission: PERMISSIONS.SELLER_CONTACTS_VIEW,
+  },
+  {
+    key: ROUTES.SELLER_CREDIT_APPLICATIONS,
+    label: 'Solicitudes credito',
+    path: ROUTES.SELLER_CREDIT_APPLICATIONS,
+    icon: FileText,
+    permission: PERMISSIONS.SELLER_CREDIT_APPLICATIONS_VIEW,
+  },
+]
+
+export const sellerMenu = sellerRetailMenu
+
+export const getSellerMenuByBusinessType = businessType => {
+  if (isAgencyBusiness(businessType)) return sellerAgencyMenu
+  if (isExperienceBusiness(businessType)) return sellerExperienceMenu
+
+  return sellerRetailMenu
+}
 
 export const brokerMenu = [
   {
@@ -202,6 +261,20 @@ export const adminMenu = [
     path: ROUTES.ADMIN_AGENCY_LEADS,
     icon: BriefcaseBusiness,
     permission: PERMISSIONS.ADMIN_AGENCY_LEADS_MANAGE,
+  },
+  {
+    key: ROUTES.ADMIN_EXPERIENCE_BOOKINGS,
+    label: 'Reservas',
+    path: ROUTES.ADMIN_EXPERIENCE_BOOKINGS,
+    icon: CalendarCheck,
+    permission: PERMISSIONS.ADMIN_EXPERIENCE_BOOKINGS_MANAGE,
+  },
+  {
+    key: ROUTES.ADMIN_CONTACTS,
+    label: 'Contactos',
+    path: ROUTES.ADMIN_CONTACTS,
+    icon: Mail,
+    permission: PERMISSIONS.ADMIN_CONTACTS_VIEW,
   },
   {
     key: ROUTES.ADMIN_VERTICALS,
