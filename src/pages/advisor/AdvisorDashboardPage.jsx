@@ -41,6 +41,8 @@ const AdvisorDashboardPage = () => {
       { key: 'paid', title: 'Pagado', value: data.paidAmount, type: 'money' },
       { key: 'outstanding', title: 'Total por recibir', value: data.outstandingAmount, type: 'money' },
       { key: 'outside', title: 'Fuera de marketplace', value: data.storesOutsideMarketplace },
+      { key: 'agencyLeads', title: 'Leads agencia', value: data.agencyLeads, description: `${data.newAgencyLeads || 0} nuevos` },
+      { key: 'agencyCommission', title: 'Comision potencial', value: data.potentialAgencyCommission, type: 'money' },
     ]
   }, [summary])
 

@@ -83,6 +83,13 @@ export const sellerMenu = [
     permission: PERMISSIONS.SELLER_AGENCY_ITEMS_MANAGE,
   },
   {
+    key: ROUTES.SELLER_AGENCY_LEADS,
+    label: 'Leads agencia',
+    path: ROUTES.SELLER_AGENCY_LEADS,
+    icon: Users,
+    permission: PERMISSIONS.SELLER_AGENCY_LEADS_MANAGE,
+  },
+  {
     key: ROUTES.SELLER_COUPONS,
     label: 'Cupones',
     path: ROUTES.SELLER_COUPONS,
@@ -188,6 +195,13 @@ export const adminMenu = [
     path: ROUTES.ADMIN_ADVISORS,
     icon: Users,
     permission: PERMISSIONS.ADMIN_USERS_MANAGE,
+  },
+  {
+    key: ROUTES.ADMIN_AGENCY_LEADS,
+    label: 'Leads agencia',
+    path: ROUTES.ADMIN_AGENCY_LEADS,
+    icon: BriefcaseBusiness,
+    permission: PERMISSIONS.ADMIN_AGENCY_LEADS_MANAGE,
   },
   {
     key: ROUTES.ADMIN_VERTICALS,

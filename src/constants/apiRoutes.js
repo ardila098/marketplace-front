@@ -65,6 +65,12 @@ export const API_ROUTES = {
     publicBySlug: (storeSlug, itemSlug) => `/agency-items/store/${storeSlug}/${itemSlug}`,
   },
 
+  agencyLeads: {
+    base: '/agency-leads',
+    byId: id => `/agency-leads/${id}`,
+    notes: id => `/agency-leads/${id}/notes`,
+  },
+
   products: {
     base: '/products',
     myStoreProducts: '/products/my-store-products',

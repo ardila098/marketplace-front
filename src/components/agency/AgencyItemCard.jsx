@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { MapPin } from 'lucide-react'
 import { Button, Space, Tag } from 'antd'
-import { getAgencyKindLabel } from '../../constants/agencyItems'
+import { getAgencyKindLabel, getAgencyStatusColor, getAgencyStatusLabel } from '../../constants/agencyItems'
 import { buildRoute, ROUTES } from '../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { currency } from '../../utils/formatters'
@@ -99,7 +99,12 @@ const AgencyItemCard = ({ item, storeSlug }) => {
 
       <Body>
         <Space direction="vertical" size={2} style={{ width: '100%' }}>
-          <Tag>{getAgencyKindLabel(item.kind)}</Tag>
+          <Space wrap size={6}>
+            <Tag>{getAgencyKindLabel(item.kind)}</Tag>
+            {item.status && (
+              <Tag color={getAgencyStatusColor(item.status)}>{getAgencyStatusLabel(item.status)}</Tag>
+            )}
+          </Space>
           <Title>{item.title}</Title>
           {item.city && (
             <Location>

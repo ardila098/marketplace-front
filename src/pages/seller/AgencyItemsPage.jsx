@@ -8,6 +8,7 @@ import {
   AGENCY_ITEM_STATUS,
   AGENCY_ITEM_STATUS_OPTIONS,
   getAgencyKindLabel,
+  getAgencyStatusColor,
   getAgencyStatusLabel,
 } from '../../constants/agencyItems'
 import { isAgencyBusiness, STORE_BUSINESS_TYPES } from '../../constants/businessTypes'
@@ -32,6 +33,8 @@ const getAllowedKinds = store => {
   return AGENCY_ITEM_KIND_OPTIONS.filter(option => option.value !== AGENCY_ITEM_KINDS.PROPERTY.value)
 }
 
+const formatDateInput = value => value ? String(value).slice(0, 10) : null
+
 const getFormValues = (item, store) => ({
   kind: item?.kind || getDefaultKind(store),
   title: item?.title,
@@ -39,13 +42,20 @@ const getFormValues = (item, store) => ({
   description: item?.description,
   price: item?.price,
   city: item?.city,
+  referenceCode: item?.referenceCode,
+  platformCommissionRate: item?.platformCommissionRate,
+  platformCommissionAmount: item?.platformCommissionAmount,
+  availabilityNotes: item?.availabilityNotes,
   images: item?.images || [],
   status: item?.status || AGENCY_ITEM_STATUS.DRAFT.value,
   isActive: item?.isActive !== false,
   contactName: item?.contactName,
   contactPhone: item?.contactPhone,
   ...(item?.vehicle || {}),
+  soatExpiresAt: formatDateInput(item?.vehicle?.soatExpiresAt),
+  technicalReviewExpiresAt: formatDateInput(item?.vehicle?.technicalReviewExpiresAt),
   ...(item?.property || {}),
+  availableFrom: formatDateInput(item?.property?.availableFrom),
 })
 
 const buildPayload = values => ({
@@ -55,6 +65,10 @@ const buildPayload = values => ({
   description: values.description,
   price: values.price,
   city: values.city,
+  referenceCode: values.referenceCode,
+  platformCommissionRate: values.platformCommissionRate,
+  platformCommissionAmount: values.platformCommissionAmount,
+  availabilityNotes: values.availabilityNotes,
   images: values.images || [],
   status: values.status,
   isActive: values.isActive,
@@ -63,6 +77,7 @@ const buildPayload = values => ({
   vehicle: {
     brand: values.brand,
     model: values.model,
+    version: values.version,
     year: values.year,
     mileageKm: values.mileageKm,
     transmission: values.transmission,
@@ -72,6 +87,11 @@ const buildPayload = values => ({
     color: values.color,
     condition: values.condition,
     plateEnding: values.plateEnding,
+    ownerType: values.ownerType,
+    acceptsTradeIn: values.acceptsTradeIn,
+    financingAvailable: values.financingAvailable,
+    soatExpiresAt: values.soatExpiresAt,
+    technicalReviewExpiresAt: values.technicalReviewExpiresAt,
   },
   property: {
     propertyType: values.propertyType,
@@ -81,8 +101,14 @@ const buildPayload = values => ({
     bathrooms: values.bathrooms,
     parkingSpaces: values.parkingSpaces,
     administrationFee: values.administrationFee,
+    stratum: values.stratum,
+    builtAreaM2: values.builtAreaM2,
+    floor: values.floor,
+    furnished: values.furnished,
     zone: values.zone,
+    neighborhood: values.neighborhood,
     address: values.address,
+    availableFrom: values.availableFrom,
   },
 })
 
@@ -199,7 +225,7 @@ const AgencyItemsPage = () => {
       title: 'Estado',
       render: (_, item) => (
         <Space>
-          <Tag color={item.status === AGENCY_ITEM_STATUS.PUBLISHED.value ? 'green' : 'default'}>
+          <Tag color={getAgencyStatusColor(item.status)}>
             {getAgencyStatusLabel(item.status)}
           </Tag>
           {!item.isActive && <Tag>Inactivo</Tag>}
@@ -268,6 +294,9 @@ const AgencyItemsPage = () => {
             isActive: true,
             condition: 'Usado',
             operationType: 'Venta',
+            acceptsTradeIn: false,
+            financingAvailable: false,
+            furnished: false,
           }}
           onFinish={handleSubmit}
         >
@@ -296,6 +325,22 @@ const AgencyItemsPage = () => {
             </Form.Item>
           </Space>
 
+          <Space size="middle" style={{ width: '100%' }} align="start">
+            <Form.Item label="Referencia interna" name="referenceCode" style={{ flex: 1 }}>
+              <Input placeholder="REF-001" />
+            </Form.Item>
+            <Form.Item label="Comision plataforma %" name="platformCommissionRate" style={{ flex: 1 }}>
+              <InputNumber min={0} max={100} style={{ width: '100%' }} />
+            </Form.Item>
+            <Form.Item label="Comision fija" name="platformCommissionAmount" style={{ flex: 1 }}>
+              <InputNumber min={0} style={{ width: '100%' }} />
+            </Form.Item>
+          </Space>
+
+          <Form.Item label="Notas de disponibilidad" name="availabilityNotes">
+            <Input.TextArea rows={2} placeholder="Disponible para visita, separado hasta tal fecha, etc." />
+          </Form.Item>
+
           <ImageUploadField
             label="Imagenes"
             name="images"
@@ -319,15 +364,18 @@ const AgencyItemsPage = () => {
                 <Form.Item label="Area m2" name="areaM2" style={{ flex: 1 }}>
                   <InputNumber min={0} style={{ width: '100%' }} />
                 </Form.Item>
-                <Form.Item label="Alcobas" name="bedrooms" style={{ flex: 1 }}>
+                <Form.Item label="Area construida" name="builtAreaM2" style={{ flex: 1 }}>
                   <InputNumber min={0} style={{ width: '100%' }} />
                 </Form.Item>
-                <Form.Item label="Banos" name="bathrooms" style={{ flex: 1 }}>
+                <Form.Item label="Alcobas" name="bedrooms" style={{ flex: 1 }}>
                   <InputNumber min={0} style={{ width: '100%' }} />
                 </Form.Item>
               </Space>
 
               <Space size="middle" style={{ width: '100%' }} align="start">
+                <Form.Item label="Banos" name="bathrooms" style={{ flex: 1 }}>
+                  <InputNumber min={0} style={{ width: '100%' }} />
+                </Form.Item>
                 <Form.Item label="Parqueaderos" name="parkingSpaces" style={{ flex: 1 }}>
                   <InputNumber min={0} style={{ width: '100%' }} />
                 </Form.Item>
@@ -336,13 +384,35 @@ const AgencyItemsPage = () => {
                 </Form.Item>
               </Space>
 
-              <Form.Item label="Zona" name="zone">
-                <Input />
-              </Form.Item>
+              <Space size="middle" style={{ width: '100%' }} align="start">
+                <Form.Item label="Estrato" name="stratum" style={{ flex: 1 }}>
+                  <InputNumber min={0} style={{ width: '100%' }} />
+                </Form.Item>
+                <Form.Item label="Piso" name="floor" style={{ flex: 1 }}>
+                  <InputNumber min={0} style={{ width: '100%' }} />
+                </Form.Item>
+                <Form.Item label="Amoblado" name="furnished" valuePropName="checked" style={{ flex: 1 }}>
+                  <Switch />
+                </Form.Item>
+              </Space>
 
-              <Form.Item label="Direccion" name="address">
-                <Input />
-              </Form.Item>
+              <Space size="middle" style={{ width: '100%' }} align="start">
+                <Form.Item label="Zona" name="zone" style={{ flex: 1 }}>
+                  <Input />
+                </Form.Item>
+                <Form.Item label="Barrio" name="neighborhood" style={{ flex: 1 }}>
+                  <Input />
+                </Form.Item>
+              </Space>
+
+              <Space size="middle" style={{ width: '100%' }} align="start">
+                <Form.Item label="Direccion" name="address" style={{ flex: 1 }}>
+                  <Input />
+                </Form.Item>
+                <Form.Item label="Disponible desde" name="availableFrom" style={{ flex: 1 }}>
+                  <Input placeholder="2026-08-02" />
+                </Form.Item>
+              </Space>
             </>
           ) : (
             <>
@@ -351,6 +421,9 @@ const AgencyItemsPage = () => {
                   <Input />
                 </Form.Item>
                 <Form.Item label="Modelo" name="model" style={{ flex: 1 }}>
+                  <Input />
+                </Form.Item>
+                <Form.Item label="Version" name="version" style={{ flex: 1 }}>
                   <Input />
                 </Form.Item>
               </Space>
@@ -391,6 +464,34 @@ const AgencyItemsPage = () => {
                 </Form.Item>
                 <Form.Item label="Terminacion placa" name="plateEnding" style={{ flex: 1 }}>
                   <Input />
+                </Form.Item>
+              </Space>
+
+              <Space size="middle" style={{ width: '100%' }} align="start">
+                <Form.Item label="Propietario" name="ownerType" style={{ flex: 1 }}>
+                  <Select
+                    allowClear
+                    options={[
+                      { label: 'Agencia', value: 'Agencia' },
+                      { label: 'Tercero consignado', value: 'Tercero consignado' },
+                      { label: 'Dueño directo', value: 'Dueno directo' },
+                    ]}
+                  />
+                </Form.Item>
+                <Form.Item label="SOAT vence" name="soatExpiresAt" style={{ flex: 1 }}>
+                  <Input placeholder="2026-08-02" />
+                </Form.Item>
+                <Form.Item label="Tecnomecanica vence" name="technicalReviewExpiresAt" style={{ flex: 1 }}>
+                  <Input placeholder="2026-08-02" />
+                </Form.Item>
+              </Space>
+
+              <Space size="middle" style={{ width: '100%' }} align="start">
+                <Form.Item label="Recibe permuta" name="acceptsTradeIn" valuePropName="checked" style={{ flex: 1 }}>
+                  <Switch />
+                </Form.Item>
+                <Form.Item label="Financiacion disponible" name="financingAvailable" valuePropName="checked" style={{ flex: 1 }}>
+                  <Switch />
                 </Form.Item>
               </Space>
             </>

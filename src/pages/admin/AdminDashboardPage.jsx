@@ -47,6 +47,8 @@ const AdminDashboardPage = () => {
       { key: 'received', title: 'Por recibir en plataforma', value: data.storeOrdersSentToPlatform },
       { key: 'payouts', title: 'Por liquidar a tiendas', value: summary?.payoutSummary?.pending?.totalAmount, type: 'money' },
       { key: 'credits', title: 'Leads de credito activos', value: data.activeCredits },
+      { key: 'agencyLeads', title: 'Leads agencia', value: data.agencyLeads, description: `${data.newAgencyLeads || 0} nuevos` },
+      { key: 'agencyItems', title: 'Inventario agencias', value: data.agencyItems, description: `${data.publishedAgencyItems || 0} publicados` },
     ]
   }, [summary])
 

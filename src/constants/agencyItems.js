@@ -24,14 +24,42 @@ export const AGENCY_ITEM_STATUS = Object.freeze({
   DRAFT: {
     value: 'draft',
     label: 'Borrador',
+    color: 'default',
   },
   PUBLISHED: {
     value: 'published',
     label: 'Publicado',
+    color: 'green',
+  },
+  RESERVED: {
+    value: 'reserved',
+    label: 'Reservado',
+    color: 'gold',
+  },
+  NEGOTIATION: {
+    value: 'negotiation',
+    label: 'En negociacion',
+    color: 'blue',
+  },
+  SOLD: {
+    value: 'sold',
+    label: 'Vendido',
+    color: 'purple',
+  },
+  PAUSED: {
+    value: 'paused',
+    label: 'Pausado',
+    color: 'orange',
+  },
+  REJECTED: {
+    value: 'rejected',
+    label: 'Rechazado',
+    color: 'red',
   },
   ARCHIVED: {
     value: 'archived',
     label: 'Archivado',
+    color: 'default',
   },
 })
 
@@ -50,3 +78,6 @@ export const getAgencyStatusLabel = value => {
   return Object.values(AGENCY_ITEM_STATUS).find(status => status.value === value)?.label || value
 }
 
+export const getAgencyStatusColor = value => {
+  return Object.values(AGENCY_ITEM_STATUS).find(status => status.value === value)?.color || 'default'
+}

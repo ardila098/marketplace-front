@@ -43,6 +43,7 @@ const SellerProductsPage = createLazyPage(
   () => import('../pages/seller/components/SellerProducts/SellerProductsPage')
 )
 const AgencyItemsPage = createLazyPage(() => import('../pages/seller/AgencyItemsPage'))
+const AgencyLeadsPage = createLazyPage(() => import('../pages/agency/AgencyLeadsPage'))
 const CouponsPage = createLazyPage(() => import('../pages/coupons/CouponsPage'))
 const CustomersPage = createLazyPage(() => import('../pages/customers/CustomersPage'))
 const PayoutsPage = createLazyPage(() => import('../pages/payouts/PayoutsPage'))
@@ -145,6 +146,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_DESIGN, element: <StoreDesignPage /> },
           { path: ROUTES.SELLER_PRODUCTS, element: <SellerProductsPage /> },
           { path: ROUTES.SELLER_AGENCY_ITEMS, element: <AgencyItemsPage /> },
+          { path: ROUTES.SELLER_AGENCY_LEADS, element: <AgencyLeadsPage /> },
           { path: ROUTES.SELLER_COUPONS, element: <CouponsPage /> },
           { path: ROUTES.SELLER_CUSTOMERS, element: <CustomersPage /> },
           { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> },
@@ -190,6 +192,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_DASHBOARD, element: <AdminDashboardPage /> },
           { path: ROUTES.ADMIN_STORES, element: <AdminStoresPage /> },
           { path: ROUTES.ADMIN_ADVISORS, element: <AdminAdvisorsPage /> },
+          { path: ROUTES.ADMIN_AGENCY_LEADS, element: <AgencyLeadsPage /> },
           { path: ROUTES.ADMIN_VERTICALS, element: <AdminVerticalsPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },
           { path: ROUTES.ADMIN_CATEGORIES, element: <AdminCategoriesPage /> },

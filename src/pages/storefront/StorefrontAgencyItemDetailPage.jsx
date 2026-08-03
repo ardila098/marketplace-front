@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import AgencyLeadForm from '../../components/agency/AgencyLeadForm'
 import CreditApplicationForm from '../../components/credit/CreditApplicationForm'
-import { AGENCY_ITEM_KINDS, getAgencyKindLabel } from '../../constants/agencyItems'
+import { AGENCY_ITEM_KINDS, getAgencyKindLabel, getAgencyStatusColor, getAgencyStatusLabel } from '../../constants/agencyItems'
 import { UPLOAD_ROUTES, getUploadUrl } from '../../constants/uploadRoutes'
 import { agencyItemService } from '../../services/agencyItemService'
 import { PageShell } from '../../styles/layoutStyles'
@@ -52,18 +53,25 @@ const getDetails = item => {
       ['Tipo', item.property?.propertyType],
       ['Operacion', item.property?.operationType],
       ['Area', item.property?.areaM2 ? `${item.property.areaM2} m2` : null],
+      ['Area construida', item.property?.builtAreaM2 ? `${item.property.builtAreaM2} m2` : null],
       ['Alcobas', item.property?.bedrooms],
       ['Banos', item.property?.bathrooms],
       ['Parqueaderos', item.property?.parkingSpaces],
       ['Administracion', item.property?.administrationFee ? currency(item.property.administrationFee) : null],
+      ['Estrato', item.property?.stratum],
+      ['Piso', item.property?.floor],
+      ['Amoblado', item.property?.furnished ? 'Si' : null],
       ['Zona', item.property?.zone],
+      ['Barrio', item.property?.neighborhood],
       ['Direccion', item.property?.address],
+      ['Disponible desde', item.property?.availableFrom ? new Date(item.property.availableFrom).toLocaleDateString('es-CO') : null],
     ]
   }
 
   return [
     ['Marca', item.vehicle?.brand],
     ['Modelo', item.vehicle?.model],
+    ['Version', item.vehicle?.version],
     ['Ano', item.vehicle?.year],
     ['Kilometraje', item.vehicle?.mileageKm ? `${item.vehicle.mileageKm.toLocaleString('es-CO')} km` : null],
     ['Transmision', item.vehicle?.transmission],
@@ -73,6 +81,11 @@ const getDetails = item => {
     ['Color', item.vehicle?.color],
     ['Estado', item.vehicle?.condition],
     ['Placa termina en', item.vehicle?.plateEnding],
+    ['Propietario', item.vehicle?.ownerType],
+    ['Recibe permuta', item.vehicle?.acceptsTradeIn ? 'Si' : null],
+    ['Financiacion disponible', item.vehicle?.financingAvailable ? 'Si' : null],
+    ['SOAT vence', item.vehicle?.soatExpiresAt ? new Date(item.vehicle.soatExpiresAt).toLocaleDateString('es-CO') : null],
+    ['Tecnomecanica vence', item.vehicle?.technicalReviewExpiresAt ? new Date(item.vehicle.technicalReviewExpiresAt).toLocaleDateString('es-CO') : null],
   ]
 }
 
@@ -153,7 +166,9 @@ const StorefrontAgencyItemDetailPage = () => {
             <Space direction="vertical" size={18} style={{ width: '100%' }}>
               <Space wrap>
                 <Tag>{getAgencyKindLabel(item.kind)}</Tag>
+                <Tag color={getAgencyStatusColor(item.status)}>{getAgencyStatusLabel(item.status)}</Tag>
                 {item.city && <Tag>{item.city}</Tag>}
+                {item.referenceCode && <Tag>Ref. {item.referenceCode}</Tag>}
               </Space>
 
               <div>
@@ -166,6 +181,12 @@ const StorefrontAgencyItemDetailPage = () => {
               {item.description && (
                 <Typography.Paragraph type="secondary" style={{ margin: 0 }}>
                   {item.description}
+                </Typography.Paragraph>
+              )}
+
+              {item.availabilityNotes && (
+                <Typography.Paragraph style={{ margin: 0 }}>
+                  {item.availabilityNotes}
                 </Typography.Paragraph>
               )}
 
@@ -188,6 +209,15 @@ const StorefrontAgencyItemDetailPage = () => {
               </Descriptions.Item>
             ))}
           </Descriptions>
+        </Col>
+
+        <Col xs={24}>
+          <AgencyLeadForm
+            item={item}
+            compact
+            title="Quieres que te contacten por este anuncio?"
+            subtitle={`Deja tus datos y ${store?.name || 'la agencia'} te contactara para continuar.`}
+          />
         </Col>
 
         {store?.assignedBroker && (

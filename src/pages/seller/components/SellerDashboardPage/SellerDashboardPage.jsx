@@ -47,6 +47,9 @@ const SellerDashboardPage = () => {
       { key: 'pendingProducts', title: 'Productos en revision', value: data.pendingProducts },
       { key: 'pendingPayout', title: 'Por liquidar', value: data.pendingPayoutAmount, type: 'money' },
       { key: 'leads', title: 'Leads de credito', value: data.creditLeads },
+      { key: 'agencyItems', title: 'Inventario agencia', value: data.agencyItems },
+      { key: 'agencyLeads', title: 'Leads agencia', value: data.agencyLeads, description: `${data.newAgencyLeads || 0} nuevos` },
+      { key: 'agencyCommission', title: 'Comision potencial', value: data.potentialAgencyCommission, type: 'money' },
     ]
   }, [summary])
 
