@@ -34,6 +34,20 @@ export const API_ROUTES = {
     me: '/brokers/me',
   },
 
+  advisors: {
+    admin: '/advisors/admin',
+    adminById: id => `/advisors/admin/${id}`,
+    summary: '/advisors/me/summary',
+    stores: '/advisors/me/stores',
+    pending: '/advisors/me/pending',
+    payouts: '/advisors/payouts',
+    payPayout: id => `/advisors/payouts/${id}/pay`,
+  },
+
+  dashboard: {
+    summary: '/dashboard',
+  },
+
   creditApplications: {
     base: '/credit-applications',
     status: id => `/credit-applications/${id}/status`,

@@ -42,10 +42,14 @@ export const ROUTES = {
   BROKER_PROFILE: '/broker/profile',
   BROKER_CREDIT_APPLICATIONS: '/broker/credit-applications',
 
-  
+  ADVISOR_DASHBOARD: '/advisor',
+  ADVISOR_STORES: '/advisor/stores',
+  ADVISOR_PAYOUTS: '/advisor/payouts',
+
 
   ADMIN_DASHBOARD: '/admin',
   ADMIN_STORES: '/admin/stores',
+  ADMIN_ADVISORS: '/admin/advisors',
   ADMIN_VERTICALS: '/admin/verticals',
   ADMIN_PRODUCTS: '/admin/products',
   ADMIN_CATEGORIES: '/admin/categories',

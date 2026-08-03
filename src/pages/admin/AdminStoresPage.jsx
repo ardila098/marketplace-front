@@ -1,8 +1,9 @@
-import { Button, Drawer, Form, Input, InputNumber, Select, Space, Switch, Table, Typography, message } from 'antd'
+import { Button, Drawer, Form, Input, InputNumber, Select, Space, Switch, Table, Tag, Typography, message } from 'antd'
 import { CheckOutlined, SettingOutlined } from '@ant-design/icons'
 import { useCallback, useEffect, useState } from 'react'
 import StatusTag from '../../components/common/StatusTag'
 import { STORE_BUSINESS_TYPE_OPTIONS, STORE_BUSINESS_TYPES } from '../../constants/businessTypes'
+import { advisorService } from '../../services/advisorService'
 import { brokerService } from '../../services/brokerService'
 import { storeService } from '../../services/storeService'
 
@@ -25,6 +26,8 @@ const getFormValues = store => ({
   businessType: store?.businessType || STORE_BUSINESS_TYPES.RETAIL.value,
   commissionRate: store?.commissionRate,
   assignedBroker: store?.assignedBroker?._id || store?.assignedBroker || undefined,
+  assignedAdvisor: store?.assignedAdvisor?._id || store?.assignedAdvisor || undefined,
+  marketplaceEnabled: store?.marketplaceEnabled !== false,
   isPublished: store?.storefront?.isPublished !== false,
   seoTitle: store?.storefront?.seoTitle,
   seoDescription: store?.storefront?.seoDescription,
@@ -36,6 +39,7 @@ const AdminStoresPage = () => {
   const [form] = Form.useForm()
   const [stores, setStores] = useState([])
   const [brokers, setBrokers] = useState([])
+  const [advisors, setAdvisors] = useState([])
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [selectedStore, setSelectedStore] = useState(null)
@@ -59,9 +63,18 @@ const AdminStoresPage = () => {
   }, [loadStores])
 
   useEffect(() => {
-    brokerService.adminList({ isActive: true })
-      .then(response => setBrokers(response.data || []))
-      .catch(() => setBrokers([]))
+    Promise.all([
+      brokerService.adminList({ isActive: true }),
+      advisorService.adminList({ isActive: true }),
+    ])
+      .then(([brokerResponse, advisorResponse]) => {
+        setBrokers(brokerResponse.data || [])
+        setAdvisors(advisorResponse.data || [])
+      })
+      .catch(() => {
+        setBrokers([])
+        setAdvisors([])
+      })
   }, [])
 
   const openSettings = store => {
@@ -96,6 +109,8 @@ const AdminStoresPage = () => {
         businessType: values.businessType,
         commissionRate: values.commissionRate,
         assignedBroker: values.assignedBroker || null,
+        assignedAdvisor: values.assignedAdvisor || null,
+        marketplaceEnabled: values.marketplaceEnabled,
       })
 
       await storeService.updateStorefront(selectedStore._id, {
@@ -159,6 +174,18 @@ const AdminStoresPage = () => {
       render: (_, store) => store.assignedBroker?.name || '-',
     },
     {
+      title: 'Asesor',
+      render: (_, store) => store.assignedAdvisor?.name || '-',
+    },
+    {
+      title: 'Marketplace',
+      render: (_, store) => (
+        <Tag color={store.marketplaceEnabled === false ? 'default' : 'green'}>
+          {store.marketplaceEnabled === false ? 'Oculta' : 'Visible'}
+        </Tag>
+      ),
+    },
+    {
       title: 'Comisión',
       render: (_, store) => `${store.commissionRate || 0}%`,
     },
@@ -213,7 +240,7 @@ const AdminStoresPage = () => {
         columns={columns}
         dataSource={stores}
         loading={loading}
-        scroll={{ x: 980 }}
+        scroll={{ x: 1180 }}
       />
 
       <Drawer
@@ -235,6 +262,10 @@ const AdminStoresPage = () => {
             <Switch />
           </Form.Item>
 
+          <Form.Item label="Visible en marketplace" name="marketplaceEnabled" valuePropName="checked">
+            <Switch />
+          </Form.Item>
+
           <Form.Item label="Tipo de negocio" name="businessType" rules={[{ required: true }]}>
             <Select options={STORE_BUSINESS_TYPE_OPTIONS} />
           </Form.Item>
@@ -250,6 +281,17 @@ const AdminStoresPage = () => {
               options={brokers.map(profile => ({
                 label: profile.displayName || profile.user?.name,
                 value: profile.user?._id || profile.user?.id || profile.user,
+              }))}
+            />
+          </Form.Item>
+
+          <Form.Item label="Asesor comercial" name="assignedAdvisor">
+            <Select
+              allowClear
+              placeholder="Sin asesor asignado"
+              options={advisors.map(item => ({
+                label: item.user?.name || item.profile?.user?.name || 'Asesor',
+                value: item.user?._id || item.user?.id || item.profile?.user?._id,
               }))}
             />
           </Form.Item>

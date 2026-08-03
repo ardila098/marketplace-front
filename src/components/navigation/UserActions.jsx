@@ -14,6 +14,7 @@ const dashboardByRole = {
   [ROLES.SELLER.value]: ROUTES.SELLER_DASHBOARD,
   [ROLES.CUSTOMER.value]: ROUTES.CUSTOMER_ORDERS,
   [ROLES.BROKER.value]: ROUTES.BROKER_PROFILE,
+  [ROLES.ADVISOR.value]: ROUTES.ADVISOR_DASHBOARD,
 }
 
 const UserActions = ({ compact = false, showAccount = true, showCart = true }) => {

@@ -55,6 +55,7 @@ const SellerProductManagePage = createLazyPage(
 
 const AdminDashboardPage = createLazyPage(() => import('../pages/admin/AdminDashboardPage'))
 const AdminStoresPage = createLazyPage(() => import('../pages/admin/AdminStoresPage'))
+const AdminAdvisorsPage = createLazyPage(() => import('../pages/admin/AdminAdvisorsPage'))
 const AdminVerticalsPage = createLazyPage(() => import('../pages/admin/AdminVerticalsPage'))
 const AdminProductsPage = createLazyPage(() => import('../pages/admin/AdminProductsPage'))
 const AdminCategoriesPage = createLazyPage(() => import('../pages/admin/AdminCategoriesPage'))
@@ -63,6 +64,9 @@ const AdminSettingsPage = createLazyPage(() => import('../pages/admin/AdminSetti
 const AdminOrdersPage = createLazyPage(() => import('../pages/orders/OrdersPage'))
 const BrokerDashboardPage = createLazyPage(() => import('../pages/broker/BrokerDashboardPage'))
 const BrokerProfilePage = createLazyPage(() => import('../pages/broker/BrokerProfilePage'))
+const AdvisorDashboardPage = createLazyPage(() => import('../pages/advisor/AdvisorDashboardPage'))
+const AdvisorStoresPage = createLazyPage(() => import('../pages/advisor/AdvisorStoresPage'))
+const AdvisorPayoutsPage = createLazyPage(() => import('../pages/advisor/AdvisorPayoutsPage'))
 
 const UnauthorizedPage = createLazyPage(() => import('../pages/system/UnauthorizedPage'))
 
@@ -165,6 +169,19 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    element: <ProtectedRoute roles={[ROLES.ADVISOR.value]} />,
+    children: [
+      {
+        element: <DashboardLayout area="advisor" />,
+        children: [
+          { path: ROUTES.ADVISOR_DASHBOARD, element: <AdvisorDashboardPage /> },
+          { path: ROUTES.ADVISOR_STORES, element: <AdvisorStoresPage /> },
+          { path: ROUTES.ADVISOR_PAYOUTS, element: <AdvisorPayoutsPage /> },
+        ],
+      },
+    ],
+  },
+  {
     element: <ProtectedRoute roles={[ROLES.ADMIN.value]} />,
     children: [
       {
@@ -172,6 +189,7 @@ export const router = createBrowserRouter([
         children: [
           { path: ROUTES.ADMIN_DASHBOARD, element: <AdminDashboardPage /> },
           { path: ROUTES.ADMIN_STORES, element: <AdminStoresPage /> },
+          { path: ROUTES.ADMIN_ADVISORS, element: <AdminAdvisorsPage /> },
           { path: ROUTES.ADMIN_VERTICALS, element: <AdminVerticalsPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },
           { path: ROUTES.ADMIN_CATEGORIES, element: <AdminCategoriesPage /> },

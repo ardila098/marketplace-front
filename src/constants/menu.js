@@ -143,6 +143,30 @@ export const brokerMenu = [
   },
 ]
 
+export const advisorMenu = [
+  {
+    key: ROUTES.ADVISOR_DASHBOARD,
+    label: 'Resumen',
+    path: ROUTES.ADVISOR_DASHBOARD,
+    icon: LayoutDashboard,
+    permission: PERMISSIONS.ADVISOR_DASHBOARD_VIEW,
+  },
+  {
+    key: ROUTES.ADVISOR_STORES,
+    label: 'Negocios',
+    path: ROUTES.ADVISOR_STORES,
+    icon: Store,
+    permission: PERMISSIONS.ADVISOR_STORES_VIEW,
+  },
+  {
+    key: ROUTES.ADVISOR_PAYOUTS,
+    label: 'Comisiones',
+    path: ROUTES.ADVISOR_PAYOUTS,
+    icon: Wallet,
+    permission: PERMISSIONS.ADVISOR_PAYOUTS_VIEW,
+  },
+]
+
 export const adminMenu = [
   {
     key: ROUTES.ADMIN_DASHBOARD,
@@ -157,6 +181,13 @@ export const adminMenu = [
     path: ROUTES.ADMIN_STORES,
     icon: Store,
     permission: PERMISSIONS.ADMIN_STORES_MANAGE,
+  },
+  {
+    key: ROUTES.ADMIN_ADVISORS,
+    label: 'Asesores',
+    path: ROUTES.ADMIN_ADVISORS,
+    icon: Users,
+    permission: PERMISSIONS.ADMIN_USERS_MANAGE,
   },
   {
     key: ROUTES.ADMIN_VERTICALS,
@@ -234,5 +265,6 @@ export const appMenuByArea = {
   customer: customerMenu,
   seller: sellerMenu,
   broker: brokerMenu,
+  advisor: advisorMenu,
   admin: adminMenu,
 }
