@@ -38,7 +38,7 @@ const ItemDetailsContainer = () => {
           </GalleryColumn>
 
           <InfoColumn>
-            <ItemInfo item={purchase.selectedReference || dataItem} />
+            <ItemInfo item={dataItem} selectedReference={purchase.selectedReference} />
             <ItemPucharse item={dataItem} purchase={purchase} />
             <ProductTabs product={dataItem} />
           </InfoColumn>

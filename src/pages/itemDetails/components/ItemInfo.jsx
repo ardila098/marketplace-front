@@ -2,13 +2,14 @@ import { formatPrice } from '../../../helpers/formatPrice'
 import {
   getItemCompareAtPrice,
   getItemDiscountPercentage,
+  getItemLabel,
 } from '../../../helpers/catalogProduct'
 
 import {
   ProductHeader,
-  StoreText,
   ProductTitle,
   CategoryText,
+  ReferenceText,
   PriceRow,
   PriceText,
   ComparePrice,
@@ -16,21 +17,25 @@ import {
   Description,
 } from '../styles/styles'
 
-const ItemInfo = ({ item }) => {
-  const compareAtPrice = getItemCompareAtPrice(item)
-  const discountPercentage = getItemDiscountPercentage(item)
-  const hasDiscount = compareAtPrice > item?.price
+const ItemInfo = ({ item, selectedReference }) => {
+  const displayItem = selectedReference || item
+  const compareAtPrice = getItemCompareAtPrice(displayItem)
+  const discountPercentage = getItemDiscountPercentage(displayItem)
+  const hasDiscount = compareAtPrice > displayItem?.price
+  const referenceLabel = selectedReference?._id !== item?._id
+    ? getItemLabel(selectedReference)
+    : ''
 
   return (
     <ProductHeader>
-      <StoreText>{item?.store?.name}</StoreText>
-
       <ProductTitle>{item?.name}</ProductTitle>
 
       <CategoryText>{item?.category?.name}</CategoryText>
 
+      {referenceLabel && <ReferenceText>{referenceLabel}</ReferenceText>}
+
       <PriceRow>
-        <PriceText>{formatPrice(item?.price)}</PriceText>
+        <PriceText>{formatPrice(displayItem?.price)}</PriceText>
 
         {hasDiscount && <ComparePrice>{formatPrice(compareAtPrice)}</ComparePrice>}
       </PriceRow>

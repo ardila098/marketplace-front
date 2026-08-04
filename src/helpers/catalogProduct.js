@@ -19,5 +19,22 @@ export const getItemDiscountPercentage = item => {
 }
 
 export const getItemLabel = item => {
-  return item?.referenceName || item?.name
+  return item?.variantReference || item?.referenceName || item?.sku || item?.name
+}
+
+export const getItemAttributesLabel = attributes => {
+  if (!Array.isArray(attributes)) return ''
+
+  return attributes
+    .map(attribute => {
+      if (!attribute) return ''
+      if (typeof attribute === 'string') return attribute
+
+      const label = attribute.labelSnapshot || attribute.label || attribute.name || attribute.key
+      const value = attribute.valueSnapshot || attribute.value || attribute.option
+
+      return [label, value].filter(Boolean).join(': ')
+    })
+    .filter(Boolean)
+    .join(' / ')
 }

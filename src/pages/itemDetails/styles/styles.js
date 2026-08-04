@@ -119,6 +119,13 @@ export const CategoryText = styled.div`
   margin-bottom: 18px;
 `
 
+export const ReferenceText = styled.div`
+  color: #111111;
+  font-size: 0.9rem;
+  font-weight: 620;
+  margin-bottom: 10px;
+`
+
 export const PriceRow = styled.div`
   display: flex;
   align-items: baseline;

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import { Star } from 'lucide-react'
+import { getItemAttributesLabel, getItemLabel } from '../../../helpers/catalogProduct'
 
 const TabsContainer = styled.div`
   margin-top: 48px;
@@ -41,6 +42,38 @@ const TabContent = styled.div`
   padding: 8px 0;
   line-height: 1.6;
   color: #4b5563;
+`
+
+const DescriptionText = styled.p`
+  margin: 0;
+  font-size: 15px;
+  white-space: pre-line;
+`
+
+const VariantList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+`
+
+const VariantItem = styled.div`
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #ffffff;
+`
+
+const VariantName = styled.div`
+  color: #111827;
+  font-size: 14px;
+  font-weight: 620;
+`
+
+const VariantMeta = styled.div`
+  color: #6b7280;
+  font-size: 13px;
+  margin-top: 3px;
 `
 
 const SpecsTable = styled.table`
@@ -117,6 +150,7 @@ const ReviewComment = styled.p`
 
 const ProductTabs = ({ product }) => {
   const [activeTab, setActiveTab] = useState('description')
+  const variants = product?.variants || []
 
   // Normalizar specs
   const specs = product?.specs ? Object.entries(product.specs) : []
@@ -172,9 +206,31 @@ const ProductTabs = ({ product }) => {
       <TabContent>
         {activeTab === 'description' && (
           <div>
-            <p style={{ margin: 0, fontSize: '15px', whiteSpace: 'pre-line' }}>
+            <DescriptionText>
               {product?.description || 'No hay descripción disponible para este producto.'}
-            </p>
+            </DescriptionText>
+
+            {!!variants.length && (
+              <VariantList>
+                {variants.map((variant, index) => {
+                  const name = variant.name || getItemLabel(variant) || `Variante ${index + 1}`
+                  const reference = getItemLabel(variant)
+                  const attributes = getItemAttributesLabel(variant.attributes)
+
+                  return (
+                    <VariantItem key={variant._id || `${name}-${index}`}>
+                      <VariantName>{name}</VariantName>
+
+                      {reference && reference !== name && (
+                        <VariantMeta>Referencia: {reference}</VariantMeta>
+                      )}
+
+                      {attributes && <VariantMeta>{attributes}</VariantMeta>}
+                    </VariantItem>
+                  )
+                })}
+              </VariantList>
+            )}
           </div>
         )}
 
@@ -185,6 +241,12 @@ const ProductTabs = ({ product }) => {
                 <tr key={key}>
                   <td className="label">{key}</td>
                   <td className="value">{val}</td>
+                </tr>
+              ))}
+              {variants.map((variant, index) => (
+                <tr key={variant._id || `variant-spec-${index}`}>
+                  <td className="label">Variante {index + 1}</td>
+                  <td className="value">{variant.name || getItemLabel(variant) || '-'}</td>
                 </tr>
               ))}
             </tbody>

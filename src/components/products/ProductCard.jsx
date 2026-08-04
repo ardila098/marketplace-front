@@ -4,6 +4,7 @@ import { buildRoute, ROUTES } from '../../constants/routes'
 import { currency } from '../../utils/formatters'
 import { useSelector } from 'react-redux'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
+import { getItemLabel } from '../../helpers/catalogProduct'
 
 import {
   ProductImageLink,
@@ -48,6 +49,8 @@ const ProductCard = ({ product, storeSlug }) => {
 
   const selectedItem = previews.find(item => getItemId(item) === selectedItemId) || defaultSelectedItem
   const selectedItemKey = getItemId(selectedItem)
+  const selectedItemLabel = getItemLabel(selectedItem)
+  const shouldShowItemLabel = selectedItemLabel && selectedItemLabel !== product.name
   const mainImage = getImage(selectedItem) || getImage(product) || getImage(product?.variants?.[0])
   const price = selectedItem?.price || product.minPrice || product.variants?.[0]?.price || product.price || 0
   const compareAtPrice = selectedItem?.compareAtPrice || product.compareAtPrice || 0
@@ -82,7 +85,7 @@ const ProductCard = ({ product, storeSlug }) => {
       <ProductInfo>
         <ProductName>{product.name}</ProductName>
 
-        <ProductMeta>{product.store?.name || product.category}</ProductMeta>
+        {shouldShowItemLabel && <ProductMeta>{selectedItemLabel}</ProductMeta>}
 
         <PriceRow>
           <ProductPrice>{currency(price)}</ProductPrice>
@@ -106,13 +109,13 @@ const ProductCard = ({ product, storeSlug }) => {
                   key={key}
                   type="button"
                   $active={itemId === selectedItemKey}
-                  title={variant.referenceName || variant.name || product.name}
+                  title={getItemLabel(variant) || product.name}
                   onClick={() => setSelectedItemId(itemId)}
                 >
                   {image ? (
                     <PreviewImage
                       src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
-                      alt={variant.referenceName || variant.name || product.name}
+                      alt={getItemLabel(variant) || product.name}
                     />
                   ) : (
                     <Dot
