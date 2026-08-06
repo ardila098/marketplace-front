@@ -1,9 +1,11 @@
 import { AtSign, Mail, MapPin, Phone } from 'lucide-react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { env } from '../../config/env'
 import { buildRoute, ROUTES } from '../../constants/routes'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
+import { selectPlatformSettings } from '../../store/slices/platformSlice'
 
 const Footer = styled.footer`
   border-top: 1px solid rgba(17, 24, 39, 0.08);
@@ -100,11 +102,15 @@ const buildStorePaths = ({ store, resolutionMode }) => {
 
 const SiteFooter = ({ store, resolutionMode }) => {
   const { translate } = useDictionaryTranslation()
+  const platformSettings = useSelector(selectPlatformSettings)
   const contact = store?.settings?.contact || {}
-  const brand = store?.name || env.appName || 'Marketplace'
+  const brand = store?.name || platformSettings.name || env.appName || 'Marketplace'
   const paths = store ? buildStorePaths({ store, resolutionMode }) : null
   const currentYear = new Date().getFullYear()
-  const description = store?.description || translate('footer.marketplaceDescription')
+  const description =
+    store?.description ||
+    platformSettings.footer?.description ||
+    translate('footer.marketplaceDescription')
   const instagramUrl = contact.instagram?.startsWith('http')
     ? contact.instagram
     : contact.instagram

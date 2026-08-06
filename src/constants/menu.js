@@ -341,7 +341,7 @@ export const adminMenu = [
   },
   {
     key: ROUTES.ADMIN_SETTINGS,
-    label: 'Configuracion',
+    label: 'Plataforma',
     path: ROUTES.ADMIN_SETTINGS,
     icon: Settings,
     permission: PERMISSIONS.ADMIN_SETTINGS_MANAGE,

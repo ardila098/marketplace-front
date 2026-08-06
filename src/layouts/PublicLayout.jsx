@@ -6,8 +6,9 @@ import CartDrawer from '../components/cart/CartDrawer'
 import SiteFooter from '../components/layout/SiteFooter'
 import ResponsivePublicMenu from '../components/navigation/ResponsivePublicMenu'
 import UserActions from '../components/navigation/UserActions'
-import { env } from '../config/env'
 import { ROUTES } from '../constants/routes'
+import { getUploadUrl, UPLOAD_ROUTES } from '../constants/uploadRoutes'
+import { selectPlatformSettings } from '../store/slices/platformSlice'
 import StorefrontLayout from './StorefrontLayout'
 
 const { Header, Content } = Layout
@@ -38,11 +39,23 @@ const Brand = styled(Link)`
   letter-spacing: 0;
   font-size: 18px;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+`
+
+const BrandLogo = styled.img`
+  width: auto;
+  max-width: 138px;
+  max-height: 38px;
+  object-fit: contain;
 `
 
 const PublicLayout = () => {
   const location = useLocation()
   const { currentStore, resolutionMode } = useSelector(state => state.storefront)
+  const platformSettings = useSelector(selectPlatformSettings)
+  const logoUrl = getUploadUrl(UPLOAD_ROUTES.platform.logos, platformSettings.logo)
   const isCustomDomainHome = location.pathname === '/' && currentStore && resolutionMode === 'host'
   const isCustomDomainStorePath =
     currentStore &&
@@ -65,7 +78,13 @@ const PublicLayout = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <HeaderBar>
-        <Brand to={ROUTES.HOME}>{env.appName || 'Marketplace'}</Brand>
+        <Brand to={ROUTES.HOME}>
+          {logoUrl ? (
+            <BrandLogo src={logoUrl} alt={platformSettings.name || 'Marketplace'} />
+          ) : (
+            platformSettings.name || 'Marketplace'
+          )}
+        </Brand>
         <ResponsivePublicMenu />
         <UserActions />
       </HeaderBar>

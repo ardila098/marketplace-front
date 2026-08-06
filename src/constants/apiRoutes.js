@@ -11,6 +11,10 @@ export const API_ROUTES = {
     byId: id => `/users/${id}`,
   },
 
+  platform: {
+    settings: '/platform/settings',
+  },
+
   stores: {
     base: '/stores',
     byId: id => `/stores/${id}`,

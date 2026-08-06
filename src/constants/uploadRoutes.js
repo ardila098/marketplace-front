@@ -14,6 +14,10 @@ export const UPLOAD_FOLDERS = Object.freeze({
     logos: 'stores/logos',
     banners: 'stores/banners',
   },
+  platform: {
+    logos: 'platform/logos',
+    banners: 'platform/banners',
+  },
   verticals: {
     icons: 'verticals/icons',
     banners: 'verticals/banners',
@@ -44,6 +48,10 @@ export const UPLOAD_ROUTES = Object.freeze({
   stores: {
     logos: buildUploadRoute('/uploads/stores/logos'),
     banners: buildUploadRoute('/uploads/stores/banners'),
+  },
+  platform: {
+    logos: buildUploadRoute('/uploads/platform/logos'),
+    banners: buildUploadRoute('/uploads/platform/banners'),
   },
   verticals: {
     icons: buildUploadRoute('/uploads/verticals/icons'),
