@@ -263,6 +263,7 @@ export const enDictionary = {
   'orders.detail.shipping': 'Customer shipping',
   'orders.detail.shippingFlow': 'Shipping flow',
   'orders.detail.platformShippingFlow': 'The platform receives store products and handles final shipping to the customer.',
+  'orders.detail.storeShippingFlow': 'The store handles dispatch and delivery to the customer.',
   'orders.detail.noShippingInfo': 'No shipping data',
   'orders.detail.noStoreInfo': 'No store data',
   'orders.detail.finance': 'Finance',

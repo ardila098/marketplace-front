@@ -58,6 +58,7 @@ const ShipmentsPage = () => {
   const [trackingForm] = Form.useForm()
   const user = useSelector(state => state.auth.user)
   const isCourier = Number(user?.role) === ROLES.COURIER.value
+  const isSeller = Number(user?.role) === ROLES.SELLER.value
   const [shipments, setShipments] = useState([])
   const [couriers, setCouriers] = useState([])
   const [summary, setSummary] = useState(null)
@@ -96,12 +97,14 @@ const ShipmentsPage = () => {
     if (isCourier) return
 
     try {
-      const response = await userService.list({ role: ROLES.COURIER.value, isActive: true })
+      const response = isSeller
+        ? await shippingService.listStoreCouriers({ isActive: true })
+        : await userService.list({ role: ROLES.COURIER.value, isActive: true })
       setCouriers(response.data || [])
     } catch (error) {
       setCouriers([])
     }
-  }, [isCourier])
+  }, [isCourier, isSeller])
 
   useEffect(() => {
     loadShipments()
@@ -142,7 +145,9 @@ const ShipmentsPage = () => {
   const openAssignModal = shipment => {
     setAssigningShipment(shipment)
     assignForm.setFieldsValue({
-      courier: shipment.courier?._id || shipment.courier || undefined,
+      courier: isSeller
+        ? shipment.storeCourier?._id || shipment.storeCourier || undefined
+        : shipment.courier?._id || shipment.courier || undefined,
       courierPayoutAmount: shipment.courierPayoutAmount,
     })
   }
@@ -151,7 +156,11 @@ const ShipmentsPage = () => {
     setSavingId(assigningShipment._id)
 
     try {
-      await shippingService.assignCourier(assigningShipment._id, values)
+      const payload = isSeller
+        ? { ...values, storeCourier: values.courier }
+        : values
+
+      await shippingService.assignCourier(assigningShipment._id, payload)
       message.success('Mensajero asignado')
       setAssigningShipment(null)
       assignForm.resetFields()
@@ -210,6 +219,9 @@ const ShipmentsPage = () => {
         <Space direction="vertical" size={0}>
           <Typography.Text strong>{shipment.shipmentNumber}</Typography.Text>
           <Typography.Text type="secondary">{shipment.orderNumber}</Typography.Text>
+          {shipment.storeOrderNumber && (
+            <Typography.Text type="secondary">{shipment.storeOrderNumber}</Typography.Text>
+          )}
           {shipment.trackingNumber && (
             shipment.trackingUrl ? (
               <Typography.Link href={shipment.trackingUrl} target="_blank" rel="noreferrer">
@@ -245,7 +257,12 @@ const ShipmentsPage = () => {
     {
       title: 'Tipo',
       render: (_, shipment) => (
-        <Tag>{shipment.method === 'local_courier' ? 'Local' : 'Nacional'}</Tag>
+        <Space direction="vertical" size={4}>
+          <Tag>{shipment.method === 'local_courier' ? 'Local' : 'Nacional'}</Tag>
+          <Tag color={shipment.salesChannel === 'storefront' ? 'blue' : 'default'}>
+            {shipment.salesChannel === 'storefront' ? 'Tienda' : 'Marketplace'}
+          </Tag>
+        </Space>
       ),
     },
     {
@@ -263,7 +280,13 @@ const ShipmentsPage = () => {
     },
     {
       title: 'Mensajero',
-      render: (_, shipment) => shipment.courier?.name || shipment.courierName || '-',
+      render: (_, shipment) => (
+        shipment.storeCourier?.name ||
+        shipment.storeCourierName ||
+        shipment.courier?.name ||
+        shipment.courierName ||
+        '-'
+      ),
     },
     {
       title: 'Estado',
@@ -321,12 +344,14 @@ const ShipmentsPage = () => {
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
       <div>
         <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-          {isCourier ? 'Mis envios' : 'Envios'}
+          {isCourier ? 'Mis envios' : isSeller ? 'Envios de mi tienda' : 'Envios'}
         </Typography.Title>
         <Typography.Text type="secondary">
           {isCourier
             ? 'Gestiona las entregas que tienes asignadas.'
-            : 'Asigna mensajeros locales y controla el estado de cada despacho.'}
+            : isSeller
+              ? 'Asigna mensajeros propios o registra guias nacionales para las compras de tu tienda.'
+              : 'Asigna mensajeros locales y controla el estado de cada despacho.'}
         </Typography.Text>
       </div>
 
@@ -380,7 +405,7 @@ const ShipmentsPage = () => {
           >
             <Select
               options={couriers.map(courier => ({
-                label: `${courier.name} - ${courier.email}`,
+                label: `${courier.name}${courier.email ? ` - ${courier.email}` : ''}`,
                 value: courier._id,
               }))}
             />

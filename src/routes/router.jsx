@@ -71,6 +71,7 @@ const AdminUsersPage = createLazyPage(() => import('../pages/admin/AdminUsersPag
 const AdminSettingsPage = createLazyPage(() => import('../pages/admin/AdminSettingsPage'))
 const AdminOrdersPage = createLazyPage(() => import('../pages/orders/OrdersPage'))
 const ShipmentsPage = createLazyPage(() => import('../pages/shipping/ShipmentsPage'))
+const StoreCouriersPage = createLazyPage(() => import('../pages/shipping/StoreCouriersPage'))
 const ReturnsPage = createLazyPage(() => import('../pages/returns/ReturnsPage'))
 const BrokerDashboardPage = createLazyPage(() => import('../pages/broker/BrokerDashboardPage'))
 const BrokerProfilePage = createLazyPage(() => import('../pages/broker/BrokerProfilePage'))
@@ -165,6 +166,8 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_COUPONS, element: <CouponsPage /> },
           { path: ROUTES.SELLER_CUSTOMERS, element: <CustomersPage /> },
           { path: ROUTES.SELLER_ORDERS, element: <SellerOrdersPage /> },
+          { path: ROUTES.SELLER_SHIPMENTS, element: <ShipmentsPage /> },
+          { path: ROUTES.SELLER_COURIERS, element: <StoreCouriersPage /> },
           { path: ROUTES.SELLER_PAYOUTS, element: <PayoutsPage /> },
           { path: ROUTES.SELLER_CREDIT_APPLICATIONS, element: <CreditApplicationsPage /> },
           { path: ROUTES.SELLER_PRODUCTS_MANAGE, element: <SellerProductManagePage /> },

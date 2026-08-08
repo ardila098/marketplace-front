@@ -13,6 +13,21 @@ export const shippingService = {
     return normalizeListResponse(response)
   },
 
+  listStoreCouriers: async params => {
+    const response = await DataService.get(API_ROUTES.shipping.storeCouriers, params)
+    return normalizeListResponse(response)
+  },
+
+  createStoreCourier: async payload => {
+    const response = await DataService.post(API_ROUTES.shipping.storeCouriers, payload)
+    return normalizeItemResponse(response, 'Mensajero creado correctamente')
+  },
+
+  updateStoreCourier: async (id, payload) => {
+    const response = await DataService.patch(API_ROUTES.shipping.storeCourierById(id), payload)
+    return normalizeItemResponse(response, 'Mensajero actualizado correctamente')
+  },
+
   getCourierSummary: async () => {
     const response = await DataService.get(API_ROUTES.shipping.courierSummary)
     return normalizeItemResponse(response)

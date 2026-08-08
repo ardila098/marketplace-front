@@ -263,6 +263,7 @@ export const esDictionary = {
   'orders.detail.shipping': 'Envio al cliente',
   'orders.detail.shippingFlow': 'Flujo de envio',
   'orders.detail.platformShippingFlow': 'La plataforma recibe los productos de la tienda y realiza el envio final al cliente.',
+  'orders.detail.storeShippingFlow': 'La tienda gestiona el despacho y la entrega al cliente.',
   'orders.detail.noShippingInfo': 'No hay datos de envio',
   'orders.detail.noStoreInfo': 'No hay datos de tienda',
   'orders.detail.finance': 'Finanzas',

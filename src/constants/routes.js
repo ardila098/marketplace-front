@@ -40,6 +40,8 @@ export const ROUTES = {
   SELLER_COUPONS: '/seller/coupons',
   SELLER_CUSTOMERS: '/seller/customers',
   SELLER_ORDERS: '/seller/orders',
+  SELLER_SHIPMENTS: '/seller/shipments',
+  SELLER_COURIERS: '/seller/couriers',
   SELLER_PAYOUTS: '/seller/payouts',
   SELLER_CREDIT_APPLICATIONS: '/seller/credit-applications',
   SELLER_PRODUCTS_MANAGE: '/seller/products/:id/manage',

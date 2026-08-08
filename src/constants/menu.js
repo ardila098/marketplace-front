@@ -106,6 +106,20 @@ const sellerRetailMenu = [
     permission: PERMISSIONS.SELLER_ORDERS_VIEW,
   },
   {
+    key: ROUTES.SELLER_SHIPMENTS,
+    label: 'Envios',
+    path: ROUTES.SELLER_SHIPMENTS,
+    icon: Truck,
+    permission: PERMISSIONS.SELLER_SHIPMENTS_MANAGE,
+  },
+  {
+    key: ROUTES.SELLER_COURIERS,
+    label: 'Mensajeros',
+    path: ROUTES.SELLER_COURIERS,
+    icon: Users,
+    permission: PERMISSIONS.SELLER_COURIERS_MANAGE,
+  },
+  {
     key: ROUTES.SELLER_PAYOUTS,
     label: 'Liquidaciones',
     path: ROUTES.SELLER_PAYOUTS,

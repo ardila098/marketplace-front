@@ -24,12 +24,13 @@ import StoreOrdersPanel from './StoreOrdersPanel'
 
 const canSellerSendToPlatform = storeOrder => {
   const isPaid = storeOrder?.order?.paymentStatus === PAYMENT_STATUS.APPROVED.value
+  const isStoreManaged = storeOrder?.shippingManagedBy === 'store'
   const isPendingDispatch = [
     STORE_ORDER_STATUS.PENDING.value,
     STORE_ORDER_STATUS.PREPARING.value,
   ].includes(storeOrder?.status)
 
-  return isPaid && isPendingDispatch
+  return isPaid && isPendingDispatch && !isStoreManaged
 }
 
 const OrdersDetails = () => {
@@ -52,6 +53,7 @@ const OrdersDetails = () => {
   const storeOrder = isSeller ? order : null
   const customer = parentOrder?.customer || {}
   const sellerCanSend = canSellerSendToPlatform(storeOrder)
+  const sellerStoreManaged = storeOrder?.shippingManagedBy === 'store'
   const detailTitle = isSeller
     ? storeOrder?.storeOrderNumber
     : parentOrder?.orderNumber
@@ -183,7 +185,7 @@ const OrdersDetails = () => {
               statuses={statuses}
               onBack={() => navigate(-1)}
             >
-              {isSeller && (
+              {isSeller && !sellerStoreManaged && (
                 <Button
                   type="primary"
                   icon={<SendOutlined />}
@@ -217,7 +219,9 @@ const OrdersDetails = () => {
                       { label: translate('orders.detail.store'), value: getStoreName(storeOrder) },
                       {
                         label: translate('orders.detail.shippingFlow'),
-                        value: translate('orders.detail.platformShippingFlow'),
+                        value: sellerStoreManaged
+                          ? translate('orders.detail.storeShippingFlow')
+                          : translate('orders.detail.platformShippingFlow'),
                       },
                     ]}
                     emptyText={translate('orders.detail.noStoreInfo')}

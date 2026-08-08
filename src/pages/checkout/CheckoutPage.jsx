@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import { PAYMENT_METHODS } from '../../constants/orderConstants'
+import { PAYMENT_METHODS, SALES_CHANNEL } from '../../constants/orderConstants'
 import { ROUTES } from '../../constants/routes'
 import { formatPrice } from '../../helpers/formatPrice'
 import {
@@ -40,6 +40,8 @@ import {
 } from './styles'
 
 const getCreatedOrder = response => response?.data?.data || response?.data || response || null
+const getStoreId = store => store?._id || store || null
+const getCartItemStoreId = item => getStoreId(item.product?.store)
 
 const CheckoutPage = () => {
   const [form] = Form.useForm()
@@ -50,6 +52,7 @@ const CheckoutPage = () => {
   const discount = useSelector(selectCartDiscount)
   const total = useSelector(selectCartTotal)
   const couponCode = useSelector(selectCartCouponCode)
+  const currentStore = useSelector(state => state.storefront.currentStore)
   const submitting = useSelector(selectCheckoutSubmitting)
   const department = Form.useWatch(['shippingAddress', 'department'], form)
   const city = Form.useWatch(['shippingAddress', 'city'], form)
@@ -60,6 +63,15 @@ const CheckoutPage = () => {
     () => total + Number(shippingQuote?.total || 0),
     [shippingQuote, total]
   )
+  const storefrontCheckout = useMemo(() => {
+    const storeId = getStoreId(currentStore)
+
+    return Boolean(
+      storeId &&
+      items.length &&
+      items.every(item => String(getCartItemStoreId(item)) === String(storeId))
+    )
+  }, [currentStore, items])
 
   useEffect(() => {
     const cleanDepartment = String(department || '').trim()
@@ -95,7 +107,17 @@ const CheckoutPage = () => {
 
   const handleSubmit = async values => {
     try {
-      const response = await dispatch(createOrderFromCart(values)).unwrap()
+      const payload = storefrontCheckout
+        ? {
+            ...values,
+            salesChannel: SALES_CHANNEL.STOREFRONT.value,
+            sourceStore: getStoreId(currentStore),
+          }
+        : {
+            ...values,
+            salesChannel: SALES_CHANNEL.MARKETPLACE.value,
+          }
+      const response = await dispatch(createOrderFromCart(payload)).unwrap()
       const createdOrder = getCreatedOrder(response)
       const reference = createdOrder?.paymentReference
       const paymentUrl = createdOrder?.paymentCheckout?.paymentUrl || createdOrder?.paymentUrl

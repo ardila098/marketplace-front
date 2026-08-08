@@ -32,12 +32,13 @@ import {
 
 const canMarkSentToPlatform = storeOrder => {
   const isPaid = getStoreOrderPaymentStatus(storeOrder) === PAYMENT_STATUS.APPROVED.value
+  const isStoreManaged = storeOrder?.shippingManagedBy === 'store'
   const isPendingDispatch = [
     STORE_ORDER_STATUS.PENDING.value,
     STORE_ORDER_STATUS.PREPARING.value,
   ].includes(storeOrder?.status)
 
-  return isPaid && isPendingDispatch
+  return isPaid && isPendingDispatch && !isStoreManaged
 }
 
 const SellerOrdersView = () => {
@@ -134,6 +135,7 @@ const SellerOrdersView = () => {
       title: translate('orders.table.actions'),
       align: 'right',
       render: (_, storeOrder) => {
+        const isStoreManaged = storeOrder?.shippingManagedBy === 'store'
         const canSend = canMarkSentToPlatform(storeOrder)
         const sendTooltip = canSend
           ? translate('orders.actions.markSent')
@@ -150,19 +152,21 @@ const SellerOrdersView = () => {
               </Button>
             </Tooltip>
 
-            <Tooltip title={sendTooltip}>
-              <span>
-                <Button
-                  type="primary"
-                  icon={<SendOutlined />}
-                  disabled={!canSend}
-                  loading={actionLoadingId === storeOrder._id}
-                  onClick={() => handleMarkSent(storeOrder)}
-                >
-                  {translate('orders.actions.send')}
-                </Button>
-              </span>
-            </Tooltip>
+            {!isStoreManaged && (
+              <Tooltip title={sendTooltip}>
+                <span>
+                  <Button
+                    type="primary"
+                    icon={<SendOutlined />}
+                    disabled={!canSend}
+                    loading={actionLoadingId === storeOrder._id}
+                    onClick={() => handleMarkSent(storeOrder)}
+                  >
+                    {translate('orders.actions.send')}
+                  </Button>
+                </span>
+              </Tooltip>
+            )}
           </ActionGroup>
         )
       },

@@ -175,6 +175,8 @@ export const API_ROUTES = {
   shipping: {
     quote: '/shipping/quote',
     shipments: '/shipping/shipments',
+    storeCouriers: '/shipping/store-couriers',
+    storeCourierById: id => `/shipping/store-couriers/${id}`,
     courierSummary: '/shipping/courier/summary',
     assignCourier: id => `/shipping/shipments/${id}/assign`,
     updateStatus: id => `/shipping/shipments/${id}/status`,

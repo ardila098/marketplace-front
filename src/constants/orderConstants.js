@@ -95,9 +95,28 @@ export const STORE_ORDER_STATUS = Object.freeze({
     value: 'received_by_platform',
     labelKey: 'orders.status.receivedByPlatform',
   },
+  SHIPPED: {
+    value: 'shipped',
+    labelKey: 'orders.status.shipped',
+  },
+  DELIVERED: {
+    value: 'delivered',
+    labelKey: 'orders.status.delivered',
+  },
   CANCELLED: {
     value: 'cancelled',
     labelKey: 'orders.status.cancelled',
+  },
+})
+
+export const SALES_CHANNEL = Object.freeze({
+  MARKETPLACE: {
+    value: 'marketplace',
+    label: 'Marketplace',
+  },
+  STOREFRONT: {
+    value: 'storefront',
+    label: 'Tienda',
   },
 })
 
@@ -128,3 +147,4 @@ export const FULFILLMENT_STATUS_VALUES = values(FULFILLMENT_STATUS)
 export const PAYMENT_METHOD_VALUES = values(PAYMENT_METHODS)
 export const STORE_ORDER_STATUS_VALUES = values(STORE_ORDER_STATUS)
 export const PAYOUT_STATUS_VALUES = values(PAYOUT_STATUS)
+export const SALES_CHANNEL_VALUES = values(SALES_CHANNEL)
