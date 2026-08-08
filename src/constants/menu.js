@@ -20,6 +20,8 @@ import {
   Wallet,
   Users,
   Sparkles,
+  RotateCcw,
+  Truck,
 } from 'lucide-react'
 import { isAgencyBusiness, isExperienceBusiness } from './businessTypes'
 import { PERMISSIONS } from './permissions'
@@ -333,6 +335,20 @@ export const adminMenu = [
     permission: PERMISSIONS.ADMIN_USERS_MANAGE,
   },
   {
+    key: ROUTES.ADMIN_SHIPMENTS,
+    label: 'Envios',
+    path: ROUTES.ADMIN_SHIPMENTS,
+    icon: Truck,
+    permission: PERMISSIONS.ADMIN_SHIPMENTS_MANAGE,
+  },
+  {
+    key: ROUTES.ADMIN_RETURNS,
+    label: 'Reclamos',
+    path: ROUTES.ADMIN_RETURNS,
+    icon: RotateCcw,
+    permission: PERMISSIONS.ADMIN_RETURNS_MANAGE,
+  },
+  {
     key: ROUTES.ADMIN_PAYOUTS,
     label: 'Liquidaciones',
     path: ROUTES.ADMIN_PAYOUTS,
@@ -348,10 +364,21 @@ export const adminMenu = [
   },
 ]
 
+export const courierMenu = [
+  {
+    key: ROUTES.COURIER_SHIPMENTS,
+    label: 'Mis envios',
+    path: ROUTES.COURIER_SHIPMENTS,
+    icon: Truck,
+    permission: PERMISSIONS.COURIER_SHIPMENTS_MANAGE,
+  },
+]
+
 export const appMenuByArea = {
   customer: customerMenu,
   seller: sellerMenu,
   broker: brokerMenu,
   advisor: advisorMenu,
   admin: adminMenu,
+  courier: courierMenu,
 }

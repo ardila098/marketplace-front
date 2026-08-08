@@ -19,6 +19,7 @@ export const ROUTES = {
   STOREFRONT_EXPERIENCE_DETAIL: '/stores/:storeSlug/experiences/:experienceSlug',
   BROKER_PUBLIC_PROFILE: '/brokers/:slug',
   ORDER_LOOKUP: '/order-lookup',
+  RETURN_REQUEST: '/returns',
   ORDER_DETAIL: '/orderDetail/:id',
 
 
@@ -64,10 +65,14 @@ export const ROUTES = {
   ADMIN_USERS: '/admin/users',
   ADMIN_SETTINGS: '/admin/settings',
   ADMIN_ORDERS: '/admin/orders',
+  ADMIN_SHIPMENTS: '/admin/shipments',
+  ADMIN_RETURNS: '/admin/returns',
   ADMIN_PAYOUTS: '/admin/payouts',
   ADMIN_COUPONS: '/admin/coupons',
   ADMIN_CUSTOMERS: '/admin/customers',
   ADMIN_CREDIT_APPLICATIONS: '/admin/credit-applications',
+
+  COURIER_SHIPMENTS: '/courier/shipments',
 
 }
 

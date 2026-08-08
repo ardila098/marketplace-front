@@ -34,6 +34,7 @@ const CheckoutPage = createLazyPage(() => import('../pages/checkout/CheckoutPage
 const CheckoutResultPage = createLazyPage(() => import('../pages/checkout/CheckoutResultPage'))
 const OrdersPage = createLazyPage(() => import('../pages/customer/OrdersPage'))
 const OrdersLookupPage = createLazyPage(() => import('../pages/orders/components/OrderLookupPage'))
+const ReturnRequestPage = createLazyPage(() => import('../pages/returns/ReturnRequestPage'))
 
 const VerticalsPage = createLazyPage(() => import('../pages/verticals/VerticalsPage'))
 const VerticalPage = createLazyPage(() => import('../pages/vertical/VerticalPage'))
@@ -69,6 +70,8 @@ const AdminCategoriesPage = createLazyPage(() => import('../pages/admin/AdminCat
 const AdminUsersPage = createLazyPage(() => import('../pages/admin/AdminUsersPage'))
 const AdminSettingsPage = createLazyPage(() => import('../pages/admin/AdminSettingsPage'))
 const AdminOrdersPage = createLazyPage(() => import('../pages/orders/OrdersPage'))
+const ShipmentsPage = createLazyPage(() => import('../pages/shipping/ShipmentsPage'))
+const ReturnsPage = createLazyPage(() => import('../pages/returns/ReturnsPage'))
 const BrokerDashboardPage = createLazyPage(() => import('../pages/broker/BrokerDashboardPage'))
 const BrokerProfilePage = createLazyPage(() => import('../pages/broker/BrokerProfilePage'))
 const AdvisorDashboardPage = createLazyPage(() => import('../pages/advisor/AdvisorDashboardPage'))
@@ -95,6 +98,7 @@ export const router = createBrowserRouter([
       { path: ROUTES.CHECKOUT, element: <CheckoutPage /> },
       { path: ROUTES.CHECKOUT_RESULT, element: <CheckoutResultPage /> },
       { path: ROUTES.ORDER_LOOKUP, element: <OrdersLookupPage /> },
+      { path: ROUTES.RETURN_REQUEST, element: <ReturnRequestPage /> },
       { path: ROUTES.ORDER_DETAIL, element: <OrderDetailPage /> },
       {
         element: <StorefrontRoute />,
@@ -213,9 +217,22 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_CUSTOMERS, element: <CustomersPage /> },
           { path: ROUTES.ADMIN_USERS, element: <AdminUsersPage /> },
           { path: ROUTES.ADMIN_ORDERS, element: <AdminOrdersPage /> },
+          { path: ROUTES.ADMIN_SHIPMENTS, element: <ShipmentsPage /> },
+          { path: ROUTES.ADMIN_RETURNS, element: <ReturnsPage /> },
           { path: ROUTES.ADMIN_PAYOUTS, element: <PayoutsPage /> },
           { path: ROUTES.ADMIN_CREDIT_APPLICATIONS, element: <CreditApplicationsPage /> },
           { path: ROUTES.ADMIN_SETTINGS, element: <AdminSettingsPage /> },
+        ],
+      },
+    ],
+  },
+  {
+    element: <ProtectedRoute roles={[ROLES.COURIER.value]} />,
+    children: [
+      {
+        element: <DashboardLayout area="courier" />,
+        children: [
+          { path: ROUTES.COURIER_SHIPMENTS, element: <ShipmentsPage /> },
         ],
       },
     ],

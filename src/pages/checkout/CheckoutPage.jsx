@@ -1,4 +1,5 @@
-import { Button, Empty, Form, Input, message } from 'antd'
+import { Alert, Button, Empty, Form, Input, message } from 'antd'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -23,6 +24,7 @@ import {
   resetCheckoutState,
   selectCheckoutSubmitting,
 } from '../../store/slices/checkoutSlice'
+import { shippingService } from '../../services/shippingService'
 import {
   CheckoutContainer,
   CheckoutTitle,
@@ -49,6 +51,47 @@ const CheckoutPage = () => {
   const total = useSelector(selectCartTotal)
   const couponCode = useSelector(selectCartCouponCode)
   const submitting = useSelector(selectCheckoutSubmitting)
+  const department = Form.useWatch(['shippingAddress', 'department'], form)
+  const city = Form.useWatch(['shippingAddress', 'city'], form)
+  const [shippingQuote, setShippingQuote] = useState(null)
+  const [shippingError, setShippingError] = useState('')
+  const [quotingShipping, setQuotingShipping] = useState(false)
+  const finalTotal = useMemo(
+    () => total + Number(shippingQuote?.total || 0),
+    [shippingQuote, total]
+  )
+
+  useEffect(() => {
+    const cleanDepartment = String(department || '').trim()
+    const cleanCity = String(city || '').trim()
+
+    if (!cleanDepartment || !cleanCity) {
+      setShippingQuote(null)
+      setShippingError('')
+      return undefined
+    }
+
+    const timeout = window.setTimeout(async () => {
+      setQuotingShipping(true)
+      setShippingError('')
+
+      try {
+        const response = await shippingService.quote({
+          department: cleanDepartment,
+          city: cleanCity,
+        })
+
+        setShippingQuote(response.data)
+      } catch (error) {
+        setShippingQuote(null)
+        setShippingError(error?.message || 'No se pudo cotizar el envio')
+      } finally {
+        setQuotingShipping(false)
+      }
+    }, 450)
+
+    return () => window.clearTimeout(timeout)
+  }, [city, department])
 
   const handleSubmit = async values => {
     try {
@@ -178,7 +221,23 @@ const CheckoutPage = () => {
               <Input.TextArea rows={3} placeholder="Apartamento, indicaciones, horarios, etc." />
             </Form.Item>
 
-            <Button type="primary" htmlType="submit" size="large" block loading={submitting}>
+            {shippingError && (
+              <Alert
+                type="warning"
+                showIcon
+                message={shippingError}
+                style={{ marginBottom: 16 }}
+              />
+            )}
+
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="large"
+              block
+              loading={submitting}
+              disabled={!shippingQuote || quotingShipping}
+            >
               Pagar con Wompi
             </Button>
           </Form>
@@ -220,8 +279,23 @@ const CheckoutPage = () => {
           )}
 
           <SummaryTotal>
+            <span>Envio</span>
+            <span>
+              {quotingShipping
+                ? 'Cotizando...'
+                : shippingQuote
+                  ? formatPrice(shippingQuote.total)
+                  : 'Por cotizar'}
+            </span>
+          </SummaryTotal>
+
+          {shippingQuote?.label && (
+            <SummaryItemMeta>{shippingQuote.label}</SummaryItemMeta>
+          )}
+
+          <SummaryTotal>
             <span>Total</span>
-            <span>{formatPrice(total)}</span>
+            <span>{formatPrice(finalTotal)}</span>
           </SummaryTotal>
         </CheckoutSummaryCard>
       </CheckoutLayout>

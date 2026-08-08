@@ -171,4 +171,20 @@ export const API_ROUTES = {
   checkout: {
     base: '/checkout',
   },
+
+  shipping: {
+    quote: '/shipping/quote',
+    shipments: '/shipping/shipments',
+    courierSummary: '/shipping/courier/summary',
+    assignCourier: id => `/shipping/shipments/${id}/assign`,
+    updateStatus: id => `/shipping/shipments/${id}/status`,
+    markCourierPaid: id => `/shipping/shipments/${id}/courier-paid`,
+    updateTracking: id => `/shipping/shipments/${id}/tracking`,
+  },
+
+  returns: {
+    base: '/returns',
+    byId: id => `/returns/${id}`,
+    notes: id => `/returns/${id}/notes`,
+  },
 }
