@@ -88,7 +88,7 @@ const ShipmentsPage = () => {
     try {
       const response = await shippingService.getCourierSummary()
       setSummary(response.data)
-    } catch (error) {
+    } catch {
       setSummary(null)
     }
   }, [])
@@ -101,7 +101,7 @@ const ShipmentsPage = () => {
         ? await shippingService.listStoreCouriers({ isActive: true })
         : await userService.list({ role: ROLES.COURIER.value, isActive: true })
       setCouriers(response.data || [])
-    } catch (error) {
+    } catch {
       setCouriers([])
     }
   }, [isCourier, isSeller])

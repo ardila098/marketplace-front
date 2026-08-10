@@ -89,7 +89,7 @@ const AdminUsersPage = () => {
     setModalOpen(true)
   }
 
-  const openEditModal = user => {
+  const openEditModal = useCallback(user => {
     setEditingUser(user)
     form.setFieldsValue({
       name: user.name,
@@ -100,7 +100,7 @@ const AdminUsersPage = () => {
       password: '',
     })
     setModalOpen(true)
-  }
+  }, [form])
 
   const closeModal = () => {
     setModalOpen(false)
@@ -187,7 +187,7 @@ const AdminUsersPage = () => {
         />
       ),
     },
-  ], [])
+  ], [openEditModal])
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>

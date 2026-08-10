@@ -1,5 +1,5 @@
 import { Button, Descriptions, Result, Spin, Space, Typography } from 'antd'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 
 import StatusTag from '../../components/common/StatusTag'
@@ -44,21 +44,25 @@ const CheckoutResultPage = () => {
   const [loading, setLoading] = useState(true)
   const [order, setOrder] = useState(null)
   const [error, setError] = useState(null)
+  const pollingAttempts = useRef(0)
   const reference = searchParams.get('reference') || sessionStorage.getItem('lastCheckoutReference')
   const transactionId =
     searchParams.get('transactionId') ||
     searchParams.get('transaction_id') ||
     searchParams.get('id')
 
-  const loadResult = useCallback(async () => {
+  const loadResult = useCallback(async ({ silent = false } = {}) => {
     if (!reference && !transactionId) {
       setOrder(null)
       setError(new Error('Referencia de pago no disponible'))
       setLoading(false)
-      return
+      return null
     }
 
-    setLoading(true)
+    if (!silent) {
+      setLoading(true)
+    }
+
     setError(null)
 
     try {
@@ -67,17 +71,47 @@ const CheckoutResultPage = () => {
         transactionId,
       })
 
-      setOrder(response.data)
+      const nextOrder = response.data
+
+      setOrder(nextOrder)
+
+      return nextOrder
     } catch (err) {
       setError(err)
       setOrder(null)
+
+      return null
     } finally {
-      setLoading(false)
+      if (!silent) {
+        setLoading(false)
+      }
     }
   }, [reference, transactionId])
 
   useEffect(() => {
-    loadResult()
+    let timeoutId
+    let cancelled = false
+
+    const syncResult = async ({ silent = false } = {}) => {
+      const nextOrder = await loadResult({ silent })
+
+      if (
+        !cancelled &&
+        nextOrder?.paymentStatus === PAYMENT_STATUS.PENDING.value &&
+        pollingAttempts.current < 4
+      ) {
+        pollingAttempts.current += 1
+        timeoutId = window.setTimeout(() => syncResult({ silent: true }), 3000)
+      }
+    }
+
+    pollingAttempts.current = 0
+    syncResult()
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(timeoutId)
+    }
   }, [loadResult])
 
   const resultConfig = useMemo(

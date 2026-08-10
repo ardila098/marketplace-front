@@ -9,7 +9,7 @@ const priorityColor = {
   low: 'default',
 }
 
-export const formatDashboardValue = (value, type) => {
+const formatDashboardValue = (value, type) => {
   if (type === 'money') return currency(value)
   return Number(value || 0)
 }
