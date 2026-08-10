@@ -45,7 +45,11 @@ const StorefrontProductDetailPage = () => {
               </InfoColumn>
             </ProductLayout>
 
-            <RelatedItems data={relatedProducts} storeSlug={activeStoreSlug} />
+            <RelatedItems
+              data={relatedProducts}
+              storeSlug={activeStoreSlug}
+              currentProduct={product}
+            />
           </>
         )}
       </Spin>

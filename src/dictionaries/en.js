@@ -179,6 +179,7 @@ export const enDictionary = {
   'products.form.newProduct': 'New product',
   'products.form.description': 'Description',
   'products.form.descriptionPlaceholder': 'Describe the product',
+  'product.relatedTitle': 'You may also like',
 
   'footer.about': 'About us',
   'footer.marketplaceDescription': 'Multi-vertical marketplace for curated shopping.',

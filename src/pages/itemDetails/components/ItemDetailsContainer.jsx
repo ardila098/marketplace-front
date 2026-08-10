@@ -44,7 +44,7 @@ const ItemDetailsContainer = () => {
           </InfoColumn>
         </ProductLayout>
 
-        <RelatedItems data={data} />
+        <RelatedItems data={data} currentProduct={dataItem} verticalId={verticalId} />
       </Spin>
     </PageContainer>
   )

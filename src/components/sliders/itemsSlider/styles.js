@@ -58,6 +58,28 @@ export const CarouselWrapper = styled(Carousel)`
   }
 `
 
+export const ItemsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 240px));
+  gap: 20px;
+  justify-content: start;
+  align-items: stretch;
+
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+`
+
+export const CarouselItem = styled.div`
+  width: 100%;
+  max-width: 260px;
+
+  @media (max-width: 576px) {
+    max-width: none;
+  }
+`
+
 export const Card = styled.article`
   position: relative;
   height: 230px;

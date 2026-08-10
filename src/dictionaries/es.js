@@ -179,6 +179,7 @@ export const esDictionary = {
   'products.form.newProduct': 'Producto nuevo',
   'products.form.description': 'Descripcion',
   'products.form.descriptionPlaceholder': 'Describe el producto',
+  'product.relatedTitle': 'Tambien te puede gustar',
 
   'footer.about': 'Sobre nosotros',
   'footer.marketplaceDescription': 'Marketplace multi-vertical para comprar productos seleccionados.',
