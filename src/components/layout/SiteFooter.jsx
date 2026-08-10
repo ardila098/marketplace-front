@@ -1,6 +1,6 @@
 import { AtSign, Mail, MapPin, Phone } from 'lucide-react'
 import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { env } from '../../config/env'
 import { buildRoute, ROUTES } from '../../constants/routes'
@@ -102,10 +102,20 @@ const buildStorePaths = ({ store, resolutionMode }) => {
 
 const SiteFooter = ({ store, resolutionMode }) => {
   const { translate } = useDictionaryTranslation()
+  const location = useLocation()
   const platformSettings = useSelector(selectPlatformSettings)
+  const verticalId = location.pathname.match(/^\/vertical\/([^/]+)(?:\/|$)/)?.[1]
+  const isVerticalContext = Boolean(verticalId && verticalId !== 'products')
   const contact = store?.settings?.contact || {}
   const brand = store?.name || platformSettings.name || env.appName || 'Marketplace'
-  const paths = store ? buildStorePaths({ store, resolutionMode }) : null
+  const paths = store
+    ? buildStorePaths({ store, resolutionMode })
+    : isVerticalContext
+      ? {
+          products: buildRoute(ROUTES.VERTICAL_PRODUCTS, { id: verticalId }),
+          outlet: buildRoute(ROUTES.VERTICAL_OUTLET, { id: verticalId }),
+        }
+      : null
   const currentYear = new Date().getFullYear()
   const description =
     store?.description ||
@@ -128,9 +138,9 @@ const SiteFooter = ({ store, resolutionMode }) => {
         <div>
           <ColumnTitle>{translate('footer.support')}</ColumnTitle>
           <LinkList>
-            <Link to={store ? paths.products : ROUTES.MARKETPLACE}>{translate('products')}</Link>
+            <Link to={paths?.products || ROUTES.MARKETPLACE}>{translate('products')}</Link>
             {store && <Link to={paths.categories}>{translate('categories')}</Link>}
-            <Link to={store ? paths.outlet : `${ROUTES.MARKETPLACE}?discounted=true`}>
+            <Link to={paths?.outlet || `${ROUTES.MARKETPLACE}?discounted=true`}>
               {translate('outlet')}
             </Link>
             <Link to={ROUTES.ORDER_LOOKUP}>{translate('footer.orderLookup')}</Link>

@@ -4,7 +4,7 @@ import ProductCard from '../../../components/products/ProductCard'
 import { PageShell } from '../../../styles/layoutStyles'
 import PropTypes from 'prop-types'
 
-const ContainerItemsList = ({ data }) => {
+const ContainerItemsList = ({ data, getProductPath }) => {
   return (
     <PageShell>
       <Space direction="vertical" size={24} style={{ width: '100%' }}>
@@ -13,7 +13,7 @@ const ContainerItemsList = ({ data }) => {
         <Row gutter={[22, 22]}>
           {data?.map(item => (
             <Col xs={24} sm={12} lg={6} key={item._id}>
-              <ProductCard product={item} />
+              <ProductCard product={item} detailPath={getProductPath?.(item)} />
             </Col>
           ))}
         </Row>
@@ -26,4 +26,5 @@ export default ContainerItemsList
 
 ContainerItemsList.propTypes = {
   data: PropTypes.array,
+  getProductPath: PropTypes.func,
 }

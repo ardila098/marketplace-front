@@ -24,7 +24,7 @@ const ItemDetailsContainer = () => {
 
   useEffect(() => {
     if (verticalId) {
-      getVerticalCatalog({ verticals: verticalId })
+      getVerticalCatalog({ vertical: verticalId })
     }
   }, [getVerticalCatalog, verticalId])
 
@@ -40,7 +40,7 @@ const ItemDetailsContainer = () => {
           <InfoColumn>
             <ItemInfo item={dataItem} selectedReference={purchase.selectedReference} />
             <ItemPucharse item={dataItem} purchase={purchase} />
-            <ProductTabs product={dataItem} />
+            <ProductTabs product={dataItem} selectedReference={purchase.selectedReference} />
           </InfoColumn>
         </ProductLayout>
 

@@ -1,6 +1,6 @@
 import { Col, Empty, Input, Row, Spin } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useLocation, useParams, useSearchParams } from 'react-router-dom'
 
 import ProductFiltersPanel from '../../components/catalog/ProductFiltersPanel'
 import {
@@ -13,9 +13,11 @@ import {
   ResultCount,
 } from '../../components/catalog/catalogStyles'
 import ProductCard from '../../components/products/ProductCard'
+import { buildRoute, ROUTES } from '../../constants/routes'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 import { catalogService } from '../../services/catalogService'
 import { categoryService } from '../../services/categoryService'
+import { verticalsServices } from '../../services/verticalsServices'
 import { PageShell } from '../../styles/layoutStyles'
 
 const parsePriceParam = value => {
@@ -27,14 +29,19 @@ const parsePriceParam = value => {
 
 const ItemsListPage = () => {
   const { translate } = useDictionaryTranslation()
+  const { id: verticalId } = useParams()
+  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const [products, setProducts] = useState([])
   const [categories, setCategories] = useState([])
+  const [vertical, setVertical] = useState(null)
   const [loading, setLoading] = useState(false)
   const search = searchParams.get('search') || ''
   const category = searchParams.get('category') || 'all'
   const sort = searchParams.get('sort') || 'newest'
-  const discounted = searchParams.get('discounted') === 'true'
+  const isVerticalCatalog = Boolean(verticalId && location.pathname.startsWith('/vertical/'))
+  const isOutletPath = location.pathname.endsWith('/outlet')
+  const discounted = isOutletPath || searchParams.get('discounted') === 'true'
   const minPrice = parsePriceParam(searchParams.get('minPrice'))
   const maxPrice = parsePriceParam(searchParams.get('maxPrice'))
   const [searchDraft, setSearchDraft] = useState(search)
@@ -43,12 +50,13 @@ const ItemsListPage = () => {
 
   const filters = useMemo(() => ({
     search,
+    vertical: isVerticalCatalog ? verticalId : undefined,
     category: category === 'all' ? undefined : category,
     discounted: discounted ? 'true' : undefined,
     minPrice: minPrice || undefined,
     maxPrice: maxPrice || undefined,
     sort,
-  }), [category, discounted, maxPrice, minPrice, search, sort])
+  }), [category, discounted, isVerticalCatalog, maxPrice, minPrice, search, sort, verticalId])
   const categoryOptions = useMemo(() => {
     return categories.map(item => ({
       label: item.name,
@@ -68,9 +76,22 @@ const ItemsListPage = () => {
   }, [filters])
 
   const loadCategories = useCallback(async () => {
-    const response = await categoryService.list({ isActive: true })
+    const response = await categoryService.list({
+      isActive: true,
+      vertical: isVerticalCatalog ? verticalId : undefined,
+    })
     setCategories(response.data || [])
-  }, [])
+  }, [isVerticalCatalog, verticalId])
+
+  const loadVertical = useCallback(async () => {
+    if (!isVerticalCatalog) {
+      setVertical(null)
+      return
+    }
+
+    const response = await verticalsServices.getVertical(verticalId)
+    setVertical(response.data || null)
+  }, [isVerticalCatalog, verticalId])
 
   useEffect(() => {
     loadProducts()
@@ -79,6 +100,10 @@ const ItemsListPage = () => {
   useEffect(() => {
     loadCategories()
   }, [loadCategories])
+
+  useEffect(() => {
+    loadVertical()
+  }, [loadVertical])
 
   useEffect(() => {
     setSearchDraft(search)
@@ -116,6 +141,15 @@ const ItemsListPage = () => {
     setSearchParams(new URLSearchParams())
   }
 
+  const getProductPath = product => {
+    if (!isVerticalCatalog) return undefined
+
+    return buildRoute(ROUTES.VERTICAL_SCOPED_PRODUCT_DETAIL, {
+      verticalId,
+      id: product._id,
+    })
+  }
+
   return (
     <PageShell>
       <CatalogLayout>
@@ -132,14 +166,18 @@ const ItemsListPage = () => {
           onMaxPriceChange={setMaxPriceDraft}
           onMinPriceChange={setMinPriceDraft}
           onSortChange={value => updateParams({ sort: value })}
-          showDiscountedToggle
+          showDiscountedToggle={!isOutletPath}
           sort={sort}
         />
 
         <CatalogContent>
           <CatalogHeader>
             <div>
-              <Eyebrow>{translate('catalog.marketplaceEyebrow')}</Eyebrow>
+              <Eyebrow>
+                {isVerticalCatalog
+                  ? vertical?.name || translate('catalog.marketplaceEyebrow')
+                  : translate('catalog.marketplaceEyebrow')}
+              </Eyebrow>
               <CatalogTitle>{discounted ? translate('outlet') : translate('products')}</CatalogTitle>
             </div>
             <ResultCount>
@@ -150,7 +188,9 @@ const ItemsListPage = () => {
           <CatalogToolbar>
             <Input.Search
               allowClear
-              placeholder={translate('catalog.searchPlaceholder')}
+              placeholder={isVerticalCatalog
+                ? translate('catalog.searchStorePlaceholder')
+                : translate('catalog.searchPlaceholder')}
               value={searchDraft}
               onChange={event => setSearchDraft(event.target.value)}
               onSearch={value => updateParams({ search: value.trim() })}
@@ -165,7 +205,7 @@ const ItemsListPage = () => {
             <Row gutter={[22, 22]}>
               {products.map(product => (
                 <Col xs={24} sm={12} lg={8} key={product._id}>
-                  <ProductCard product={product} />
+                  <ProductCard product={product} detailPath={getProductPath(product)} />
                 </Col>
               ))}
             </Row>

@@ -39,9 +39,9 @@ const StorefrontProductDetailPage = () => {
               </GalleryColumn>
 
               <InfoColumn>
-                <ItemInfo item={purchase.selectedReference || product} />
+                <ItemInfo item={product} selectedReference={purchase.selectedReference} />
                 <ItemPucharse item={product} purchase={purchase} />
-                <ProductTabs product={product} />
+                <ProductTabs product={product} selectedReference={purchase.selectedReference} />
               </InfoColumn>
             </ProductLayout>
 

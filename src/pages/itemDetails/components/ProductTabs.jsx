@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import styled from 'styled-components'
 import { Star } from 'lucide-react'
-import { getItemAttributesLabel, getItemLabel } from '../../../helpers/catalogProduct'
+import { getItemLabel } from '../../../helpers/catalogProduct'
+import { PRODUCT_TYPES } from '../../../constants/productTypeConstants'
 
 const TabsContainer = styled.div`
   margin-top: 48px;
@@ -50,30 +51,57 @@ const DescriptionText = styled.p`
   white-space: pre-line;
 `
 
-const VariantList = styled.div`
+const SelectionDetails = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   margin-top: 20px;
 `
 
-const VariantItem = styled.div`
+const SelectionCard = styled.div`
   border: 1px solid #f0f0f0;
   border-radius: 8px;
-  padding: 12px 14px;
+  padding: 14px 16px;
   background: #ffffff;
 `
 
-const VariantName = styled.div`
+const SelectionName = styled.div`
   color: #111827;
   font-size: 14px;
   font-weight: 620;
 `
 
-const VariantMeta = styled.div`
+const SelectionMeta = styled.div`
   color: #6b7280;
   font-size: 13px;
   margin-top: 3px;
+`
+
+const AttributeList = styled.dl`
+  display: grid;
+  grid-template-columns: minmax(120px, 180px) 1fr;
+  gap: 8px 14px;
+  margin: 12px 0 0;
+
+  dt,
+  dd {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  dt {
+    color: #111827;
+    font-weight: 620;
+  }
+
+  dd {
+    color: #4b5563;
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
 `
 
 const SpecsTable = styled.table`
@@ -148,9 +176,48 @@ const ReviewComment = styled.p`
   color: #4b5563;
 `
 
-const ProductTabs = ({ product }) => {
+const getAttributeRows = attributes => {
+  if (!Array.isArray(attributes)) return []
+
+  return attributes
+    .map((attribute, index) => {
+      if (!attribute) return null
+
+      if (typeof attribute === 'string') {
+        return ['Atributo', attribute]
+      }
+
+      const label = attribute.labelSnapshot || attribute.label || attribute.name || attribute.key
+      const value = attribute.valueSnapshot || attribute.value || attribute.option
+
+      if (!label && !value) return null
+
+      return [label || `Atributo ${index + 1}`, value || '-']
+    })
+    .filter(Boolean)
+}
+
+const getSelectionLabel = selectedReference => {
+  const label = getItemLabel(selectedReference)
+
+  if (label) return label
+
+  return getAttributeRows(selectedReference?.attributes)
+    .map(([, value]) => value)
+    .filter(Boolean)
+    .join(' / ')
+}
+
+const ProductTabs = ({ product, selectedReference }) => {
   const [activeTab, setActiveTab] = useState('description')
-  const variants = product?.variants || []
+  const isVariantProduct = product?.productType === PRODUCT_TYPES.VARIANT.value
+  const isConfigurableSet = product?.productType === PRODUCT_TYPES.CONFIGURABLE_SET.value
+  const selectionLabel = getSelectionLabel(selectedReference)
+  const selectionTypeLabel = isConfigurableSet ? 'Referencia' : 'Variante'
+  const selectedAttributes = getAttributeRows(selectedReference?.attributes)
+  const shouldShowSelection = Boolean(
+    selectedReference?._id && String(selectedReference._id) !== String(product?._id)
+  )
 
   // Normalizar specs
   const specs = product?.specs ? Object.entries(product.specs) : []
@@ -210,26 +277,31 @@ const ProductTabs = ({ product }) => {
               {product?.description || 'No hay descripción disponible para este producto.'}
             </DescriptionText>
 
-            {!!variants.length && (
-              <VariantList>
-                {variants.map((variant, index) => {
-                  const name = variant.name || getItemLabel(variant) || `Variante ${index + 1}`
-                  const reference = getItemLabel(variant)
-                  const attributes = getItemAttributesLabel(variant.attributes)
+            {shouldShowSelection && (
+              <SelectionDetails>
+                <SelectionCard>
+                  {selectionLabel && (
+                    <SelectionName>
+                      {selectionTypeLabel}: {selectionLabel}
+                    </SelectionName>
+                  )}
 
-                  return (
-                    <VariantItem key={variant._id || `${name}-${index}`}>
-                      <VariantName>{name}</VariantName>
+                  {!!selectedAttributes.length && (
+                    <AttributeList>
+                      {selectedAttributes.map(([label, value]) => (
+                        <div key={`${label}-${value}`}>
+                          <dt>{label}</dt>
+                          <dd>{value}</dd>
+                        </div>
+                      ))}
+                    </AttributeList>
+                  )}
 
-                      {reference && reference !== name && (
-                        <VariantMeta>Referencia: {reference}</VariantMeta>
-                      )}
-
-                      {attributes && <VariantMeta>{attributes}</VariantMeta>}
-                    </VariantItem>
-                  )
-                })}
-              </VariantList>
+                  {!selectedAttributes.length && isVariantProduct && (
+                    <SelectionMeta>No hay atributos adicionales para esta variante.</SelectionMeta>
+                  )}
+                </SelectionCard>
+              </SelectionDetails>
             )}
           </div>
         )}
@@ -243,10 +315,16 @@ const ProductTabs = ({ product }) => {
                   <td className="value">{val}</td>
                 </tr>
               ))}
-              {variants.map((variant, index) => (
-                <tr key={variant._id || `variant-spec-${index}`}>
-                  <td className="label">Variante {index + 1}</td>
-                  <td className="value">{variant.name || getItemLabel(variant) || '-'}</td>
+              {shouldShowSelection && (
+                <tr>
+                  <td className="label">{selectionTypeLabel}</td>
+                  <td className="value">{selectionLabel || '-'}</td>
+                </tr>
+              )}
+              {selectedAttributes.map(([label, value]) => (
+                <tr key={`${label}-${value}`}>
+                  <td className="label">{label}</td>
+                  <td className="value">{value}</td>
                 </tr>
               ))}
             </tbody>

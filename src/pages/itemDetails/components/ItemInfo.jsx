@@ -30,9 +30,9 @@ const ItemInfo = ({ item, selectedReference }) => {
     <ProductHeader>
       <ProductTitle>{item?.name}</ProductTitle>
 
-      <CategoryText>{item?.category?.name}</CategoryText>
-
       {referenceLabel && <ReferenceText>{referenceLabel}</ReferenceText>}
+
+      <CategoryText>{item?.category?.name}</CategoryText>
 
       <PriceRow>
         <PriceText>{formatPrice(displayItem?.price)}</PriceText>

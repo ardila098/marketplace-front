@@ -34,7 +34,7 @@ const getItemId = item => {
   return String(item?.itemId || item?._id || item?.sku || item?.image || '')
 }
 
-const ProductCard = ({ product, storeSlug }) => {
+const ProductCard = ({ product, storeSlug, detailPath }) => {
   const { translate } = useDictionaryTranslation()
   const resolutionMode = useSelector(state => state.storefront.resolutionMode)
   const previews = useMemo(() => {
@@ -57,14 +57,14 @@ const ProductCard = ({ product, storeSlug }) => {
   const discountPercentage = compareAtPrice > price
     ? selectedItem?.discountPercentage || product.selectedItem?.discountPercentage || product.maxDiscountPercentage || 0
     : 0
-  const targetRoute = storeSlug
+  const targetRoute = detailPath || (storeSlug
     ? resolutionMode === 'host'
       ? `/products/${product.slug}`
       : buildRoute(ROUTES.STOREFRONT_PRODUCT_DETAIL, {
           storeSlug,
           productSlug: product.slug,
         })
-    : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id })
+    : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id }))
 
   return (
     <ProductCardWrapper hoverable bordered={false}>

@@ -87,6 +87,9 @@ export const router = createBrowserRouter([
     children: [
       { path: ROUTES.HOME, element: <HomePage /> },
       { path: ROUTES.VERTICAL, element: <VerticalPage /> },
+      { path: ROUTES.VERTICAL_PRODUCTS, element: <ProductListPage /> },
+      { path: ROUTES.VERTICAL_OUTLET, element: <ProductListPage /> },
+      { path: ROUTES.VERTICAL_SCOPED_PRODUCT_DETAIL, element: <ItemDetailPage /> },
       { path: ROUTES.VERTICALS, element: <VerticalsPage /> },
       { path: ROUTES.MARKETPLACE, element: <ProductListPage /> },
       { path: ROUTES.STORES, element: <StoresPage /> },
