@@ -12,13 +12,9 @@ import {
   PlusSquareOutlined,
   SkinOutlined,
 } from '@ant-design/icons'
+import styled from 'styled-components'
 
-const actionButtonStyle = {
-  border: 'none',
-  boxShadow: 'none',
-}
-
-const iconColors = {
+const ICON_COLORS = {
   edit: '#1d4ed8',
   variant: '#047857',
   reference: '#4338ca',
@@ -26,6 +22,22 @@ const iconColors = {
   detail: '#475569',
   delete: '#b91c1c',
 }
+
+const ActionButton = styled(Button)`
+  border: none;
+  box-shadow: none;
+`
+
+const ActionIcon = styled.span`
+  color: ${({ $color }) => $color};
+  display: inline-flex;
+`
+
+const renderIcon = (Icon, color) => (
+  <ActionIcon $color={color}>
+    <Icon />
+  </ActionIcon>
+)
 
 const TableActions = ({
   record,
@@ -52,22 +64,20 @@ const TableActions = ({
   return (
     <Space size="small">
       <Tooltip title={editText}>
-        <Button
+        <ActionButton
           size="small"
           type="text"
-          icon={<EditOutlined style={{ color: iconColors.edit }} />}
-          style={actionButtonStyle}
+          icon={renderIcon(EditOutlined, ICON_COLORS.edit)}
           onClick={() => onEdit?.(id)}
         />
       </Tooltip>
 
       {showVariant && (
         <Tooltip title={variantText}>
-          <Button
+          <ActionButton
             size="small"
             type="text"
-            icon={<PlusCircleOutlined style={{ color: iconColors.variant }} />}
-            style={actionButtonStyle}
+            icon={renderIcon(PlusCircleOutlined, ICON_COLORS.variant)}
             onClick={() => onAddVariant?.(record)}
           />
         </Tooltip>
@@ -75,11 +85,10 @@ const TableActions = ({
 
       {showConfigurableSet && (
         <Tooltip title={referenceTitle}>
-          <Button
+          <ActionButton
             size="small"
             type="text"
-            icon={<SkinOutlined style={{ color: iconColors.reference }} />}
-            style={actionButtonStyle}
+            icon={renderIcon(SkinOutlined, ICON_COLORS.reference)}
             onClick={() => onAddReference?.(record)}
           />
         </Tooltip>
@@ -87,22 +96,20 @@ const TableActions = ({
 
       {showConfigurableSet && (
         <Tooltip title={inventoryTitle}>
-          <Button
+          <ActionButton
             size="small"
             type="text"
-            icon={<PlusSquareOutlined style={{ color: iconColors.inventory }} />}
-            style={actionButtonStyle}
+            icon={renderIcon(PlusSquareOutlined, ICON_COLORS.inventory)}
             onClick={() => onAddInventoryItem?.(record)}
           />
         </Tooltip>
       )}
 
       <Tooltip title={detailsTitle}>
-        <Button
+        <ActionButton
           size="small"
           type="text"
-          icon={<EyeOutlined style={{ color: iconColors.detail }} />}
-          style={actionButtonStyle}
+          icon={renderIcon(EyeOutlined, ICON_COLORS.detail)}
           onClick={() => onManage?.(record)}
         />
       </Tooltip>
@@ -116,11 +123,10 @@ const TableActions = ({
           onConfirm={() => onDelete?.(record)}
         >
           <Tooltip title={deleteText}>
-            <Button
+            <ActionButton
               size="small"
               type="text"
-              icon={<DeleteOutlined style={{ color: iconColors.delete }} />}
-              style={actionButtonStyle}
+              icon={renderIcon(DeleteOutlined, ICON_COLORS.delete)}
             />
           </Tooltip>
         </Popconfirm>

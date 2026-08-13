@@ -15,8 +15,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { ROLES } from '../../constants/roles'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { shippingService } from '../../services/shippingService'
 import { userService } from '../../services/userService'
+import {
+  FormActions,
+  FullWidthSpace,
+  ModalForm,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  RightAlignedActions,
+  SearchInput,
+  SelectFilter,
+} from '../../styles/dashboardStyles'
 import { currency } from '../../utils/formatters'
 
 const STATUS_OPTIONS = [
@@ -67,6 +80,7 @@ const ShipmentsPage = () => {
   const [savingId, setSavingId] = useState('')
   const [assigningShipment, setAssigningShipment] = useState(null)
   const [trackingShipment, setTrackingShipment] = useState(null)
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadShipments = useCallback(async value => {
     setLoading(true)
@@ -107,10 +121,13 @@ const ShipmentsPage = () => {
   }, [isCourier, isSeller])
 
   useEffect(() => {
-    loadShipments()
+    loadShipments(debouncedSearch)
+  }, [debouncedSearch, loadShipments])
+
+  useEffect(() => {
     loadSummary()
     loadCouriers()
-  }, [loadCouriers, loadShipments, loadSummary])
+  }, [loadCouriers, loadSummary])
 
   const updateStatus = async (shipment, status) => {
     setSavingId(shipment._id)
@@ -118,7 +135,7 @@ const ShipmentsPage = () => {
     try {
       await shippingService.updateStatus(shipment._id, { status })
       message.success('Estado actualizado')
-      loadShipments(search)
+      loadShipments(debouncedSearch)
       loadSummary()
     } catch (error) {
       message.error(error?.message || 'No se pudo actualizar el envio')
@@ -133,7 +150,7 @@ const ShipmentsPage = () => {
     try {
       await shippingService.markCourierPaid(shipment._id)
       message.success('Pago registrado')
-      loadShipments(search)
+      loadShipments(debouncedSearch)
       loadSummary()
     } catch (error) {
       message.error(error?.message || 'No se pudo registrar el pago')
@@ -164,7 +181,7 @@ const ShipmentsPage = () => {
       message.success('Mensajero asignado')
       setAssigningShipment(null)
       assignForm.resetFields()
-      loadShipments(search)
+      loadShipments(debouncedSearch)
       loadSummary()
     } catch (error) {
       message.error(error?.message || 'No se pudo asignar el mensajero')
@@ -191,7 +208,7 @@ const ShipmentsPage = () => {
       message.success('Guia actualizada')
       setTrackingShipment(null)
       trackingForm.resetFields()
-      loadShipments(search)
+      loadShipments(debouncedSearch)
     } catch (error) {
       message.error(error?.message || 'No se pudo actualizar la guia')
     } finally {
@@ -303,8 +320,8 @@ const ShipmentsPage = () => {
       title: 'Acciones',
       align: 'right',
       render: (_, shipment) => (
-        <Space wrap style={{ justifyContent: 'flex-end' }}>
-          <Select
+        <RightAlignedActions>
+          <SelectFilter
             size="small"
             value={shipment.status}
             options={isCourier
@@ -315,7 +332,7 @@ const ShipmentsPage = () => {
               : STATUS_OPTIONS}
             loading={savingId === shipment._id}
             onChange={status => updateStatus(shipment, status)}
-            style={{ width: 150 }}
+            $width={150}
           />
 
           {!isCourier && (
@@ -335,40 +352,37 @@ const ShipmentsPage = () => {
               Pagar
             </Button>
           )}
-        </Space>
+        </RightAlignedActions>
       ),
     },
   ]
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <div>
-        <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
+    <PageStack>
+      <PageIntro>
+        <PageTitle>
           {isCourier ? 'Mis envios' : isSeller ? 'Envios de mi tienda' : 'Envios'}
-        </Typography.Title>
-        <Typography.Text type="secondary">
+        </PageTitle>
+        <PageDescription>
           {isCourier
             ? 'Gestiona las entregas que tienes asignadas.'
             : isSeller
               ? 'Asigna mensajeros propios o registra guias nacionales para las compras de tu tienda.'
               : 'Asigna mensajeros locales y controla el estado de cada despacho.'}
-        </Typography.Text>
-      </div>
+        </PageDescription>
+      </PageIntro>
 
       <Card>
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <FullWidthSpace>
           {summaryCards}
 
-          <Input.Search
+          <SearchInput
             allowClear
             value={search}
             placeholder="Buscar por envio, orden, ciudad o direccion"
-            onChange={event => {
-              setSearch(event.target.value)
-              if (!event.target.value) loadShipments('')
-            }}
-            onSearch={loadShipments}
-            style={{ maxWidth: 440 }}
+            onChange={event => setSearch(event.target.value)}
+            onSearch={setSearch}
+            $width={440}
           />
 
           <Table
@@ -379,7 +393,7 @@ const ShipmentsPage = () => {
             pagination={{ pageSize: 10 }}
             scroll={{ x: 1120 }}
           />
-        </Space>
+        </FullWidthSpace>
       </Card>
 
       <Modal
@@ -392,11 +406,10 @@ const ShipmentsPage = () => {
         footer={null}
         destroyOnClose
       >
-        <Form
+        <ModalForm
           form={assignForm}
           layout="vertical"
           onFinish={assignCourier}
-          style={{ marginTop: 20 }}
         >
           <Form.Item
             label="Mensajero"
@@ -419,13 +432,13 @@ const ShipmentsPage = () => {
             <Input.TextArea rows={3} />
           </Form.Item>
 
-          <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
+          <FormActions>
             <Button onClick={() => setAssigningShipment(null)}>Cancelar</Button>
             <Button type="primary" htmlType="submit" loading={!!savingId}>
               Guardar
             </Button>
-          </Space>
-        </Form>
+          </FormActions>
+        </ModalForm>
       </Modal>
 
       <Modal
@@ -438,11 +451,10 @@ const ShipmentsPage = () => {
         footer={null}
         destroyOnClose
       >
-        <Form
+        <ModalForm
           form={trackingForm}
           layout="vertical"
           onFinish={saveTracking}
-          style={{ marginTop: 20 }}
         >
           <Form.Item label="Proveedor" name="provider">
             <Input placeholder="envia, servientrega, interrapidisimo..." />
@@ -464,15 +476,15 @@ const ShipmentsPage = () => {
             <Input.TextArea rows={3} />
           </Form.Item>
 
-          <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
+          <FormActions>
             <Button onClick={() => setTrackingShipment(null)}>Cancelar</Button>
             <Button type="primary" htmlType="submit" loading={!!savingId}>
               Guardar
             </Button>
-          </Space>
-        </Form>
+          </FormActions>
+        </ModalForm>
       </Modal>
-    </Space>
+    </PageStack>
   )
 }
 

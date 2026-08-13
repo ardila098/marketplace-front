@@ -2,7 +2,6 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Form,
   Input,
   Modal,
@@ -21,8 +20,20 @@ import { useCallback, useMemo, useState, useEffect } from 'react'
 import StatusTag from '../../components/common/StatusTag'
 import { PAYOUT_STATUS } from '../../constants/orderConstants'
 import { ROLES } from '../../constants/roles'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useAuth } from '../../hooks/useAuth'
 import { orderService } from '../../services/orderService'
+import {
+  FullWidthDatePicker,
+  FullWidthSpace,
+  ModalForm,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  SearchInput,
+  Toolbar,
+} from '../../styles/dashboardStyles'
 import { currency } from '../../utils/formatters'
 
 const emptyTotals = {
@@ -66,6 +77,7 @@ const PayoutsPage = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [createModalOpen, setCreateModalOpen] = useState(false)
   const [payingPayout, setPayingPayout] = useState(null)
+  const debouncedSearch = useDebouncedValue(search)
 
   const selectedRows = useMemo(() => {
     const selected = new Set(selectedRowKeys)
@@ -85,7 +97,7 @@ const PayoutsPage = () => {
 
     try {
       const params = {
-        search: search || undefined,
+        search: debouncedSearch || undefined,
       }
 
       const [summaryResponse, pendingResponse, payoutsResponse] = await Promise.all([
@@ -102,7 +114,7 @@ const PayoutsPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [search])
+  }, [debouncedSearch])
 
   useEffect(() => {
     loadPayouts()
@@ -320,17 +332,15 @@ const PayoutsPage = () => {
   ]
 
   return (
-    <Space direction="vertical" size="large" style={{ width: '100%' }}>
-      <div>
-        <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-          Liquidaciones
-        </Typography.Title>
-        <Typography.Text type="secondary">
+    <PageStack size="large">
+      <PageIntro>
+        <PageTitle>Liquidaciones</PageTitle>
+        <PageDescription>
           {isAdmin
             ? 'Controla saldos pendientes, pagos en proceso e historial de pagos a tiendas.'
             : 'Consulta cuanto esta pendiente por pagarte y el historial de pagos recibidos.'}
-        </Typography.Text>
-      </div>
+        </PageDescription>
+      </PageIntro>
 
       <Row gutter={[16, 16]}>
         <Col xs={24} md={8}>
@@ -378,22 +388,22 @@ const PayoutsPage = () => {
           </Button>
         )}
       >
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Space wrap style={{ justifyContent: 'space-between', width: '100%' }}>
-            <Input.Search
+        <FullWidthSpace>
+          <Toolbar>
+            <SearchInput
               allowClear
               placeholder="Buscar suborden, tienda o producto"
               value={search}
               onChange={event => setSearch(event.target.value)}
-              onSearch={loadPayouts}
-              style={{ maxWidth: 360 }}
+              onSearch={setSearch}
+              $width={360}
             />
             {isAdmin && selectedRows.length > 0 && (
               <Tag color={selectedStoreIds.length === 1 ? 'green' : 'red'}>
                 Seleccionado: {currency(selectedAmount)}
               </Tag>
             )}
-          </Space>
+          </Toolbar>
 
           <Table
             rowKey="_id"
@@ -406,7 +416,7 @@ const PayoutsPage = () => {
             } : undefined}
             scroll={{ x: 1040 }}
           />
-        </Space>
+        </FullWidthSpace>
       </Card>
 
       {isAdmin && (
@@ -451,7 +461,7 @@ const PayoutsPage = () => {
         footer={null}
         destroyOnHidden
       >
-        <Form
+        <ModalForm
           form={createForm}
           layout="vertical"
           onFinish={handleCreatePayout}
@@ -477,13 +487,13 @@ const PayoutsPage = () => {
           </Form.Item>
 
           <Form.Item label="Fecha de pago" name="paidAt">
-            <DatePicker style={{ width: '100%' }} />
+            <FullWidthDatePicker />
           </Form.Item>
 
           <Button type="primary" htmlType="submit" block loading={saving} icon={<DollarOutlined />}>
             Crear liquidacion
           </Button>
-        </Form>
+        </ModalForm>
       </Modal>
 
       <Modal
@@ -493,7 +503,7 @@ const PayoutsPage = () => {
         footer={null}
         destroyOnHidden
       >
-        <Form form={payForm} layout="vertical" onFinish={handleMarkPaid}>
+        <ModalForm form={payForm} layout="vertical" onFinish={handleMarkPaid}>
           <Form.Item label="Metodo" name="method" rules={[{ required: true }]}>
             <Input placeholder="bank_transfer" />
           </Form.Item>
@@ -503,15 +513,15 @@ const PayoutsPage = () => {
           </Form.Item>
 
           <Form.Item label="Fecha de pago" name="paidAt">
-            <DatePicker style={{ width: '100%' }} />
+            <FullWidthDatePicker />
           </Form.Item>
 
           <Button type="primary" htmlType="submit" block loading={saving} icon={<CheckOutlined />}>
             Marcar como pagado
           </Button>
-        </Form>
+        </ModalForm>
       </Modal>
-    </Space>
+    </PageStack>
   )
 }
 

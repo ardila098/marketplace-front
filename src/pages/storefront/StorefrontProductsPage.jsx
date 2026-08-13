@@ -14,6 +14,7 @@ import {
   ResultCount,
 } from '../../components/catalog/catalogStyles'
 import StorefrontProductGrid from '../../components/storefront/StorefrontProductGrid'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 import { PageShell } from '../../styles/layoutStyles'
 import useStoreCategories from './hooks/useStoreCategories'
@@ -42,6 +43,7 @@ const StorefrontProductsPage = () => {
   const [searchDraft, setSearchDraft] = useState(search)
   const [minPriceDraft, setMinPriceDraft] = useState(minPrice)
   const [maxPriceDraft, setMaxPriceDraft] = useState(maxPrice)
+  const debouncedSearchDraft = useDebouncedValue(searchDraft)
 
   const filters = useMemo(() => ({
     search,
@@ -67,6 +69,21 @@ const StorefrontProductsPage = () => {
     setMinPriceDraft(minPrice)
     setMaxPriceDraft(maxPrice)
   }, [maxPrice, minPrice, search])
+
+  useEffect(() => {
+    const nextSearch = debouncedSearchDraft.trim()
+    if (nextSearch === search) return
+
+    const next = new URLSearchParams(searchParams)
+
+    if (nextSearch) {
+      next.set('search', nextSearch)
+    } else {
+      next.delete('search')
+    }
+
+    setSearchParams(next)
+  }, [debouncedSearchDraft, search, searchParams, setSearchParams])
 
   const updateParams = updates => {
     const next = new URLSearchParams(searchParams)
@@ -132,7 +149,7 @@ const StorefrontProductsPage = () => {
               placeholder={translate('catalog.searchStorePlaceholder')}
               value={searchDraft}
               onChange={event => setSearchDraft(event.target.value)}
-              onSearch={value => updateParams({ search: value.trim() })}
+              onSearch={setSearchDraft}
             />
           </CatalogToolbar>
 

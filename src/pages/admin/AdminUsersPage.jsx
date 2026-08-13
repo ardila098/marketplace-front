@@ -14,7 +14,20 @@ import {
 import { Pencil, Plus } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { userService } from '../../services/userService'
+import {
+  FilterGroup,
+  FormActions,
+  ModalForm,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  SearchInput,
+  SelectFilter,
+  Toolbar,
+} from '../../styles/dashboardStyles'
 
 const ROLE_INPUT_OPTIONS = [
   { label: 'Admin', value: 1 },
@@ -57,13 +70,14 @@ const AdminUsersPage = () => {
   const [role, setRole] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [editingUser, setEditingUser] = useState(null)
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadUsers = useCallback(async () => {
     setLoading(true)
 
     try {
       const response = await userService.list({
-        search: search || undefined,
+        search: debouncedSearch || undefined,
         role: role || undefined,
       })
 
@@ -73,7 +87,7 @@ const AdminUsersPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [role, search])
+  }, [debouncedSearch, role])
 
   useEffect(() => {
     loadUsers()
@@ -190,38 +204,36 @@ const AdminUsersPage = () => {
   ], [openEditModal])
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <div>
-        <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-          Usuarios
-        </Typography.Title>
-        <Typography.Text type="secondary">
+    <PageStack>
+      <PageIntro>
+        <PageTitle>Usuarios</PageTitle>
+        <PageDescription>
           Consulta y administra las cuentas registradas en la plataforma.
-        </Typography.Text>
-      </div>
+        </PageDescription>
+      </PageIntro>
 
-      <Space wrap style={{ justifyContent: 'space-between', width: '100%' }}>
-        <Space wrap>
-          <Input.Search
+      <Toolbar>
+        <FilterGroup>
+          <SearchInput
             allowClear
             placeholder="Buscar por nombre, correo o telefono"
             value={search}
             onChange={event => setSearch(event.target.value)}
-            onSearch={loadUsers}
-            style={{ width: 340 }}
+            onSearch={setSearch}
+            $width={340}
           />
-          <Select
+          <SelectFilter
             options={ROLE_OPTIONS}
             value={role}
             onChange={setRole}
-            style={{ width: 180 }}
+            $width={180}
           />
-        </Space>
+        </FilterGroup>
 
         <Button type="primary" icon={<Plus size={16} />} onClick={openCreateModal}>
           Nuevo usuario
         </Button>
-      </Space>
+      </Toolbar>
 
       <Table
         rowKey="_id"
@@ -238,11 +250,10 @@ const AdminUsersPage = () => {
         footer={null}
         destroyOnClose
       >
-        <Form
+        <ModalForm
           form={form}
           layout="vertical"
           onFinish={handleSave}
-          style={{ marginTop: 20 }}
         >
           <Form.Item
             label="Nombre"
@@ -287,17 +298,17 @@ const AdminUsersPage = () => {
             <Switch />
           </Form.Item>
 
-          <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
+          <FormActions>
             <Button onClick={closeModal}>
               Cancelar
             </Button>
             <Button type="primary" htmlType="submit" loading={saving}>
               Guardar
             </Button>
-          </Space>
-        </Form>
+          </FormActions>
+        </ModalForm>
       </Modal>
-    </Space>
+    </PageStack>
   )
 }
 

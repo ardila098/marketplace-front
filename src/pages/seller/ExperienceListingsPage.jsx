@@ -1,8 +1,9 @@
-import { Button, Drawer, Form, Input, InputNumber, Select, Space, Switch, Table, Tag, Typography, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { Button, Drawer, Form, Input, Select, Space, Switch, Table, Tag, Typography, message } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
+import { isExperienceBusiness } from '../../constants/businessTypes'
 import {
   EXPERIENCE_LISTING_STATUS,
   EXPERIENCE_LISTING_STATUS_OPTIONS,
@@ -11,10 +12,20 @@ import {
   getExperienceStatusLabel,
   getPricingUnitLabel,
 } from '../../constants/experiences'
-import { isExperienceBusiness } from '../../constants/businessTypes'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES, getUploadUrl } from '../../constants/uploadRoutes'
 import { experienceService } from '../../services/experienceService'
 import { storeService } from '../../services/storeService'
+import {
+  FieldGrid,
+  FullWidthInputNumber,
+  ImagePlaceholder,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  ThumbnailImage,
+  Toolbar,
+} from '../../styles/dashboardStyles'
 import { currency } from '../../utils/formatters'
 
 const arrayToText = values => (values || []).join(', ')
@@ -71,13 +82,14 @@ const buildPayload = values => ({
 const renderImage = listing => {
   const image = listing.coverImage || listing.images?.[0]
 
-  if (!image) return <div style={{ width: 54, height: 42, borderRadius: 8, background: '#f3f4f6' }} />
+  if (!image) {
+    return <ImagePlaceholder $width={54} $height={42} $radius={8} />
+  }
 
   return (
-    <img
+    <ThumbnailImage
       src={getUploadUrl(UPLOAD_ROUTES.experiences.images, image)}
       alt={listing.title}
-      style={{ width: 54, height: 42, borderRadius: 8, objectFit: 'cover' }}
     />
   )
 }
@@ -202,16 +214,14 @@ const ExperienceListingsPage = () => {
   ], [openDrawer])
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <Space align="start" style={{ width: '100%', justifyContent: 'space-between' }}>
-        <div>
-          <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-            Experiencias
-          </Typography.Title>
-          <Typography.Text type="secondary">
+    <PageStack>
+      <Toolbar align="start">
+        <PageIntro>
+          <PageTitle>Experiencias</PageTitle>
+          <PageDescription>
             Publica glampings, fincas, estadias o experiencias con solicitud de reserva.
-          </Typography.Text>
-        </div>
+          </PageDescription>
+        </PageIntro>
 
         <Button
           type="primary"
@@ -221,7 +231,7 @@ const ExperienceListingsPage = () => {
         >
           Nueva experiencia
         </Button>
-      </Space>
+      </Toolbar>
 
       {!experienceEnabled && (
         <Tag color="gold">
@@ -266,42 +276,42 @@ const ExperienceListingsPage = () => {
             <Input.TextArea rows={4} />
           </Form.Item>
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <Form.Item label="Ciudad" name="city" style={{ flex: 1 }}>
+          <FieldGrid>
+            <Form.Item label="Ciudad" name="city">
               <Input />
             </Form.Item>
-            <Form.Item label="Lugar" name="locationName" style={{ flex: 1 }}>
+            <Form.Item label="Lugar" name="locationName">
               <Input />
             </Form.Item>
-          </Space>
+          </FieldGrid>
 
           <Form.Item label="Direccion o referencia" name="address">
             <Input />
           </Form.Item>
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <Form.Item label="Precio" name="price" style={{ flex: 1 }}>
-              <InputNumber min={0} style={{ width: '100%' }} />
+          <FieldGrid>
+            <Form.Item label="Precio" name="price">
+              <FullWidthInputNumber min={0} />
             </Form.Item>
-            <Form.Item label="Unidad" name="pricingUnit" style={{ flex: 1 }}>
+            <Form.Item label="Unidad" name="pricingUnit">
               <Select options={EXPERIENCE_PRICING_UNIT_OPTIONS} />
             </Form.Item>
-            <Form.Item label="Noches minimas" name="minNights" style={{ flex: 1 }}>
-              <InputNumber min={1} style={{ width: '100%' }} />
+            <Form.Item label="Noches minimas" name="minNights">
+              <FullWidthInputNumber min={1} />
             </Form.Item>
-          </Space>
+          </FieldGrid>
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <Form.Item label="Capacidad" name="capacityGuests" style={{ flex: 1 }}>
-              <InputNumber min={0} style={{ width: '100%' }} />
+          <FieldGrid>
+            <Form.Item label="Capacidad" name="capacityGuests">
+              <FullWidthInputNumber min={0} />
             </Form.Item>
-            <Form.Item label="Alcobas" name="bedrooms" style={{ flex: 1 }}>
-              <InputNumber min={0} style={{ width: '100%' }} />
+            <Form.Item label="Alcobas" name="bedrooms">
+              <FullWidthInputNumber min={0} />
             </Form.Item>
-            <Form.Item label="Banos" name="bathrooms" style={{ flex: 1 }}>
-              <InputNumber min={0} style={{ width: '100%' }} />
+            <Form.Item label="Banos" name="bathrooms">
+              <FullWidthInputNumber min={0} />
             </Form.Item>
-          </Space>
+          </FieldGrid>
 
           <Form.Item label="Amenidades" name="amenities">
             <Input.TextArea rows={2} placeholder="Jacuzzi, chimenea, vista al lago" />
@@ -327,21 +337,21 @@ const ExperienceListingsPage = () => {
             maxCount={8}
           />
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <Form.Item label="Estado publicacion" name="status" style={{ flex: 1 }}>
+          <FieldGrid>
+            <Form.Item label="Estado publicacion" name="status">
               <Select options={EXPERIENCE_LISTING_STATUS_OPTIONS} />
             </Form.Item>
-            <Form.Item label="Activa" name="isActive" valuePropName="checked" style={{ flex: 1 }}>
+            <Form.Item label="Activa" name="isActive" valuePropName="checked">
               <Switch />
             </Form.Item>
-          </Space>
+          </FieldGrid>
 
           <Button type="primary" htmlType="submit" loading={saving} block>
             Guardar experiencia
           </Button>
         </Form>
       </Drawer>
-    </Space>
+    </PageStack>
   )
 }
 

@@ -18,6 +18,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
 import { getUploadUrl, UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { categoryService } from '../../services/categoryService'
 import { verticalsServices } from '../../services/verticalsServices'
 
@@ -43,13 +44,14 @@ const AdminCategoriesPage = () => {
   const [editingCategory, setEditingCategory] = useState(null)
   const [search, setSearch] = useState('')
   const [verticalFilter, setVerticalFilter] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadCategories = useCallback(async () => {
     setLoading(true)
 
     try {
       const response = await categoryService.adminList({
-        search: search || undefined,
+        search: debouncedSearch || undefined,
         vertical: verticalFilter || undefined,
       })
 
@@ -59,7 +61,7 @@ const AdminCategoriesPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [search, verticalFilter])
+  }, [debouncedSearch, verticalFilter])
 
   const loadVerticals = useCallback(async () => {
     try {
@@ -249,7 +251,7 @@ const AdminCategoriesPage = () => {
             placeholder="Buscar categoria"
             value={search}
             onChange={event => setSearch(event.target.value)}
-            onSearch={loadCategories}
+            onSearch={setSearch}
             style={{ width: 280 }}
           />
           <Select

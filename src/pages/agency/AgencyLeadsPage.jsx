@@ -1,4 +1,4 @@
-import { Button, Input, InputNumber, List, Modal, Select, Space, Table, Tag, Typography, message } from 'antd'
+import { Button, Input, InputNumber, List, Modal, Space, Table, Tag, Typography, message } from 'antd'
 import { MessageSquare } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -9,7 +9,22 @@ import {
   AGENCY_LEAD_STATUS_LABELS,
 } from '../../constants/agencyLeads'
 import { getAgencyKindLabel } from '../../constants/agencyItems'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { agencyLeadService } from '../../services/agencyLeadService'
+import {
+  CompactParagraph,
+  FieldBlock,
+  FieldGrid,
+  FilterGroup,
+  FullWidthSpace,
+  MinWidthSelect,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  SearchInput,
+  SelectFilter,
+} from '../../styles/dashboardStyles'
 import { currency } from '../../utils/formatters'
 
 const formatDate = value => value ? new Date(value).toLocaleDateString('es-CO') : '-'
@@ -24,13 +39,14 @@ const AgencyLeadsPage = () => {
   const [noteText, setNoteText] = useState('')
   const [saving, setSaving] = useState(false)
   const [editValues, setEditValues] = useState({})
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadLeads = useCallback(async (params = {}) => {
     setLoading(true)
 
     try {
       const response = await agencyLeadService.list({
-        search: (params.search ?? search) || undefined,
+        search: (params.search ?? debouncedSearch) || undefined,
         status: (params.status ?? status) || undefined,
       })
 
@@ -40,7 +56,7 @@ const AgencyLeadsPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [search, status])
+  }, [debouncedSearch, status])
 
   useEffect(() => {
     loadLeads()
@@ -149,11 +165,10 @@ const AgencyLeadsPage = () => {
     {
       title: 'Estado',
       render: (_, lead) => (
-        <Select
+        <MinWidthSelect
           value={lead.status}
           options={AGENCY_LEAD_STATUS}
           onChange={value => handleStatusChange(lead, value)}
-          style={{ minWidth: 180 }}
         />
       ),
     },
@@ -177,37 +192,30 @@ const AgencyLeadsPage = () => {
   ]
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <div>
-        <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-          Leads de agencia
-        </Typography.Title>
-        <Typography.Text type="secondary">
+    <PageStack>
+      <PageIntro>
+        <PageTitle>Leads de agencia</PageTitle>
+        <PageDescription>
           Gestiona interesados en vehiculos, motos o inmuebles desde un solo lugar.
-        </Typography.Text>
-      </div>
+        </PageDescription>
+      </PageIntro>
 
-      <Space wrap>
-        <Input.Search
+      <FilterGroup>
+        <SearchInput
           allowClear
           placeholder="Buscar cliente, correo o telefono"
           value={search}
           onChange={event => setSearch(event.target.value)}
-          onSearch={value => loadLeads({ search: value })}
-          style={{ width: 320 }}
+          onSearch={setSearch}
         />
-        <Select
+        <SelectFilter
           allowClear
           placeholder="Estado"
           value={status || undefined}
           options={AGENCY_LEAD_STATUS}
-          onChange={value => {
-            setStatus(value || '')
-            loadLeads({ status: value || '' })
-          }}
-          style={{ width: 220 }}
+          onChange={value => setStatus(value || '')}
         />
-      </Space>
+      </FilterGroup>
 
       <Table
         rowKey="_id"
@@ -224,74 +232,69 @@ const AgencyLeadsPage = () => {
         footer={null}
         destroyOnClose
       >
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <FullWidthSpace>
           {selectedLead && (
-            <Space wrap>
+            <FilterGroup>
               <Tag color={AGENCY_LEAD_STATUS_COLORS[selectedLead.status] || 'default'}>
                 {AGENCY_LEAD_STATUS_LABELS[selectedLead.status] || selectedLead.status}
               </Tag>
               <Tag>{selectedLead.item?.title}</Tag>
               <Tag>{selectedLead.customer?.phone}</Tag>
-            </Space>
+            </FilterGroup>
           )}
 
           {selectedLead?.interest?.message && (
-            <Typography.Paragraph style={{ margin: 0 }}>
+            <CompactParagraph>
               {selectedLead.interest.message}
-            </Typography.Paragraph>
+            </CompactParagraph>
           )}
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <div style={{ flex: 1 }}>
+          <FieldGrid>
+            <FieldBlock>
               <Typography.Text>Valor potencial</Typography.Text>
               <InputNumber
                 min={0}
                 value={editValues.potentialValue}
                 onChange={value => setEditValues(current => ({ ...current, potentialValue: value }))}
-                style={{ width: '100%', marginTop: 6 }}
               />
-            </div>
-            <div style={{ flex: 1 }}>
+            </FieldBlock>
+            <FieldBlock>
               <Typography.Text>Comision %</Typography.Text>
               <InputNumber
                 min={0}
                 max={100}
                 value={editValues.platformCommissionRate}
                 onChange={value => setEditValues(current => ({ ...current, platformCommissionRate: value }))}
-                style={{ width: '100%', marginTop: 6 }}
               />
-            </div>
-          </Space>
+            </FieldBlock>
+          </FieldGrid>
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <div style={{ flex: 1 }}>
+          <FieldGrid>
+            <FieldBlock>
               <Typography.Text>Comision estimada</Typography.Text>
               <InputNumber
                 min={0}
                 value={editValues.platformCommissionAmount}
                 onChange={value => setEditValues(current => ({ ...current, platformCommissionAmount: value }))}
-                style={{ width: '100%', marginTop: 6 }}
               />
-            </div>
-            <div style={{ flex: 1 }}>
+            </FieldBlock>
+            <FieldBlock>
               <Typography.Text>Proxima accion</Typography.Text>
               <Input
                 value={editValues.nextActionAt}
                 placeholder="2026-08-02"
                 onChange={event => setEditValues(current => ({ ...current, nextActionAt: event.target.value }))}
-                style={{ marginTop: 6 }}
               />
-            </div>
-          </Space>
+            </FieldBlock>
+          </FieldGrid>
 
-          <div>
+          <FieldBlock>
             <Typography.Text>Motivo de perdida</Typography.Text>
             <Input
               value={editValues.lostReason}
               onChange={event => setEditValues(current => ({ ...current, lostReason: event.target.value }))}
-              style={{ marginTop: 6 }}
             />
-          </div>
+          </FieldBlock>
 
           <Button type="primary" onClick={handleSaveLead} loading={saving}>
             Guardar seguimiento
@@ -323,9 +326,9 @@ const AgencyLeadsPage = () => {
           <Button onClick={handleSaveNote} loading={saving} disabled={!noteText.trim()}>
             Agregar nota
           </Button>
-        </Space>
+        </FullWidthSpace>
       </Modal>
-    </Space>
+    </PageStack>
   )
 }
 

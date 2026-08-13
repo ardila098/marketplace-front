@@ -1,7 +1,19 @@
 import { Button, Card, Form, Input, Modal, Select, Space, Table, Tag, Typography, message } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { returnService } from '../../services/returnService'
+import {
+  FilterGroup,
+  FormActions,
+  FullWidthSpace,
+  ModalForm,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  SearchInput,
+} from '../../styles/dashboardStyles'
 
 const STATUS_OPTIONS = [
   { label: 'Abierta', value: 'open' },
@@ -48,6 +60,7 @@ const ReturnsPage = () => {
   const [loading, setLoading] = useState(false)
   const [savingId, setSavingId] = useState('')
   const [editingRequest, setEditingRequest] = useState(null)
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadRequests = useCallback(async value => {
     setLoading(true)
@@ -64,8 +77,8 @@ const ReturnsPage = () => {
   }, [])
 
   useEffect(() => {
-    loadRequests()
-  }, [loadRequests])
+    loadRequests(debouncedSearch)
+  }, [debouncedSearch, loadRequests])
 
   const summary = useMemo(() => ({
     total: requests.length,
@@ -94,7 +107,7 @@ const ReturnsPage = () => {
       await returnService.update(editingRequest._id, values)
       message.success('Reclamo actualizado')
       closeModal()
-      loadRequests(search)
+      loadRequests(debouncedSearch)
     } catch (error) {
       message.error(error?.message || 'No se pudo actualizar el reclamo')
     } finally {
@@ -152,34 +165,29 @@ const ReturnsPage = () => {
   ]
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <div>
-        <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-          Reclamos
-        </Typography.Title>
-        <Typography.Text type="secondary">
+    <PageStack>
+      <PageIntro>
+        <PageTitle>Reclamos</PageTitle>
+        <PageDescription>
           Gestiona devoluciones, garantias y solicitudes despues de la compra.
-        </Typography.Text>
-      </div>
+        </PageDescription>
+      </PageIntro>
 
       <Card>
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Space wrap>
+        <FullWidthSpace>
+          <FilterGroup>
             <Tag>Total: {summary.total}</Tag>
             <Tag color="gold">Pendientes: {summary.open}</Tag>
             <Tag color="green">Resueltos: {summary.resolved}</Tag>
-          </Space>
+          </FilterGroup>
 
-          <Input.Search
+          <SearchInput
             allowClear
             value={search}
             placeholder="Buscar por orden, cliente, correo o telefono"
-            onChange={event => {
-              setSearch(event.target.value)
-              if (!event.target.value) loadRequests('')
-            }}
-            onSearch={loadRequests}
-            style={{ maxWidth: 440 }}
+            onChange={event => setSearch(event.target.value)}
+            onSearch={setSearch}
+            $width={440}
           />
 
           <Table
@@ -190,7 +198,7 @@ const ReturnsPage = () => {
             pagination={{ pageSize: 10 }}
             scroll={{ x: 980 }}
           />
-        </Space>
+        </FullWidthSpace>
       </Card>
 
       <Modal
@@ -200,7 +208,7 @@ const ReturnsPage = () => {
         footer={null}
         destroyOnClose
       >
-        <Form form={form} layout="vertical" onFinish={handleSave} style={{ marginTop: 20 }}>
+        <ModalForm form={form} layout="vertical" onFinish={handleSave}>
           <Form.Item
             label="Estado"
             name="status"
@@ -217,15 +225,15 @@ const ReturnsPage = () => {
             <Input.TextArea rows={3} />
           </Form.Item>
 
-          <Space style={{ justifyContent: 'flex-end', width: '100%' }}>
+          <FormActions>
             <Button onClick={closeModal}>Cancelar</Button>
             <Button type="primary" htmlType="submit" loading={savingId === editingRequest?._id}>
               Guardar
             </Button>
-          </Space>
-        </Form>
+          </FormActions>
+        </ModalForm>
       </Modal>
-    </Space>
+    </PageStack>
   )
 }
 

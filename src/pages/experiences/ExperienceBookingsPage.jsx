@@ -6,6 +6,7 @@ import {
   getBookingStatusColor,
   getBookingStatusLabel,
 } from '../../constants/experiences'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { experienceService } from '../../services/experienceService'
 import { currency } from '../../utils/formatters'
 
@@ -26,6 +27,7 @@ const ExperienceBookingsPage = () => {
   const [updatingId, setUpdatingId] = useState('')
   const [noteBooking, setNoteBooking] = useState(null)
   const [noteText, setNoteText] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadBookings = useCallback(async value => {
     setLoading(true)
@@ -42,8 +44,8 @@ const ExperienceBookingsPage = () => {
   }, [])
 
   useEffect(() => {
-    loadBookings()
-  }, [loadBookings])
+    loadBookings(debouncedSearch)
+  }, [debouncedSearch, loadBookings])
 
   const updateStatus = async (booking, status) => {
     setUpdatingId(booking._id)
@@ -51,7 +53,7 @@ const ExperienceBookingsPage = () => {
     try {
       await experienceService.updateBooking(booking._id, { status })
       message.success('Estado actualizado')
-      loadBookings(search)
+      loadBookings(debouncedSearch)
     } catch (error) {
       message.error(error?.message || 'No se pudo actualizar la reserva')
     } finally {
@@ -69,7 +71,7 @@ const ExperienceBookingsPage = () => {
       message.success('Nota agregada')
       setNoteBooking(null)
       setNoteText('')
-      loadBookings(search)
+      loadBookings(debouncedSearch)
     } catch (error) {
       message.error(error?.message || 'No se pudo agregar la nota')
     } finally {
@@ -171,11 +173,8 @@ const ExperienceBookingsPage = () => {
             allowClear
             value={search}
             placeholder="Buscar por cliente, email o telefono"
-            onChange={event => {
-              setSearch(event.target.value)
-              if (!event.target.value) loadBookings('')
-            }}
-            onSearch={loadBookings}
+            onChange={event => setSearch(event.target.value)}
+            onSearch={setSearch}
             style={{ maxWidth: 420 }}
           />
 

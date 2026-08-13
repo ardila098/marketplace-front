@@ -13,6 +13,10 @@ import StorefrontLayout from './StorefrontLayout'
 
 const { Header, Content } = Layout
 
+const PageLayout = styled(Layout)`
+  min-height: 100vh;
+`
+
 const HeaderBar = styled(Header)`
   height: 72px;
   background: rgba(255,255,255,.92);
@@ -76,7 +80,7 @@ const PublicLayout = () => {
   }
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <PageLayout>
       <HeaderBar>
         <Brand to={ROUTES.HOME}>
           {logoUrl ? (
@@ -93,7 +97,7 @@ const PublicLayout = () => {
       </Content>
       <SiteFooter />
       <CartDrawer />
-    </Layout>
+    </PageLayout>
   )
 }
 

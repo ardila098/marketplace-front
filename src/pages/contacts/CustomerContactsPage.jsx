@@ -1,7 +1,17 @@
-import { Card, Input, Space, Table, Tag, Typography } from 'antd'
+import { Card, Space, Table, Tag, Typography } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { customerContactService } from '../../services/customerContactService'
+import {
+  FilterGroup,
+  FullWidthSpace,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  SearchInput,
+} from '../../styles/dashboardStyles'
 
 const formatDate = value => {
   if (!value) return '-'
@@ -17,6 +27,7 @@ const CustomerContactsPage = () => {
   const [contacts, setContacts] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadContacts = useCallback(async value => {
     setLoading(true)
@@ -33,8 +44,8 @@ const CustomerContactsPage = () => {
   }, [])
 
   useEffect(() => {
-    loadContacts()
-  }, [loadContacts])
+    loadContacts(debouncedSearch)
+  }, [debouncedSearch, loadContacts])
 
   const summary = useMemo(() => ({
     total: contacts.length,
@@ -94,34 +105,29 @@ const CustomerContactsPage = () => {
   ]
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <div>
-        <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-          Contactos
-        </Typography.Title>
-        <Typography.Text type="secondary">
+    <PageStack>
+      <PageIntro>
+        <PageTitle>Contactos</PageTitle>
+        <PageDescription>
           Clientes potenciales capturados desde leads, reservas y formularios.
-        </Typography.Text>
-      </div>
+        </PageDescription>
+      </PageIntro>
 
       <Card>
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Space wrap>
+        <FullWidthSpace>
+          <FilterGroup>
             <Tag>Total: {summary.total}</Tag>
             <Tag>Con email: {summary.withEmail}</Tag>
             <Tag>Con telefono: {summary.withPhone}</Tag>
-          </Space>
+          </FilterGroup>
 
-          <Input.Search
+          <SearchInput
             allowClear
             value={search}
             placeholder="Buscar por nombre, email, telefono o ciudad"
-            onChange={event => {
-              setSearch(event.target.value)
-              if (!event.target.value) loadContacts('')
-            }}
-            onSearch={loadContacts}
-            style={{ maxWidth: 420 }}
+            onChange={event => setSearch(event.target.value)}
+            onSearch={setSearch}
+            $width={420}
           />
 
           <Table
@@ -132,9 +138,9 @@ const CustomerContactsPage = () => {
             pagination={{ pageSize: 10 }}
             scroll={{ x: 860 }}
           />
-        </Space>
+        </FullWidthSpace>
       </Card>
-    </Space>
+    </PageStack>
   )
 }
 

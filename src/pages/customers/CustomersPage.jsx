@@ -1,8 +1,17 @@
-import { Card, Input, Segmented, Space, Table, Tag, Typography } from 'antd'
+import { Card, Segmented, Space, Table, Tag, Typography } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 import { newsletterService } from '../../services/newsletterService'
+import {
+  FullWidthSpace,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  SearchInput,
+} from '../../styles/dashboardStyles'
 
 const PageHeader = styled.div`
   display: flex;
@@ -27,6 +36,14 @@ const SummaryItem = styled.div`
   border-radius: 8px;
   padding: 14px 16px;
   background: #fbfcfe;
+`
+
+const SummaryValue = styled(Typography.Title).attrs({
+  level: 4,
+})`
+  && {
+    margin: 0;
+  }
 `
 
 const formatDate = value => {
@@ -67,6 +84,7 @@ const CustomersPage = () => {
   const [search, setSearch] = useState('')
   const [usageFilter, setUsageFilter] = useState('all')
   const [loading, setLoading] = useState(false)
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadCustomers = useCallback(async value => {
     setLoading(true)
@@ -83,8 +101,8 @@ const CustomersPage = () => {
   }, [])
 
   useEffect(() => {
-    loadCustomers()
-  }, [loadCustomers])
+    loadCustomers(debouncedSearch)
+  }, [debouncedSearch, loadCustomers])
 
   const rows = useMemo(() => flattenCustomers(customers), [customers])
   const visibleRows = useMemo(() => {
@@ -164,16 +182,14 @@ const CustomersPage = () => {
   ]
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+    <PageStack>
       <PageHeader>
-        <div>
-          <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-            {translate('customers.title')}
-          </Typography.Title>
-          <Typography.Text type="secondary">
+        <PageIntro>
+          <PageTitle>{translate('customers.title')}</PageTitle>
+          <PageDescription>
             {translate('customers.subtitle')}
-          </Typography.Text>
-        </div>
+          </PageDescription>
+        </PageIntro>
         <Segmented
           value={usageFilter}
           onChange={setUsageFilter}
@@ -186,32 +202,29 @@ const CustomersPage = () => {
       </PageHeader>
 
       <Card>
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <FullWidthSpace>
           <SummaryGrid>
             <SummaryItem>
               <Typography.Text type="secondary">{translate('customers.total')}</Typography.Text>
-              <Typography.Title level={4} style={{ margin: 0 }}>{summary.total}</Typography.Title>
+              <SummaryValue>{summary.total}</SummaryValue>
             </SummaryItem>
             <SummaryItem>
               <Typography.Text type="secondary">{translate('customers.withCouponUsed')}</Typography.Text>
-              <Typography.Title level={4} style={{ margin: 0 }}>{summary.usedCustomers}</Typography.Title>
+              <SummaryValue>{summary.usedCustomers}</SummaryValue>
             </SummaryItem>
             <SummaryItem>
               <Typography.Text type="secondary">{translate('customers.couponUses')}</Typography.Text>
-              <Typography.Title level={4} style={{ margin: 0 }}>{summary.couponUses}</Typography.Title>
+              <SummaryValue>{summary.couponUses}</SummaryValue>
             </SummaryItem>
           </SummaryGrid>
 
-          <Input.Search
+          <SearchInput
             allowClear
             placeholder={translate('customers.searchPlaceholder')}
             value={search}
-            onChange={event => {
-              setSearch(event.target.value)
-              if (!event.target.value) loadCustomers('')
-            }}
-            onSearch={loadCustomers}
-            style={{ maxWidth: 360 }}
+            onChange={event => setSearch(event.target.value)}
+            onSearch={setSearch}
+            $width={360}
           />
 
           <Table
@@ -222,9 +235,9 @@ const CustomersPage = () => {
             pagination={{ pageSize: 10 }}
             scroll={{ x: 760 }}
           />
-        </Space>
+        </FullWidthSpace>
       </Card>
-    </Space>
+    </PageStack>
   )
 }
 

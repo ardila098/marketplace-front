@@ -1,6 +1,7 @@
-import { Button, Drawer, Form, Input, InputNumber, Select, Space, Switch, Table, Tag, Typography, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { Button, Drawer, Form, Input, Select, Space, Switch, Table, Tag, Typography, message } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
 import {
   AGENCY_ITEM_KINDS,
@@ -15,6 +16,17 @@ import { isAgencyBusiness, STORE_BUSINESS_TYPES } from '../../constants/business
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES, getUploadUrl } from '../../constants/uploadRoutes'
 import { agencyItemService } from '../../services/agencyItemService'
 import { storeService } from '../../services/storeService'
+import {
+  FieldGrid,
+  FullWidthInputNumber,
+  ImagePlaceholder,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  ThumbnailImage,
+  Toolbar,
+} from '../../styles/dashboardStyles'
 import { currency } from '../../utils/formatters'
 
 const getDefaultKind = store => {
@@ -115,13 +127,14 @@ const buildPayload = values => ({
 const renderImage = item => {
   const image = item.coverImage || item.images?.[0]
 
-  if (!image) return <div style={{ width: 54, height: 42, borderRadius: 8, background: '#f3f4f6' }} />
+  if (!image) {
+    return <ImagePlaceholder $width={54} $height={42} $radius={8} />
+  }
 
   return (
-    <img
+    <ThumbnailImage
       src={getUploadUrl(UPLOAD_ROUTES.agencyItems.images, image)}
       alt={item.title}
-      style={{ width: 54, height: 42, borderRadius: 8, objectFit: 'cover' }}
     />
   )
 }
@@ -244,16 +257,14 @@ const AgencyItemsPage = () => {
   ]
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <Space align="start" style={{ width: '100%', justifyContent: 'space-between' }}>
-        <div>
-          <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-            Inventario de agencia
-          </Typography.Title>
-          <Typography.Text type="secondary">
+    <PageStack>
+      <Toolbar align="start">
+        <PageIntro>
+          <PageTitle>Inventario de agencia</PageTitle>
+          <PageDescription>
             Publica carros, motos o inmuebles sin mezclarlos con productos del marketplace.
-          </Typography.Text>
-        </div>
+          </PageDescription>
+        </PageIntro>
 
         <Button
           type="primary"
@@ -263,7 +274,7 @@ const AgencyItemsPage = () => {
         >
           Nuevo item
         </Button>
-      </Space>
+      </Toolbar>
 
       {!agencyEnabled && (
         <Tag color="gold">
@@ -316,26 +327,26 @@ const AgencyItemsPage = () => {
             <Input.TextArea rows={4} />
           </Form.Item>
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <Form.Item label="Precio" name="price" style={{ flex: 1 }}>
-              <InputNumber min={0} style={{ width: '100%' }} />
+          <FieldGrid>
+            <Form.Item label="Precio" name="price">
+              <FullWidthInputNumber min={0} />
             </Form.Item>
-            <Form.Item label="Ciudad" name="city" style={{ flex: 1 }}>
+            <Form.Item label="Ciudad" name="city">
               <Input />
             </Form.Item>
-          </Space>
+          </FieldGrid>
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <Form.Item label="Referencia interna" name="referenceCode" style={{ flex: 1 }}>
+          <FieldGrid>
+            <Form.Item label="Referencia interna" name="referenceCode">
               <Input placeholder="REF-001" />
             </Form.Item>
-            <Form.Item label="Comision plataforma %" name="platformCommissionRate" style={{ flex: 1 }}>
-              <InputNumber min={0} max={100} style={{ width: '100%' }} />
+            <Form.Item label="Comision plataforma %" name="platformCommissionRate">
+              <FullWidthInputNumber min={0} max={100} />
             </Form.Item>
-            <Form.Item label="Comision fija" name="platformCommissionAmount" style={{ flex: 1 }}>
-              <InputNumber min={0} style={{ width: '100%' }} />
+            <Form.Item label="Comision fija" name="platformCommissionAmount">
+              <FullWidthInputNumber min={0} />
             </Form.Item>
-          </Space>
+          </FieldGrid>
 
           <Form.Item label="Notas de disponibilidad" name="availabilityNotes">
             <Input.TextArea rows={2} placeholder="Disponible para visita, separado hasta tal fecha, etc." />
@@ -351,178 +362,177 @@ const AgencyItemsPage = () => {
 
           {kind === AGENCY_ITEM_KINDS.PROPERTY.value ? (
             <>
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Tipo de inmueble" name="propertyType" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Tipo de inmueble" name="propertyType">
                   <Input placeholder="Apartamento, casa, lote" />
                 </Form.Item>
-                <Form.Item label="Operacion" name="operationType" style={{ flex: 1 }}>
+                <Form.Item label="Operacion" name="operationType">
                   <Select options={[{ label: 'Venta', value: 'Venta' }, { label: 'Arriendo', value: 'Arriendo' }]} />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Area m2" name="areaM2" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+              <FieldGrid>
+                <Form.Item label="Area m2" name="areaM2">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-                <Form.Item label="Area construida" name="builtAreaM2" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+                <Form.Item label="Area construida" name="builtAreaM2">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-                <Form.Item label="Alcobas" name="bedrooms" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+                <Form.Item label="Alcobas" name="bedrooms">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Banos" name="bathrooms" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+              <FieldGrid>
+                <Form.Item label="Banos" name="bathrooms">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-                <Form.Item label="Parqueaderos" name="parkingSpaces" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+                <Form.Item label="Parqueaderos" name="parkingSpaces">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-                <Form.Item label="Administracion" name="administrationFee" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+                <Form.Item label="Administracion" name="administrationFee">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Estrato" name="stratum" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+              <FieldGrid>
+                <Form.Item label="Estrato" name="stratum">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-                <Form.Item label="Piso" name="floor" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+                <Form.Item label="Piso" name="floor">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-                <Form.Item label="Amoblado" name="furnished" valuePropName="checked" style={{ flex: 1 }}>
+                <Form.Item label="Amoblado" name="furnished" valuePropName="checked">
                   <Switch />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Zona" name="zone" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Zona" name="zone">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Barrio" name="neighborhood" style={{ flex: 1 }}>
+                <Form.Item label="Barrio" name="neighborhood">
                   <Input />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Direccion" name="address" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Direccion" name="address">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Disponible desde" name="availableFrom" style={{ flex: 1 }}>
+                <Form.Item label="Disponible desde" name="availableFrom">
                   <Input placeholder="2026-08-02" />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
             </>
           ) : (
             <>
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Marca" name="brand" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Marca" name="brand">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Modelo" name="model" style={{ flex: 1 }}>
+                <Form.Item label="Modelo" name="model">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Version" name="version" style={{ flex: 1 }}>
+                <Form.Item label="Version" name="version">
                   <Input />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Ano" name="year" style={{ flex: 1 }}>
-                  <InputNumber min={1900} max={2100} style={{ width: '100%' }} />
+              <FieldGrid>
+                <Form.Item label="Ano" name="year">
+                  <FullWidthInputNumber min={1900} max={2100} />
                 </Form.Item>
-                <Form.Item label="Kilometraje" name="mileageKm" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+                <Form.Item label="Kilometraje" name="mileageKm">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-                <Form.Item label="Cilindraje" name="engineCc" style={{ flex: 1 }}>
-                  <InputNumber min={0} style={{ width: '100%' }} />
+                <Form.Item label="Cilindraje" name="engineCc">
+                  <FullWidthInputNumber min={0} />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Transmision" name="transmission" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Transmision" name="transmission">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Combustible" name="fuelType" style={{ flex: 1 }}>
+                <Form.Item label="Combustible" name="fuelType">
                   <Input />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Tipo carroceria" name="bodyType" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Tipo carroceria" name="bodyType">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Color" name="color" style={{ flex: 1 }}>
+                <Form.Item label="Color" name="color">
                   <Input />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Estado" name="condition" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Estado" name="condition">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Terminacion placa" name="plateEnding" style={{ flex: 1 }}>
+                <Form.Item label="Terminacion placa" name="plateEnding">
                   <Input />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Propietario" name="ownerType" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Propietario" name="ownerType">
                   <Select
                     allowClear
                     options={[
                       { label: 'Agencia', value: 'Agencia' },
                       { label: 'Tercero consignado', value: 'Tercero consignado' },
-                      { label: 'Dueño directo', value: 'Dueno directo' },
+                      { label: 'Dueno directo', value: 'Dueno directo' },
                     ]}
                   />
                 </Form.Item>
-                <Form.Item label="SOAT vence" name="soatExpiresAt" style={{ flex: 1 }}>
+                <Form.Item label="SOAT vence" name="soatExpiresAt">
                   <Input placeholder="2026-08-02" />
                 </Form.Item>
-                <Form.Item label="Tecnomecanica vence" name="technicalReviewExpiresAt" style={{ flex: 1 }}>
+                <Form.Item label="Tecnomecanica vence" name="technicalReviewExpiresAt">
                   <Input placeholder="2026-08-02" />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
 
-              <Space size="middle" style={{ width: '100%' }} align="start">
-                <Form.Item label="Recibe permuta" name="acceptsTradeIn" valuePropName="checked" style={{ flex: 1 }}>
+              <FieldGrid>
+                <Form.Item label="Recibe permuta" name="acceptsTradeIn" valuePropName="checked">
                   <Switch />
                 </Form.Item>
-                <Form.Item label="Financiacion disponible" name="financingAvailable" valuePropName="checked" style={{ flex: 1 }}>
+                <Form.Item label="Financiacion disponible" name="financingAvailable" valuePropName="checked">
                   <Switch />
                 </Form.Item>
-              </Space>
+              </FieldGrid>
             </>
           )}
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <Form.Item label="Estado publicacion" name="status" style={{ flex: 1 }}>
+          <FieldGrid>
+            <Form.Item label="Estado publicacion" name="status">
               <Select options={AGENCY_ITEM_STATUS_OPTIONS} />
             </Form.Item>
-            <Form.Item label="Activo" name="isActive" valuePropName="checked" style={{ flex: 1 }}>
+            <Form.Item label="Activo" name="isActive" valuePropName="checked">
               <Switch />
             </Form.Item>
-          </Space>
+          </FieldGrid>
 
-          <Space size="middle" style={{ width: '100%' }} align="start">
-            <Form.Item label="Contacto" name="contactName" style={{ flex: 1 }}>
+          <FieldGrid>
+            <Form.Item label="Contacto" name="contactName">
               <Input />
             </Form.Item>
-            <Form.Item label="Telefono" name="contactPhone" style={{ flex: 1 }}>
+            <Form.Item label="Telefono" name="contactPhone">
               <Input />
             </Form.Item>
-          </Space>
+          </FieldGrid>
 
           <Button type="primary" htmlType="submit" loading={saving} block>
             Guardar item
           </Button>
         </Form>
       </Drawer>
-    </Space>
+    </PageStack>
   )
 }
 
 export default AgencyItemsPage
-

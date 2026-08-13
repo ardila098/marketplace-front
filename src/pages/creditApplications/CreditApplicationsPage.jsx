@@ -1,4 +1,4 @@
-import { Button, Input, List, Modal, Select, Space, Table, Tag, Typography, message } from 'antd'
+import { Button, Input, List, Modal, Space, Table, Tag, Typography, message } from 'antd'
 import { MessageSquare } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -9,9 +9,21 @@ import {
   CREDIT_TYPE_LABELS,
 } from '../../constants/creditApplications'
 import { ROLES } from '../../constants/roles'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
+import { useAuth } from '../../hooks/useAuth'
 import { brokerService } from '../../services/brokerService'
 import { creditApplicationService } from '../../services/creditApplicationService'
-import { useAuth } from '../../hooks/useAuth'
+import {
+  FilterGroup,
+  FullWidthSpace,
+  MinWidthSelect,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  SearchInput,
+  SelectFilter,
+} from '../../styles/dashboardStyles'
 
 const currencyFormatter = new Intl.NumberFormat('es-CO', {
   style: 'currency',
@@ -21,7 +33,7 @@ const currencyFormatter = new Intl.NumberFormat('es-CO', {
 
 const formatMoney = value => currencyFormatter.format(Number(value || 0))
 
-const sourceLabels = {
+const SOURCE_LABELS = {
   broker_landing: 'Landing broker',
   store_credit: 'Tienda / agencia',
   platform: 'Plataforma',
@@ -38,6 +50,7 @@ const CreditApplicationsPage = () => {
   const [noteModal, setNoteModal] = useState(null)
   const [noteText, setNoteText] = useState('')
   const [savingNote, setSavingNote] = useState(false)
+  const debouncedSearch = useDebouncedValue(search)
 
   const isAdmin = Number(role) === ROLES.ADMIN.value
   const isSeller = Number(role) === ROLES.SELLER.value
@@ -48,7 +61,7 @@ const CreditApplicationsPage = () => {
 
     try {
       const response = await creditApplicationService.list({
-        search: (params.search ?? search) || undefined,
+        search: (params.search ?? debouncedSearch) || undefined,
         status: (params.status ?? status) || undefined,
       })
 
@@ -58,7 +71,7 @@ const CreditApplicationsPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [search, status])
+  }, [debouncedSearch, status])
 
   useEffect(() => {
     loadApplications()
@@ -147,7 +160,7 @@ const CreditApplicationsPage = () => {
       title: 'Origen',
       render: (_, application) => (
         <Space direction="vertical" size={0}>
-          <Typography.Text>{sourceLabels[application.sourceType] || application.sourceType}</Typography.Text>
+          <Typography.Text>{SOURCE_LABELS[application.sourceType] || application.sourceType}</Typography.Text>
           <Typography.Text type="secondary">{application.store?.name || '-'}</Typography.Text>
         </Space>
       ),
@@ -155,13 +168,13 @@ const CreditApplicationsPage = () => {
     {
       title: 'Broker',
       render: (_, application) => isAdmin ? (
-        <Select
+        <MinWidthSelect
           allowClear
           placeholder="Sin asignar"
           value={application.broker?._id || undefined}
           options={brokerOptions}
           onChange={value => handleBrokerChange(application, value)}
-          style={{ minWidth: 190 }}
+          $width={190}
         />
       ) : (
         application.broker?.name || '-'
@@ -170,11 +183,11 @@ const CreditApplicationsPage = () => {
     {
       title: 'Estado',
       render: (_, application) => canUpdateStatus ? (
-        <Select
+        <MinWidthSelect
           value={application.status}
           options={CREDIT_APPLICATION_STATUS}
           onChange={value => handleStatusChange(application, value)}
-          style={{ minWidth: 210 }}
+          $width={210}
         />
       ) : (
         <Tag color={CREDIT_APPLICATION_STATUS_COLORS[application.status] || 'default'}>
@@ -200,37 +213,31 @@ const CreditApplicationsPage = () => {
   ]
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <div>
-        <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-          Solicitudes de asesoria
-        </Typography.Title>
-        <Typography.Text type="secondary">
+    <PageStack>
+      <PageIntro>
+        <PageTitle>Solicitudes de asesoria</PageTitle>
+        <PageDescription>
           Gestiona contactos interesados en revisar alternativas de credito con un asesor.
-        </Typography.Text>
-      </div>
+        </PageDescription>
+      </PageIntro>
 
-      <Space wrap>
-        <Input.Search
+      <FilterGroup>
+        <SearchInput
           allowClear
           placeholder="Buscar cliente, correo o telefono"
           value={search}
           onChange={event => setSearch(event.target.value)}
-          onSearch={value => loadApplications({ search: value })}
-          style={{ width: 320 }}
+          onSearch={setSearch}
         />
-        <Select
+        <SelectFilter
           allowClear
           placeholder="Estado"
           value={status || undefined}
           options={CREDIT_APPLICATION_STATUS}
-          onChange={value => {
-            setStatus(value || '')
-            loadApplications({ status: value || '' })
-          }}
-          style={{ width: 240 }}
+          onChange={value => setStatus(value || '')}
+          $width={240}
         />
-      </Space>
+      </FilterGroup>
 
       <Table
         rowKey="_id"
@@ -250,7 +257,7 @@ const CreditApplicationsPage = () => {
         footer={null}
         destroyOnClose
       >
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <FullWidthSpace>
           <List
             size="small"
             dataSource={noteModal?.notes || []}
@@ -277,9 +284,9 @@ const CreditApplicationsPage = () => {
           <Button type="primary" onClick={handleSaveNote} loading={savingNote} disabled={!noteText.trim()}>
             Guardar nota
           </Button>
-        </Space>
+        </FullWidthSpace>
       </Modal>
-    </Space>
+    </PageStack>
   )
 }
 

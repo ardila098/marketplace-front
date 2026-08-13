@@ -1,9 +1,7 @@
 import {
   Button,
   Form,
-  Image,
   Input,
-  InputNumber,
   Modal,
   Popconfirm,
   Space,
@@ -18,7 +16,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
 import { getUploadUrl, UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { verticalsServices } from '../../services/verticalsServices'
+import {
+  FieldGrid,
+  FullWidthInputNumber,
+  ImagePlaceholder,
+  ModalForm,
+  PageDescription,
+  PageIntro,
+  PageStack,
+  PageTitle,
+  SearchInput,
+  TableImage,
+  Toolbar,
+} from '../../styles/dashboardStyles'
 
 const getVerticalPayload = values => ({
   name: values.name,
@@ -39,6 +51,7 @@ const AdminVerticalsPage = () => {
   const [editingVertical, setEditingVertical] = useState(null)
   const [uploadingFields, setUploadingFields] = useState({})
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
   const isUploading = Object.values(uploadingFields).some(Boolean)
 
   const setFieldUploading = useCallback((field, uploading) => {
@@ -54,7 +67,7 @@ const AdminVerticalsPage = () => {
     try {
       const response = await verticalsServices.list()
       const items = response.data || []
-      const term = search.trim().toLowerCase()
+      const term = debouncedSearch.trim().toLowerCase()
 
       setVerticals(
         term
@@ -69,7 +82,7 @@ const AdminVerticalsPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [search])
+  }, [debouncedSearch])
 
   useEffect(() => {
     loadVerticals()
@@ -157,21 +170,20 @@ const AdminVerticalsPage = () => {
       render: (_, vertical) => (
         <Space>
           {vertical.icon ? (
-            <Image
+            <TableImage
               src={getUploadUrl(UPLOAD_ROUTES.verticals.icons, vertical.icon)}
               width={44}
               height={44}
-              style={{ borderRadius: 12, objectFit: 'cover' }}
+              $radius={12}
             />
           ) : (
-            <div style={{ width: 44, height: 44, borderRadius: 12, background: '#f2f2f2' }} />
+            <ImagePlaceholder $radius={12} />
           )}
           {vertical.banner ? (
-            <Image
+            <TableImage
               src={getUploadUrl(UPLOAD_ROUTES.verticals.banners, vertical.banner)}
               width={76}
               height={44}
-              style={{ borderRadius: 10, objectFit: 'cover' }}
             />
           ) : null}
         </Space>
@@ -236,30 +248,27 @@ const AdminVerticalsPage = () => {
   ], [handleToggleStatus, openEditModal])
 
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <div>
-        <Typography.Title level={2} style={{ margin: 0, letterSpacing: 0 }}>
-          Verticales
-        </Typography.Title>
-        <Typography.Text type="secondary">
+    <PageStack>
+      <PageIntro>
+        <PageTitle>Verticales</PageTitle>
+        <PageDescription>
           Administra las secciones principales del marketplace y sus imagenes.
-        </Typography.Text>
-      </div>
+        </PageDescription>
+      </PageIntro>
 
-      <Space wrap style={{ justifyContent: 'space-between', width: '100%' }}>
-        <Input.Search
+      <Toolbar>
+        <SearchInput
           allowClear
           placeholder="Buscar vertical"
           value={search}
           onChange={event => setSearch(event.target.value)}
-          onSearch={loadVerticals}
-          style={{ width: 300 }}
+          onSearch={setSearch}
         />
 
         <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
           Crear vertical
         </Button>
-      </Space>
+      </Toolbar>
 
       <Table
         rowKey="_id"
@@ -277,7 +286,7 @@ const AdminVerticalsPage = () => {
         destroyOnHidden
         width={760}
       >
-        <Form
+        <ModalForm
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
@@ -298,7 +307,7 @@ const AdminVerticalsPage = () => {
             <Input.TextArea rows={3} />
           </Form.Item>
 
-          <Space size="large" align="start" wrap style={{ width: '100%' }}>
+          <FieldGrid>
             <ImageUploadField
               label="Icono"
               name="icon"
@@ -320,10 +329,10 @@ const AdminVerticalsPage = () => {
               disabled={saving}
               onUploadingChange={uploading => setFieldUploading('banner', uploading)}
             />
-          </Space>
+          </FieldGrid>
 
           <Form.Item label="Orden" name="sortOrder">
-            <InputNumber min={0} style={{ width: '100%' }} />
+            <FullWidthInputNumber min={0} />
           </Form.Item>
 
           <Form.Item label="Activa" name="isActive" valuePropName="checked">
@@ -333,9 +342,9 @@ const AdminVerticalsPage = () => {
           <Button type="primary" htmlType="submit" block loading={saving || isUploading}>
             Guardar vertical
           </Button>
-        </Form>
+        </ModalForm>
       </Modal>
-    </Space>
+    </PageStack>
   )
 }
 

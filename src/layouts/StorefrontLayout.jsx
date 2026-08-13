@@ -16,6 +16,11 @@ import { buildStoreTheme } from '../styles/themePresets'
 
 const { Header, Content } = Layout
 
+const StorefrontShell = styled(Layout)`
+  min-height: 100vh;
+  background: ${({ theme }) => theme.backgroundColor || '#fff'};
+`
+
 const HeaderBar = styled(Header)`
   min-height: 68px;
   background: ${({ theme }) => `${theme.surfaceColor || '#fff'}30`};
@@ -171,7 +176,7 @@ const StorefrontLayout = () => {
 
   return (
     <ThemeProvider theme={storeTheme}>
-      <Layout style={{ background: storeTheme.backgroundColor, minHeight: '100vh' }}>
+      <StorefrontShell>
         <HeaderBar>
           <MobileMenuButton
             aria-label={translate('menu')}
@@ -229,7 +234,7 @@ const StorefrontLayout = () => {
         </Content>
         <SiteFooter store={store} resolutionMode={resolutionMode} />
         <CartDrawer />
-      </Layout>
+      </StorefrontShell>
     </ThemeProvider>
   )
 }

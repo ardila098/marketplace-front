@@ -1,5 +1,48 @@
 import { Button, Col, Input, Row, Space, Table } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
+
+const TableShell = styled(Space)`
+  width: 100%;
+`
+
+const TableToolbar = styled(Row)`
+  width: 100%;
+`
+
+const SearchColumn = styled(Col)`
+  min-width: 0;
+
+  .ant-input-search {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  @media (max-width: 768px) {
+    .ant-input-search {
+      max-width: none;
+    }
+  }
+`
+
+const ActionColumn = styled(Col)`
+  display: flex;
+  justify-content: flex-end;
+
+  @media (max-width: 768px) {
+    justify-content: stretch;
+
+    .ant-btn {
+      width: 100%;
+    }
+  }
+`
+
+const StyledTable = styled(Table)`
+  width: 100%;
+`
 
 const AppTable = ({
   columns = [],
@@ -10,35 +53,48 @@ const AppTable = ({
   handleCreate,
   onChange,
 }) => {
+  const tableSearch = tableData?.search || ''
+  const handleTableSearch = tableData?.handleSearch
+  const [searchDraft, setSearchDraft] = useState(tableSearch)
+  const debouncedSearch = useDebouncedValue(searchDraft)
+
+  useEffect(() => {
+    setSearchDraft(tableSearch)
+  }, [tableSearch])
+
+  useEffect(() => {
+    if (!handleTableSearch) return
+    if (tableSearch === debouncedSearch) return
+
+    handleTableSearch(debouncedSearch)
+  }, [debouncedSearch, handleTableSearch, tableSearch])
+
   return (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <Col md={24}>
-        <Row>
-          <Col md={12}>
-            <Input.Search
-              placeholder={searchPlaceholder}
-              value={tableData?.search}
-              onChange={event => tableData.handleSearch(event.target.value)}
-              allowClear
-              style={{ maxWidth: 320 }}
-            />
-          </Col>
+    <TableShell direction="vertical" size="middle">
+      <TableToolbar gutter={[12, 12]}>
+        <SearchColumn xs={24} md={12}>
+          <Input.Search
+            placeholder={searchPlaceholder}
+            value={searchDraft}
+            onChange={event => setSearchDraft(event.target.value)}
+            onSearch={setSearchDraft}
+            allowClear
+          />
+        </SearchColumn>
 
-          <Col md={12}>
-            <Row justify={'end'}>
-              <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
-                {createPlaceholder}
-              </Button>
-            </Row>
-          </Col>
-        </Row>
-      </Col>
+        <ActionColumn xs={24} md={12}>
+          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
+            {createPlaceholder}
+          </Button>
+        </ActionColumn>
+      </TableToolbar>
 
-      <Table
+      <StyledTable
         rowKey={rowKey}
         columns={columns}
         dataSource={tableData?.rows || tableData?.data}
         loading={tableData?.loading}
+        scroll={{ x: 'max-content' }}
         pagination={{
           current: tableData?.page,
           pageSize: tableData?.pageSize,
@@ -47,7 +103,7 @@ const AppTable = ({
         }}
         onChange={onChange}
       />
-    </Space>
+    </TableShell>
   )
 }
 

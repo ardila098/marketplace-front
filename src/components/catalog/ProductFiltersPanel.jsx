@@ -34,6 +34,49 @@ const FieldLabel = styled(Typography.Text)`
   margin-bottom: 8px;
 `
 
+const FieldStack = styled(Space).attrs({
+  direction: 'vertical',
+  size: 16,
+})`
+  width: 100%;
+`
+
+const FullWidthSelect = styled(Select)`
+  width: 100%;
+`
+
+const FullWidthCompact = styled(Space.Compact)`
+  width: 100%;
+`
+
+const HalfInputNumber = styled(InputNumber)`
+  width: 50%;
+`
+
+const ToggleRow = styled(Space)`
+  width: 100%;
+  justify-content: space-between;
+`
+
+const FilterDivider = styled(Divider)`
+  && {
+    margin: 2px 0;
+  }
+`
+
+const HalfActionButton = styled(Button)`
+  width: 50%;
+`
+
+const PanelTitle = styled(Typography.Title).attrs({
+  level: 5,
+})`
+  && {
+    margin-top: 0;
+    margin-bottom: 18px;
+  }
+`
+
 const FilterFields = ({
   categories = [],
   category,
@@ -53,13 +96,12 @@ const FilterFields = ({
   const { translate } = useDictionaryTranslation()
 
   return (
-    <Space direction="vertical" size={16} style={{ width: '100%' }}>
+    <FieldStack>
       <div>
         <FieldLabel>{translate('category')}</FieldLabel>
-        <Select
+        <FullWidthSelect
           value={category}
           onChange={onCategoryChange}
-          style={{ width: '100%' }}
           options={[
             { label: translate('all'), value: 'all' },
             ...categories,
@@ -69,30 +111,27 @@ const FilterFields = ({
 
       <div>
         <FieldLabel>{translate('price')}</FieldLabel>
-        <Space.Compact style={{ width: '100%' }}>
-          <InputNumber
+        <FullWidthCompact>
+          <HalfInputNumber
             min={0}
             placeholder={translate('min')}
             value={minPrice}
             onChange={onMinPriceChange}
-            style={{ width: '50%' }}
           />
-          <InputNumber
+          <HalfInputNumber
             min={0}
             placeholder={translate('max')}
             value={maxPrice}
             onChange={onMaxPriceChange}
-            style={{ width: '50%' }}
           />
-        </Space.Compact>
+        </FullWidthCompact>
       </div>
 
       <div>
         <FieldLabel>{translate('sort')}</FieldLabel>
-        <Select
+        <FullWidthSelect
           value={sort}
           onChange={onSortChange}
-          style={{ width: '100%' }}
           options={[
             { label: translate('catalog.recent'), value: 'newest' },
             { label: translate('catalog.priceAsc'), value: 'price_asc' },
@@ -103,23 +142,23 @@ const FilterFields = ({
       </div>
 
       {showDiscountedToggle && (
-        <Space style={{ justifyContent: 'space-between', width: '100%' }}>
+        <ToggleRow>
           <Typography.Text>{translate('outletOnly')}</Typography.Text>
           <Switch checked={discounted} onChange={onDiscountedChange} />
-        </Space>
+        </ToggleRow>
       )}
 
-      <Divider style={{ margin: '2px 0' }} />
+      <FilterDivider />
 
-      <Space.Compact style={{ width: '100%' }}>
-        <Button type="primary" onClick={onApply} style={{ width: '50%' }}>
+      <FullWidthCompact>
+        <HalfActionButton type="primary" onClick={onApply}>
           {translate('apply')}
-        </Button>
-        <Button onClick={onClear} style={{ width: '50%' }}>
+        </HalfActionButton>
+        <HalfActionButton onClick={onClear}>
           {translate('clear')}
-        </Button>
-      </Space.Compact>
-    </Space>
+        </HalfActionButton>
+      </FullWidthCompact>
+    </FieldStack>
   )
 }
 
@@ -146,9 +185,7 @@ const ProductFiltersPanel = ({ title, ...props }) => {
     return (
       <Aside>
         <Panel>
-          <Typography.Title level={5} style={{ marginTop: 0, marginBottom: 18 }}>
-            {panelTitle}
-          </Typography.Title>
+          <PanelTitle>{panelTitle}</PanelTitle>
           {fields}
         </Panel>
       </Aside>

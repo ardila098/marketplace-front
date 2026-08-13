@@ -8,6 +8,7 @@ import {
   ResultCount,
 } from '../../components/catalog/catalogStyles'
 import StoreCard from '../../components/storefront/StoreCard'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 import { storeService } from '../../services/storeService'
 import { PageShell } from '../../styles/layoutStyles'
@@ -17,6 +18,7 @@ const StoresPage = () => {
   const [stores, setStores] = useState([])
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadStores = useCallback(async (params = {}) => {
     setLoading(true)
@@ -33,8 +35,8 @@ const StoresPage = () => {
   }, [])
 
   useEffect(() => {
-    loadStores()
-  }, [loadStores])
+    loadStores({ search: debouncedSearch || undefined })
+  }, [debouncedSearch, loadStores])
 
   return (
     <PageShell>
@@ -53,7 +55,7 @@ const StoresPage = () => {
         placeholder={translate('stores.list.searchPlaceholder')}
         value={search}
         onChange={event => setSearch(event.target.value)}
-        onSearch={value => loadStores({ search: value })}
+        onSearch={setSearch}
         style={{ maxWidth: 360, marginBottom: 22 }}
       />
 

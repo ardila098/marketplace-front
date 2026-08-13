@@ -3,6 +3,7 @@ import { CheckOutlined, SettingOutlined } from '@ant-design/icons'
 import { useCallback, useEffect, useState } from 'react'
 import StatusTag from '../../components/common/StatusTag'
 import { STORE_BUSINESS_TYPE_OPTIONS, STORE_BUSINESS_TYPES } from '../../constants/businessTypes'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { advisorService } from '../../services/advisorService'
 import { brokerService } from '../../services/brokerService'
 import { storeService } from '../../services/storeService'
@@ -44,6 +45,7 @@ const AdminStoresPage = () => {
   const [saving, setSaving] = useState(false)
   const [selectedStore, setSelectedStore] = useState(null)
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadStores = useCallback(async (params = {}) => {
     setLoading(true)
@@ -59,8 +61,8 @@ const AdminStoresPage = () => {
   }, [])
 
   useEffect(() => {
-    loadStores()
-  }, [loadStores])
+    loadStores({ search: debouncedSearch || undefined })
+  }, [debouncedSearch, loadStores])
 
   useEffect(() => {
     Promise.all([
@@ -91,7 +93,7 @@ const AdminStoresPage = () => {
     try {
       await storeService.approve(store._id)
       message.success('Tienda aprobada')
-      loadStores({ search })
+      loadStores({ search: debouncedSearch || undefined })
     } catch (error) {
       message.error(error?.message || 'No se pudo aprobar la tienda')
     }
@@ -128,7 +130,7 @@ const AdminStoresPage = () => {
 
       message.success('Tienda actualizada')
       closeSettings()
-      loadStores({ search })
+      loadStores({ search: debouncedSearch || undefined })
     } catch (error) {
       message.error(error?.message || 'No se pudo actualizar la tienda')
     } finally {
@@ -231,7 +233,7 @@ const AdminStoresPage = () => {
         placeholder="Buscar tienda, seller o dominio"
         value={search}
         onChange={event => setSearch(event.target.value)}
-        onSearch={value => loadStores({ search: value })}
+        onSearch={setSearch}
         style={{ maxWidth: 380 }}
       />
 

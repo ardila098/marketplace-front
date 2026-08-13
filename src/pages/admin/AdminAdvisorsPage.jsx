@@ -17,6 +17,7 @@ import { CheckOutlined, DollarOutlined, EditOutlined } from '@ant-design/icons'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import StatusTag from '../../components/common/StatusTag'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { advisorService } from '../../services/advisorService'
 import { currency } from '../../utils/formatters'
 
@@ -42,12 +43,13 @@ const AdminAdvisorsPage = () => {
   const [editingAdvisor, setEditingAdvisor] = useState(null)
   const [selectedAdvisor, setSelectedAdvisor] = useState(null)
   const [payingPayout, setPayingPayout] = useState(null)
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadData = useCallback(async () => {
     setLoading(true)
 
     try {
-      const params = { search: search || undefined }
+      const params = { search: debouncedSearch || undefined }
       const [advisorsResponse, payoutsResponse] = await Promise.all([
         advisorService.adminList(params),
         advisorService.getPayouts(),
@@ -60,7 +62,7 @@ const AdminAdvisorsPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [search])
+  }, [debouncedSearch])
 
   useEffect(() => {
     loadData()
@@ -304,7 +306,7 @@ const AdminAdvisorsPage = () => {
         placeholder="Buscar asesor"
         value={search}
         onChange={event => setSearch(event.target.value)}
-        onSearch={loadData}
+        onSearch={setSearch}
         style={{ maxWidth: 360 }}
       />
 

@@ -8,6 +8,7 @@ import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { currency } from '../../utils/formatters'
 import useStoreCategories from '../../pages/storefront/hooks/useStoreCategories'
 import useStoreProducts from '../../pages/storefront/hooks/useStoreProducts'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 
 const getImage = product => {
@@ -24,11 +25,12 @@ const StorefrontSearchDrawer = ({ storeSlug, resolutionMode }) => {
   const { translate } = useDictionaryTranslation()
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
   const activeStoreSlug = open ? storeSlug : null
   const productFilters = useMemo(() => ({
-    search,
+    search: debouncedSearch,
     pageSize: 6,
-  }), [search])
+  }), [debouncedSearch])
   const { categories } = useStoreCategories(activeStoreSlug)
   const { products } = useStoreProducts(activeStoreSlug, productFilters)
 

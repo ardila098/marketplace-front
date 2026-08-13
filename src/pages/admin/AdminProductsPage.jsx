@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import StatusTag from '../../components/common/StatusTag'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { productService } from '../../services/productService'
 
 const STATUS_OPTIONS = [
@@ -29,13 +30,14 @@ const AdminProductsPage = () => {
   const [savingId, setSavingId] = useState('')
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
 
   const loadProducts = useCallback(async () => {
     setLoading(true)
 
     try {
       const response = await productService.list({
-        search: search || undefined,
+        search: debouncedSearch || undefined,
         status: status || undefined,
       })
 
@@ -45,7 +47,7 @@ const AdminProductsPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [search, status])
+  }, [debouncedSearch, status])
 
   useEffect(() => {
     loadProducts()
@@ -155,7 +157,7 @@ const AdminProductsPage = () => {
           placeholder="Buscar producto"
           value={search}
           onChange={event => setSearch(event.target.value)}
-          onSearch={loadProducts}
+          onSearch={setSearch}
           style={{ width: 320 }}
         />
         <Select

@@ -14,6 +14,7 @@ import {
 } from '../../components/catalog/catalogStyles'
 import ProductCard from '../../components/products/ProductCard'
 import { buildRoute, ROUTES } from '../../constants/routes'
+import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 import { catalogService } from '../../services/catalogService'
 import { categoryService } from '../../services/categoryService'
@@ -47,6 +48,7 @@ const ItemsListPage = () => {
   const [searchDraft, setSearchDraft] = useState(search)
   const [minPriceDraft, setMinPriceDraft] = useState(minPrice)
   const [maxPriceDraft, setMaxPriceDraft] = useState(maxPrice)
+  const debouncedSearchDraft = useDebouncedValue(searchDraft)
 
   const filters = useMemo(() => ({
     search,
@@ -110,6 +112,21 @@ const ItemsListPage = () => {
     setMinPriceDraft(minPrice)
     setMaxPriceDraft(maxPrice)
   }, [maxPrice, minPrice, search])
+
+  useEffect(() => {
+    const nextSearch = debouncedSearchDraft.trim()
+    if (nextSearch === search) return
+
+    const next = new URLSearchParams(searchParams)
+
+    if (nextSearch) {
+      next.set('search', nextSearch)
+    } else {
+      next.delete('search')
+    }
+
+    setSearchParams(next)
+  }, [debouncedSearchDraft, search, searchParams, setSearchParams])
 
   const updateParams = updates => {
     const next = new URLSearchParams(searchParams)
@@ -193,7 +210,7 @@ const ItemsListPage = () => {
                 : translate('catalog.searchPlaceholder')}
               value={searchDraft}
               onChange={event => setSearchDraft(event.target.value)}
-              onSearch={value => updateParams({ search: value.trim() })}
+              onSearch={setSearchDraft}
             />
           </CatalogToolbar>
 
