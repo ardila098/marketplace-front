@@ -18,6 +18,12 @@ export const DEFAULT_PLATFORM_SETTINGS = Object.freeze({
   footer: {
     description: 'Marketplace multi-vertical para comprar productos seleccionados.',
   },
+  seo: {
+    title: 'Cooqys',
+    description: 'Marketplace multi-vertical para comprar productos seleccionados.',
+    keywords: [],
+    image: '',
+  },
 })
 
 export const mergePlatformSettings = settings => ({
@@ -30,6 +36,10 @@ export const mergePlatformSettings = settings => ({
   footer: {
     ...DEFAULT_PLATFORM_SETTINGS.footer,
     ...(settings?.footer || {}),
+  },
+  seo: {
+    ...DEFAULT_PLATFORM_SETTINGS.seo,
+    ...(settings?.seo || {}),
   },
 })
 

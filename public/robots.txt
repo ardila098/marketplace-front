@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://api.cooqys.com/api/seo/sitemap.xml

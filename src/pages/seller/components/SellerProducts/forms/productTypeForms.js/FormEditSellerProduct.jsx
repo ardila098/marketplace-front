@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Button, Col, Form, Input, Row, Select, Space, Switch, message } from 'antd'
+import { Button, Col, Form, Input, Row, Select, Space, Switch, Typography, message } from 'antd'
 
 import ProductVariantFields from './ProductVariantFields'
 import ProductConfigurableSetFields from './ProductConfigurableSetFields'
@@ -68,6 +68,12 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
       vertical: data?.vertical?._id || data?.vertical,
       isNewArrival: data?.isNewArrival ?? data?.isNew ?? false,
       category: data?.category?._id || data?.category,
+      seo: {
+        ...(data?.seo || {}),
+        keywords: Array.isArray(data?.seo?.keywords)
+          ? data.seo.keywords.join(', ')
+          : data?.seo?.keywords || '',
+      },
     })
   }, [form, data])
 
@@ -164,6 +170,42 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
           <Form.Item label={translate('products.form.description')} name="description">
             <Input.TextArea rows={4} placeholder={translate('products.form.descriptionPlaceholder')} />
           </Form.Item>
+        </Col>
+
+        <Col xs={24}>
+          <Typography.Title level={5} style={{ marginTop: 4 }}>
+            SEO
+          </Typography.Title>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item label="Titulo SEO" name={['seo', 'title']}>
+            <Input placeholder={data?.name || translate('products.form.namePlaceholder')} />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item label="Palabras clave" name={['seo', 'keywords']}>
+            <Input placeholder="producto, categoria, tienda" />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item label="Descripcion SEO" name={['seo', 'description']}>
+            <Input.TextArea rows={3} maxLength={170} showCount />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <ImageUploadField
+            label="Imagen para compartir"
+            name={['seo', 'image']}
+            folder={UPLOAD_FOLDERS.products.images}
+            uploadRoute={UPLOAD_ROUTES.products.images}
+            maxCount={1}
+            multiple={false}
+            disabled={loading}
+          />
         </Col>
 
         <Col xs={24}>{renderProductTypeFields()}</Col>

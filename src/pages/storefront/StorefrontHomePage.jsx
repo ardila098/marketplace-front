@@ -12,7 +12,9 @@ import StorefrontProductGrid from '../../components/storefront/StorefrontProduct
 import StorefrontTrustStrip from '../../components/storefront/StorefrontTrustStrip'
 import { isAgencyBusiness, isExperienceBusiness } from '../../constants/businessTypes'
 import { buildRoute, ROUTES } from '../../constants/routes'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
+import { useSeoMeta } from '../../hooks/useSeoMeta'
 import { agencyItemService } from '../../services/agencyItemService'
 import { experienceService } from '../../services/experienceService'
 import { PageShell } from '../../styles/layoutStyles'
@@ -49,6 +51,34 @@ const StorefrontHomePage = () => {
   const productFilters = useMemo(() => ({ limit: 6 }), [])
   const { products, loading } = useStoreProducts(isAgencyStore || isExperienceStore ? null : activeStoreSlug, productFilters)
   const { categories } = useStoreCategories(isAgencyStore || isExperienceStore ? null : activeStoreSlug)
+  const storefront = store?.storefront || {}
+  const storeDescription = storefront.seoDescription || store?.description || `${store?.name || 'Tienda'} en Cooqys`
+  const storeImage = storefront.socialImage
+    ? getUploadUrl(UPLOAD_ROUTES.stores.banners, storefront.socialImage)
+    : getUploadUrl(UPLOAD_ROUTES.stores.banners, store?.banner) ||
+      getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
+  const storeUrl = storefront.publicUrl ||
+    (typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : '')
+
+  useSeoMeta({
+    title: storefront.seoTitle || store?.name,
+    description: storeDescription,
+    keywords: storefront.seoKeywords,
+    image: storeImage,
+    canonical: storeUrl,
+    siteName: store?.name,
+    verification: storefront.tracking?.searchConsoleVerification,
+    jsonLd: store
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'Store',
+          name: store.name,
+          description: storeDescription,
+          url: storeUrl,
+          image: storeImage,
+        }
+      : null,
+  })
 
   useEffect(() => {
     if (!isAgencyStore || !activeStoreSlug) {

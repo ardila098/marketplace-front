@@ -13,6 +13,7 @@ import {
 import { buildRoute, ROUTES } from '../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
+import { useSeoMeta } from '../../hooks/useSeoMeta'
 import { PageShell } from '../../styles/layoutStyles'
 import useStoreCategories from './hooks/useStoreCategories'
 
@@ -92,11 +93,27 @@ const StorefrontCategoriesPage = () => {
   const { currentStore: store, resolutionMode } = useSelector(state => state.storefront)
   const activeStoreSlug = storeSlug || store?.slug
   const { categories, loading } = useStoreCategories(activeStoreSlug)
+  const storefront = store?.storefront || {}
+  const seoImage = storefront.socialImage
+    ? getUploadUrl(UPLOAD_ROUTES.stores.banners, storefront.socialImage)
+    : getUploadUrl(UPLOAD_ROUTES.stores.banners, store?.banner) ||
+      getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
   const productsPath = resolutionMode === 'host'
     ? '/products'
     : activeStoreSlug
       ? buildRoute(ROUTES.STOREFRONT_PRODUCTS, { storeSlug: activeStoreSlug })
       : '/products'
+
+  useSeoMeta({
+    title: store?.name ? `Categorias - ${store.name}` : translate('categories'),
+    description: storefront.seoDescription || store?.description,
+    keywords: storefront.seoKeywords,
+    image: seoImage,
+    canonical: typeof window !== 'undefined'
+      ? `${window.location.origin}${window.location.pathname}`
+      : '',
+    siteName: store?.name,
+  })
 
   return (
     <PageShell>

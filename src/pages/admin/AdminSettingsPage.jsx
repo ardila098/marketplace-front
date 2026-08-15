@@ -12,6 +12,20 @@ import {
 
 const { TextArea } = Input
 
+const getSettingsFormValues = settings => {
+  const mergedSettings = mergePlatformSettings(settings)
+
+  return {
+    ...mergedSettings,
+    seo: {
+      ...mergedSettings.seo,
+      keywords: Array.isArray(mergedSettings.seo?.keywords)
+        ? mergedSettings.seo.keywords.join(', ')
+        : mergedSettings.seo?.keywords || '',
+    },
+  }
+}
+
 const AdminSettingsPage = () => {
   const [form] = Form.useForm()
   const dispatch = useDispatch()
@@ -26,7 +40,7 @@ const AdminSettingsPage = () => {
       .then(response => {
         if (!mounted) return
 
-        form.setFieldsValue(mergePlatformSettings(response.data))
+        form.setFieldsValue(getSettingsFormValues(response.data))
       })
       .catch(error => {
         message.error(error.message || 'No se pudo cargar la configuracion')
@@ -47,7 +61,7 @@ const AdminSettingsPage = () => {
       const response = await platformService.updateSettings(values)
       const settings = mergePlatformSettings(response.data)
 
-      form.setFieldsValue(settings)
+      form.setFieldsValue(getSettingsFormValues(settings))
       dispatch(setPlatformSettings(settings))
       message.success(response.message || 'Configuracion actualizada correctamente')
     } catch (error) {
@@ -144,6 +158,37 @@ const AdminSettingsPage = () => {
                 >
                   <Input />
                 </Form.Item>
+              </Col>
+            </Row>
+          </Card>
+
+          <Card title="SEO" style={{ marginBottom: 18 }}>
+            <Row gutter={20}>
+              <Col span={24}>
+                <Form.Item label="Titulo SEO" name={['seo', 'title']}>
+                  <Input placeholder="Cooqys" />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item label="Descripcion SEO" name={['seo', 'description']}>
+                  <TextArea rows={3} maxLength={170} showCount />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item label="Palabras clave" name={['seo', 'keywords']}>
+                  <Input placeholder="marketplace, tiendas, ecommerce" />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <ImageUploadField
+                  label="Imagen para compartir"
+                  name={['seo', 'image']}
+                  folder={UPLOAD_FOLDERS.platform.banners}
+                  uploadRoute={UPLOAD_ROUTES.platform.banners}
+                  maxCount={1}
+                  multiple={false}
+                  onUploadingChange={setUploading}
+                />
               </Col>
             </Row>
           </Card>

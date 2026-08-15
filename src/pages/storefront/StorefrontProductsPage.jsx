@@ -14,8 +14,10 @@ import {
   ResultCount,
 } from '../../components/catalog/catalogStyles'
 import StorefrontProductGrid from '../../components/storefront/StorefrontProductGrid'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
+import { useSeoMeta } from '../../hooks/useSeoMeta'
 import { PageShell } from '../../styles/layoutStyles'
 import useStoreCategories from './hooks/useStoreCategories'
 import useStoreProducts from './hooks/useStoreProducts'
@@ -57,6 +59,24 @@ const StorefrontProductsPage = () => {
 
   const { products, loading } = useStoreProducts(activeStoreSlug, filters)
   const { categories } = useStoreCategories(activeStoreSlug)
+  const storefront = store?.storefront || {}
+  const seoImage = storefront.socialImage
+    ? getUploadUrl(UPLOAD_ROUTES.stores.banners, storefront.socialImage)
+    : getUploadUrl(UPLOAD_ROUTES.stores.banners, store?.banner) ||
+      getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
+  const pageLabel = isOutlet ? translate('outlet') : translate('products')
+
+  useSeoMeta({
+    title: store?.name ? `${pageLabel} - ${store.name}` : pageLabel,
+    description: storefront.seoDescription || store?.description,
+    keywords: storefront.seoKeywords,
+    image: seoImage,
+    canonical: typeof window !== 'undefined'
+      ? `${window.location.origin}${window.location.pathname}`
+      : '',
+    siteName: store?.name,
+  })
+
   const categoryOptions = useMemo(() => {
     return categories.map(item => ({
       label: `${item.name} (${item.productCount})`,

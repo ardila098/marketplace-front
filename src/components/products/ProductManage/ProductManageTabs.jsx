@@ -106,12 +106,30 @@ const ProductManageTabs = () => {
     }
   }
 
+  const handleSeoSubmit = async values => {
+    setSaving(true)
+
+    try {
+      await productService.update(productId, values)
+      message.success('SEO actualizado correctamente')
+      getProductDetail()
+    } catch (error) {
+      message.error(error.message || 'No se pudo actualizar el SEO')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const baseItems = [
     {
       key: 'summary',
       label: 'Resumen',
       children: (
-        <ProductSummaryTab product={product} />
+        <ProductSummaryTab
+          product={product}
+          saving={saving}
+          onSaveSeo={handleSeoSubmit}
+        />
       ),
     },
   ]

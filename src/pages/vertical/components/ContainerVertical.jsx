@@ -3,7 +3,9 @@ import { Button, Space } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import CategorySlider from '../../../components/catalog/CategorySlider'
 import { buildRoute, ROUTES } from '../../../constants/routes'
+import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'
+import { useSeoMeta } from '../../../hooks/useSeoMeta'
 import useCatalog from '../../../hooks/useCatalog'
 import useVerticals from '../../../hooks/useVerticals'
 import { categoryService } from '../../../services/categoryService'
@@ -21,6 +23,31 @@ const ContainerVertical = () => {
   const { dataVertical, getVertical } = useVerticals()
   const productsPath = buildRoute(ROUTES.VERTICAL_PRODUCTS, { id })
   const outletPath = buildRoute(ROUTES.VERTICAL_OUTLET, { id })
+  const verticalImage = getUploadUrl(
+    UPLOAD_ROUTES.verticals.banners,
+    dataVertical?.bannerImage || dataVertical?.banner || dataVertical?.image
+  ) || getUploadUrl(UPLOAD_ROUTES.verticals.icons, dataVertical?.icon)
+  const verticalDescription =
+    dataVertical?.description ||
+    `Productos seleccionados en la vertical ${dataVertical?.name || ''}`.trim()
+
+  useSeoMeta({
+    title: dataVertical?.name ? `${dataVertical.name} | Cooqys` : 'Vertical | Cooqys',
+    description: verticalDescription,
+    image: verticalImage,
+    canonical: typeof window !== 'undefined'
+      ? `${window.location.origin}${window.location.pathname}`
+      : '',
+    jsonLd: dataVertical
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'CollectionPage',
+          name: dataVertical.name,
+          description: verticalDescription,
+          image: verticalImage,
+        }
+      : null,
+  })
 
   const loadCategories = useCallback(async () => {
     if (!id) return

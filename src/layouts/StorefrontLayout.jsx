@@ -12,6 +12,7 @@ import { isAgencyBusiness, isExperienceBusiness } from '../constants/businessTyp
 import { buildRoute, ROUTES } from '../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../hooks/useDictionaryTranslation'
+import { useStorefrontTracking } from '../hooks/useTrackingScripts'
 import { buildStoreTheme } from '../styles/themePresets'
 
 const { Header, Content } = Layout
@@ -127,6 +128,7 @@ const StorefrontLayout = () => {
   const { storeSlug } = useParams()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const { currentStore: store, resolutionMode } = useSelector(state => state.storefront)
+  useStorefrontTracking(store?.storefront?.tracking)
   const activeStoreSlug = storeSlug || store?.slug
   const homePath =
     resolutionMode === 'host'
