@@ -21,6 +21,7 @@ export const ROUTES = {
   STOREFRONT_AGENCY_ITEM_DETAIL: '/stores/:storeSlug/agency-items/:itemSlug',
   STOREFRONT_EXPERIENCE_DETAIL: '/stores/:storeSlug/experiences/:experienceSlug',
   BROKER_PUBLIC_PROFILE: '/brokers/:slug',
+  LANDING_PUBLIC: '/l/:slug',
   ORDER_LOOKUP: '/order-lookup',
   RETURN_REQUEST: '/returns',
   ORDER_DETAIL: '/orderDetail/:id',
@@ -78,6 +79,12 @@ export const ROUTES = {
   ADMIN_CREDIT_APPLICATIONS: '/admin/credit-applications',
 
   COURIER_SHIPMENTS: '/courier/shipments',
+
+  LANDING_DASHBOARD: '/landing',
+  LANDING_PAGES: '/landing/pages',
+  LANDING_LEADS: '/landing/leads',
+
+  ADMIN_LANDINGS: '/admin/landings',
 
 }
 

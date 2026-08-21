@@ -14,6 +14,7 @@ const redirectByRole = {
   [ROLES.BROKER.value]: ROUTES.BROKER_DASHBOARD,
   [ROLES.ADVISOR.value]: ROUTES.ADVISOR_DASHBOARD,
   [ROLES.CUSTOMER.value]: ROUTES.MARKETPLACE,
+  [ROLES.LANDING.value]: ROUTES.LANDING_PAGES,
 }
 
 const RegisterPage = () => {
@@ -75,14 +76,18 @@ const RegisterPage = () => {
                     label: translate('auth.sellerAccount'),
                     value: ROLES.SELLER.value,
                   },
+                  {
+                    label: translate('auth.landingAccount'),
+                    value: ROLES.LANDING.value,
+                  },
                 ]}
               />
             </Form.Item>
 
             <Typography.Paragraph type="secondary">
-              {selectedRole === ROLES.SELLER.value
-                ? translate('auth.sellerAccountHint')
-                : translate('auth.customerAccountHint')}
+              {selectedRole === ROLES.SELLER.value && translate('auth.sellerAccountHint')}
+              {selectedRole === ROLES.LANDING.value && translate('auth.landingAccountHint')}
+              {selectedRole === ROLES.CUSTOMER.value && translate('auth.customerAccountHint')}
             </Typography.Paragraph>
 
             <Form.Item

@@ -23,6 +23,10 @@ export const ROLES = Object.freeze({
     value: 6,
     label: 'Courier',
   },
+  LANDING: {
+    value: 7,
+    label: 'Landing',
+  },
 })
 
 export const ROLE_VALUES = Object.freeze(

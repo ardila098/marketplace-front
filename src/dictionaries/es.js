@@ -84,6 +84,8 @@ export const esDictionary = {
   'auth.customerAccountHint': 'Compra productos y consulta tus ordenes.',
   'auth.sellerAccount': 'Vender',
   'auth.sellerAccountHint': 'Crea tu tienda, publica productos y administra tus ventas.',
+  'auth.landingAccount': 'Landing',
+  'auth.landingAccountHint': 'Crea paginas de venta rapidas para productos, packs o campanas.',
   'auth.createAccount': 'Crear cuenta',
   'auth.signIn': 'Ingresar',
   'auth.registerSuccess': 'Cuenta creada correctamente',

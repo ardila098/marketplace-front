@@ -14,6 +14,7 @@ const redirectByRole = {
   [ROLES.BROKER.value]: ROUTES.BROKER_DASHBOARD,
   [ROLES.ADVISOR.value]: ROUTES.ADVISOR_DASHBOARD,
   [ROLES.CUSTOMER.value]: ROUTES.MARKETPLACE,
+  [ROLES.LANDING.value]: ROUTES.LANDING_PAGES,
 }
 
 const LoginPage = () => {

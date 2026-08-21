@@ -84,6 +84,8 @@ export const enDictionary = {
   'auth.customerAccountHint': 'Buy products and check your orders.',
   'auth.sellerAccount': 'Sell',
   'auth.sellerAccountHint': 'Create your store, publish products and manage your sales.',
+  'auth.landingAccount': 'Landing',
+  'auth.landingAccountHint': 'Create fast sales pages for products, bundles, or campaigns.',
   'auth.createAccount': 'Create account',
   'auth.signIn': 'Sign in',
   'auth.registerSuccess': 'Account created successfully',

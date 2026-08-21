@@ -286,6 +286,13 @@ export const adminMenu = [
     permission: PERMISSIONS.ADMIN_EXPERIENCE_BOOKINGS_MANAGE,
   },
   {
+    key: ROUTES.ADMIN_LANDINGS,
+    label: 'Landings',
+    path: ROUTES.ADMIN_LANDINGS,
+    icon: FileText,
+    permission: PERMISSIONS.ADMIN_LANDINGS_MANAGE,
+  },
+  {
     key: ROUTES.ADMIN_CONTACTS,
     label: 'Contactos',
     path: ROUTES.ADMIN_CONTACTS,
@@ -388,6 +395,23 @@ export const courierMenu = [
   },
 ]
 
+export const landingMenu = [
+  {
+    key: ROUTES.LANDING_PAGES,
+    label: 'Mis landings',
+    path: ROUTES.LANDING_PAGES,
+    icon: FileText,
+    permission: PERMISSIONS.LANDING_PAGES_MANAGE,
+  },
+  {
+    key: ROUTES.LANDING_LEADS,
+    label: 'Solicitudes',
+    path: ROUTES.LANDING_LEADS,
+    icon: Mail,
+    permission: PERMISSIONS.LANDING_LEADS_VIEW,
+  },
+]
+
 export const appMenuByArea = {
   customer: customerMenu,
   seller: sellerMenu,
@@ -395,4 +419,5 @@ export const appMenuByArea = {
   advisor: advisorMenu,
   admin: adminMenu,
   courier: courierMenu,
+  landing: landingMenu,
 }

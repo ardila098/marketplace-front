@@ -28,6 +28,7 @@ const StorefrontExperienceDetailPage = createLazyPage(
 )
 const StoresPage = createLazyPage(() => import('../pages/stores/StoresPage'))
 const BrokerPublicPage = createLazyPage(() => import('../pages/brokers/BrokerPublicPage'))
+const LandingPublicPage = createLazyPage(() => import('../pages/landings/LandingPublicPage'))
 
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const CheckoutPage = createLazyPage(() => import('../pages/checkout/CheckoutPage'))
@@ -78,10 +79,13 @@ const BrokerProfilePage = createLazyPage(() => import('../pages/broker/BrokerPro
 const AdvisorDashboardPage = createLazyPage(() => import('../pages/advisor/AdvisorDashboardPage'))
 const AdvisorStoresPage = createLazyPage(() => import('../pages/advisor/AdvisorStoresPage'))
 const AdvisorPayoutsPage = createLazyPage(() => import('../pages/advisor/AdvisorPayoutsPage'))
+const LandingPagesPage = createLazyPage(() => import('../pages/landings/LandingPagesPage'))
+const LandingLeadsPage = createLazyPage(() => import('../pages/landings/LandingLeadsPage'))
 
 const UnauthorizedPage = createLazyPage(() => import('../pages/system/UnauthorizedPage'))
 
 export const router = createBrowserRouter([
+  { path: ROUTES.LANDING_PUBLIC, element: <LandingPublicPage /> },
   {
     element: <PublicLayout />,
     children: [
@@ -205,6 +209,19 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    element: <ProtectedRoute roles={[ROLES.LANDING.value]} />,
+    children: [
+      {
+        element: <DashboardLayout area="landing" />,
+        children: [
+          { path: ROUTES.LANDING_DASHBOARD, element: <LandingPagesPage /> },
+          { path: ROUTES.LANDING_PAGES, element: <LandingPagesPage /> },
+          { path: ROUTES.LANDING_LEADS, element: <LandingLeadsPage /> },
+        ],
+      },
+    ],
+  },
+  {
     element: <ProtectedRoute roles={[ROLES.ADMIN.value]} />,
     children: [
       {
@@ -215,6 +232,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_ADVISORS, element: <AdminAdvisorsPage /> },
           { path: ROUTES.ADMIN_AGENCY_LEADS, element: <AgencyLeadsPage /> },
           { path: ROUTES.ADMIN_EXPERIENCE_BOOKINGS, element: <ExperienceBookingsPage /> },
+          { path: ROUTES.ADMIN_LANDINGS, element: <LandingPagesPage /> },
           { path: ROUTES.ADMIN_CONTACTS, element: <CustomerContactsPage /> },
           { path: ROUTES.ADMIN_VERTICALS, element: <AdminVerticalsPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },

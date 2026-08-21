@@ -92,6 +92,20 @@ export const API_ROUTES = {
     publicBySlug: (storeSlug, experienceSlug) => `/experiences/store/${storeSlug}/${experienceSlug}`,
   },
 
+  landingPages: {
+    base: '/landing-pages',
+    byId: id => `/landing-pages/${id}`,
+    status: id => `/landing-pages/${id}/status`,
+    my: '/landing-pages/my',
+    admin: '/landing-pages/admin',
+    publicResolve: '/landing-pages/public/resolve',
+    publicBySlug: slug => `/landing-pages/public/${slug}`,
+    publicLead: slug => `/landing-pages/public/${slug}/leads`,
+    leads: '/landing-pages/leads',
+    leadById: id => `/landing-pages/leads/${id}`,
+    leadNotes: id => `/landing-pages/leads/${id}/notes`,
+  },
+
   products: {
     base: '/products',
     myStoreProducts: '/products/my-store-products',
