@@ -226,12 +226,45 @@ export const BenefitGrid = styled.div`
   gap: 14px;
 `
 
+export const BenefitPanel = styled(Card)`
+  && {
+    border-radius: 22px;
+    border-color: #ededed;
+    background: #fff;
+  }
+`
+
+export const BenefitTitle = styled(Typography.Text)`
+  display: block;
+  margin-bottom: 14px;
+  color: #111;
+  font-size: 15px;
+  font-weight: 800;
+`
+
 export const BenefitCard = styled.div`
-  padding: 20px;
+  position: relative;
+  min-height: 72px;
+  padding: 16px 16px 16px 42px;
   border: 1px solid #ededed;
-  border-radius: 18px;
-  background: #fff;
+  border-radius: 16px;
+  background: #fafafa;
+  color: #111;
+  font-size: 14px;
+  line-height: 1.45;
   font-weight: 700;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 19px;
+    left: 17px;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--landing-primary);
+    box-shadow: 0 0 0 5px rgba(17, 17, 17, 0.06);
+  }
 `
 
 export const GalleryGrid = styled.div`
@@ -333,11 +366,13 @@ export const StickyCtaInner = styled.div`
 
 export const LeadDrawer = styled(Drawer)`
   .ant-drawer-body {
-    padding-bottom: 32px;
+    padding-bottom: 0;
   }
 `
 
 export const LeadForm = styled(Form)`
+  padding-bottom: 18px;
+
   .ant-input,
   .ant-select-selector {
     border-radius: 12px !important;
@@ -352,6 +387,41 @@ export const LeadFormGrid = styled.div`
   @media (max-width: 640px) {
     grid-template-columns: 1fr;
   }
+`
+
+export const LeadSelectionCard = styled.div`
+  margin-bottom: 14px;
+  padding: 16px;
+  border: 1px solid #ededed;
+  border-radius: 18px;
+  background: #fafafa;
+`
+
+export const LeadSelectionTitle = styled(Typography.Text)`
+  display: block;
+  margin-bottom: 12px;
+  color: #111;
+  font-size: 15px;
+  font-weight: 800;
+`
+
+export const LeadSelectionHint = styled(Typography.Text)`
+  display: block;
+  margin-top: -6px;
+  margin-bottom: 12px;
+  color: #6b7280;
+  font-size: 13px;
+`
+
+export const LeadFormActions = styled.div`
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin: 6px -24px 0;
+  padding: 18px 24px 24px;
+  border-top: 1px solid #ededed;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
 `
 
 export const DashboardFormSection = styled.div`

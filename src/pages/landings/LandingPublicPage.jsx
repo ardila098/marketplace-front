@@ -8,6 +8,8 @@ import { currency } from '../../utils/formatters'
 import {
   BenefitCard,
   BenefitGrid,
+  BenefitPanel,
+  BenefitTitle,
   Eyebrow,
   FaqGrid,
   FaqItem,
@@ -27,7 +29,11 @@ import {
   LandingLogo,
   LeadDrawer,
   LeadForm,
+  LeadFormActions,
   LeadFormGrid,
+  LeadSelectionCard,
+  LeadSelectionHint,
+  LeadSelectionTitle,
   OfferBadge,
   OfferCompare,
   OfferPrice,
@@ -260,11 +266,14 @@ const LandingPublicPage = ({ host, initialLanding = null }) => {
           </ProductCopy>
 
           {!!benefits.length && (
-            <BenefitGrid>
-              {benefits.slice(0, 6).map(benefit => (
-                <BenefitCard key={benefit}>{benefit}</BenefitCard>
-              ))}
-            </BenefitGrid>
+            <BenefitPanel bordered={false}>
+              <BenefitTitle>Beneficios del producto</BenefitTitle>
+              <BenefitGrid>
+                {benefits.slice(0, 6).map(benefit => (
+                  <BenefitCard key={benefit}>{benefit}</BenefitCard>
+                ))}
+              </BenefitGrid>
+            </BenefitPanel>
           )}
         </ProductPanel>
       </Section>
@@ -353,21 +362,28 @@ const LandingPublicPage = ({ host, initialLanding = null }) => {
         ) : (
           <LeadForm form={form} layout="vertical" onFinish={handleSubmit}>
             {selectionLabels.map((label, index) => (
-              <LeadFormGrid key={`${label}-${index}`}>
+              <LeadSelectionCard key={`${label}-${index}`}>
                 <Form.Item label={label} name={['selections', index, 'label']} initialValue={label} hidden>
                   <Input />
                 </Form.Item>
-                {!!colorOptions.length && (
-                  <Form.Item label="Color" name={['selections', index, 'color']} rules={[{ required: true }]}>
-                    <Select options={colorOptions} />
-                  </Form.Item>
-                )}
-                {!!sizeOptions.length && (
-                  <Form.Item label="Talla" name={['selections', index, 'size']} rules={[{ required: true }]}>
-                    <Select options={sizeOptions} />
-                  </Form.Item>
-                )}
-              </LeadFormGrid>
+                <LeadSelectionTitle>{label}</LeadSelectionTitle>
+                <LeadSelectionHint>Escoge las opciones para este item.</LeadSelectionHint>
+                <LeadFormGrid>
+                  {!!colorOptions.length && (
+                    <Form.Item label="Color" name={['selections', index, 'color']} rules={[{ required: true }]}>
+                      <Select options={colorOptions} />
+                    </Form.Item>
+                  )}
+                  {!!sizeOptions.length && (
+                    <Form.Item label="Talla" name={['selections', index, 'size']} rules={[{ required: true }]}>
+                      <Select options={sizeOptions} />
+                    </Form.Item>
+                  )}
+                  {!colorOptions.length && !sizeOptions.length && (
+                    <Typography.Text type="secondary">Sin opciones adicionales.</Typography.Text>
+                  )}
+                </LeadFormGrid>
+              </LeadSelectionCard>
             ))}
 
             <LeadFormGrid>
@@ -432,9 +448,11 @@ const LandingPublicPage = ({ host, initialLanding = null }) => {
               </Checkbox>
             </Form.Item>
 
-            <LandingButton htmlType="submit" loading={saving} block>
-              Enviar solicitud
-            </LandingButton>
+            <LeadFormActions>
+              <LandingButton htmlType="submit" loading={saving} block>
+                Enviar solicitud
+              </LandingButton>
+            </LeadFormActions>
           </LeadForm>
         )}
       </LeadDrawer>

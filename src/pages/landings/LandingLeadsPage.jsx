@@ -27,7 +27,10 @@ const formatDate = value => {
 
 const renderSelections = selections => {
   const values = (selections || [])
-    .map(item => [item.color, item.size].filter(Boolean).join(' / '))
+    .map(item => {
+      const options = [item.color, item.size].filter(Boolean).join(' / ')
+      return [item.label, options].filter(Boolean).join(': ')
+    })
     .filter(Boolean)
 
   return values.length ? values.join(', ') : '-'
