@@ -28,6 +28,7 @@ export const API_ROUTES = {
     categories: slug => `/stores/${slug}/categories`,
     storefront: id => `/stores/${id}/storefront`,
     domainStatus: id => `/stores/${id}/domain/status`,
+    domainSync: id => `/stores/${id}/domain/sync`,
     approve: id => `/stores/${id}/approve`,
   },
 
@@ -101,6 +102,7 @@ export const API_ROUTES = {
     publicResolve: '/landing-pages/public/resolve',
     publicBySlug: slug => `/landing-pages/public/${slug}`,
     publicLead: slug => `/landing-pages/public/${slug}/leads`,
+    domainSync: id => `/landing-pages/${id}/domain/sync`,
     leads: '/landing-pages/leads',
     leadById: id => `/landing-pages/leads/${id}`,
     leadNotes: id => `/landing-pages/leads/${id}/notes`,

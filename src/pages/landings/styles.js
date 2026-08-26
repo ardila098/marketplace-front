@@ -169,7 +169,7 @@ export const LandingButton = styled(Button)`
     border-radius: 999px;
     border-color: var(--landing-primary);
     background: var(--landing-primary);
-    color: #fff;
+    color: #000000;
     font-weight: 800;
     box-shadow: none;
   }

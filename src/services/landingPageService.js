@@ -38,6 +38,11 @@ export const landingPageService = {
     return normalizeItemResponse(response, 'Estado actualizado correctamente')
   },
 
+  syncDomain: async id => {
+    const response = await DataService.post(API_ROUTES.landingPages.domainSync(id))
+    return normalizeItemResponse(response, 'Dominio sincronizado correctamente')
+  },
+
   createLead: async (slug, payload) => {
     const response = await DataService.post(API_ROUTES.landingPages.publicLead(slug), payload)
     return normalizeItemResponse(response, 'Solicitud enviada correctamente')

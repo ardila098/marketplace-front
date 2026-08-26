@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Drawer, Form, Input, Select, Space, Switch, Table, Tag, Typography, message } from 'antd'
+import { Button, Card, Drawer, Form, Input, Select, Space, Switch, Table, Tag, Typography, message } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
@@ -65,6 +65,12 @@ const getPublicUrl = landing => {
   if (!landing?.slug) return ''
 
   return `${window.location.origin}/l/${landing.slug}`
+}
+
+const getDomainRecords = domain => {
+  if (domain?.dnsRecords?.length) return domain.dnsRecords
+
+  return [domain?.cnameRecord, domain?.verificationRecord].filter(Boolean)
 }
 
 const getFormValues = landing => ({
@@ -191,6 +197,7 @@ const LandingPagesPage = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [syncingDomain, setSyncingDomain] = useState(false)
   const isAdmin = Number(role) === ROLES.ADMIN.value
 
   const loadData = useCallback(async () => {
@@ -244,6 +251,28 @@ const LandingPagesPage = () => {
       message.error(error?.message || 'No se pudo guardar la landing')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleSyncDomain = async () => {
+    if (!selectedLanding?._id) return
+
+    setSyncingDomain(true)
+
+    try {
+      const response = await landingPageService.syncDomain(selectedLanding._id)
+      const updatedLanding = response.data
+
+      setSelectedLanding(updatedLanding)
+      setLandings(currentLandings => currentLandings.map(landing => (
+        landing._id === updatedLanding._id ? updatedLanding : landing
+      )))
+      form.setFieldsValue(getFormValues(updatedLanding))
+      message.success('Dominio sincronizado correctamente')
+    } catch (error) {
+      message.error(error?.message || 'No se pudo verificar el dominio')
+    } finally {
+      setSyncingDomain(false)
     }
   }
 
@@ -387,15 +416,44 @@ const LandingPagesPage = () => {
               </FieldGrid>
             )}
 
-            {selectedLanding?.domain?.verificationRecord && (
-              <Space direction="vertical" size={4}>
-                <Typography.Text strong>Registro DNS para verificar</Typography.Text>
+            {selectedLanding?.domain?.hostname && (
+              <Space direction="vertical" size="small" style={{ width: '100%' }}>
+                <Space wrap>
+                  <Tag color={getLandingDomainStatusColor(selectedLanding.domain.status)}>
+                    {getLandingDomainStatusLabel(selectedLanding.domain.status)}
+                  </Tag>
+                  {selectedLanding.domain.cloudflareHostnameStatus && (
+                    <Typography.Text type="secondary">
+                      Cloudflare: {selectedLanding.domain.cloudflareHostnameStatus}
+                    </Typography.Text>
+                  )}
+                  {selectedLanding.domain.sslStatus && (
+                    <Typography.Text type="secondary">
+                      SSL: {selectedLanding.domain.sslStatus}
+                    </Typography.Text>
+                  )}
+                  <Button size="small" loading={syncingDomain} onClick={handleSyncDomain}>
+                    Verificar ahora
+                  </Button>
+                </Space>
+
                 <Typography.Text type="secondary">
-                  Agrega este registro TXT en el DNS del dominio y luego el admin puede marcarlo como verificado.
+                  Agrega estos registros en el DNS del dominio. El CNAME debe apuntar a Cooqys.
                 </Typography.Text>
-                <PublicPathText copyable>{selectedLanding.domain.verificationRecord.type}</PublicPathText>
-                <PublicPathText copyable>{selectedLanding.domain.verificationRecord.name}</PublicPathText>
-                <PublicPathText copyable>{selectedLanding.domain.verificationRecord.value}</PublicPathText>
+
+                {getDomainRecords(selectedLanding.domain).map((record, index) => (
+                  <Card size="small" key={`${record.type}-${record.name}-${index}`}>
+                    <PublicPathText copyable>{record.type}</PublicPathText>
+                    <PublicPathText copyable>{record.name}</PublicPathText>
+                    <PublicPathText copyable>{record.value}</PublicPathText>
+                  </Card>
+                ))}
+
+                {selectedLanding.domain.rejectionReason && (
+                  <Typography.Text type="danger">
+                    {selectedLanding.domain.rejectionReason}
+                  </Typography.Text>
+                )}
               </Space>
             )}
           </DashboardFormSection>

@@ -68,6 +68,11 @@ export const storeService = {
     return normalizeItemResponse(response, 'Dominio actualizado correctamente')
   },
 
+  syncDomain: async id => {
+    const response = await DataService.post(API_ROUTES.stores.domainSync(id))
+    return normalizeItemResponse(response, 'Dominio sincronizado correctamente')
+  },
+
   approve: async id => {
     const response = await DataService.patch(API_ROUTES.stores.approve(id))
     return normalizeItemResponse(response, 'Tienda aprobada correctamente')

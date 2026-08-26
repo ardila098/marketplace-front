@@ -30,12 +30,86 @@ const getStoreValues = store => ({
   },
 })
 
+const getDomainRecords = domain => {
+  if (domain?.dnsRecords?.length) return domain.dnsRecords
+
+  return [domain?.cnameRecord, domain?.verificationRecord].filter(Boolean)
+}
+
+const DomainDnsInstructions = ({ domain, loading, onSync }) => {
+  if (!domain?.hostname) return null
+
+  const records = getDomainRecords(domain)
+
+  return (
+    <Card
+      title="Configuracion de dominio"
+      extra={(
+        <Button size="small" loading={loading} onClick={onSync}>
+          Verificar ahora
+        </Button>
+      )}
+    >
+      <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <Space wrap>
+          <StatusTag status={domain.status || 'not_configured'} />
+          {domain.cloudflareHostnameStatus && (
+            <Typography.Text type="secondary">
+              Cloudflare: {domain.cloudflareHostnameStatus}
+            </Typography.Text>
+          )}
+          {domain.sslStatus && (
+            <Typography.Text type="secondary">
+              SSL: {domain.sslStatus}
+            </Typography.Text>
+          )}
+        </Space>
+
+        <Typography.Paragraph style={{ marginBottom: 0 }}>
+          Agrega estos registros en el DNS del dominio. Cuando el CNAME apunte a Cooqys,
+          usa el boton de verificacion para actualizar el estado.
+        </Typography.Paragraph>
+
+        {records.map((record, index) => (
+          <Card size="small" key={`${record.type}-${record.name}-${index}`}>
+            <Row gutter={[12, 8]}>
+              <Col xs={24} md={6}>
+                <Typography.Text type="secondary">Tipo</Typography.Text>
+                <Typography.Paragraph copyable style={{ marginBottom: 0 }}>
+                  {record.type}
+                </Typography.Paragraph>
+              </Col>
+              <Col xs={24} md={8}>
+                <Typography.Text type="secondary">Nombre</Typography.Text>
+                <Typography.Paragraph copyable style={{ marginBottom: 0 }}>
+                  {record.name}
+                </Typography.Paragraph>
+              </Col>
+              <Col xs={24} md={10}>
+                <Typography.Text type="secondary">Valor</Typography.Text>
+                <Typography.Paragraph copyable style={{ marginBottom: 0 }}>
+                  {record.value}
+                </Typography.Paragraph>
+              </Col>
+            </Row>
+          </Card>
+        ))}
+
+        {domain.rejectionReason && (
+          <Typography.Text type="danger">{domain.rejectionReason}</Typography.Text>
+        )}
+      </Space>
+    </Card>
+  )
+}
+
 const StoreFormPage = () => {
   const [form] = Form.useForm()
   const [store, setStore] = useState(null)
   const [verticals, setVerticals] = useState([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [syncingDomain, setSyncingDomain] = useState(false)
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -104,6 +178,23 @@ const StoreFormPage = () => {
       message.error(error?.message || 'No se pudo guardar la tienda')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleSyncDomain = async () => {
+    if (!store?._id) return
+
+    setSyncingDomain(true)
+
+    try {
+      const response = await storeService.syncDomain(store._id)
+      setStore(response.data)
+      form.setFieldsValue(getStoreValues(response.data))
+      message.success('Dominio sincronizado correctamente')
+    } catch (error) {
+      message.error(error?.message || 'No se pudo verificar el dominio')
+    } finally {
+      setSyncingDomain(false)
     }
   }
 
@@ -268,19 +359,11 @@ const StoreFormPage = () => {
           </Form>
         </Card>
 
-        {domain?.verificationRecord && (
-          <Card title="Verificacion de dominio">
-            <Typography.Paragraph>
-              Crea este registro DNS para solicitar la verificacion del dominio.
-            </Typography.Paragraph>
-            <Typography.Text strong>Tipo</Typography.Text>
-            <Typography.Paragraph copyable>{domain.verificationRecord.type}</Typography.Paragraph>
-            <Typography.Text strong>Nombre</Typography.Text>
-            <Typography.Paragraph copyable>{domain.verificationRecord.name}</Typography.Paragraph>
-            <Typography.Text strong>Valor</Typography.Text>
-            <Typography.Paragraph copyable>{domain.verificationRecord.value}</Typography.Paragraph>
-          </Card>
-        )}
+        <DomainDnsInstructions
+          domain={domain}
+          loading={syncingDomain}
+          onSync={handleSyncDomain}
+        />
       </Space>
     </Spin>
   )
