@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { ROLES } from '../../constants/roles'
 import { ROUTES } from '../../constants/routes'
 import { useAuth } from '../../hooks/useAuth'
+import { authService } from '../../services/authService'
 import { logout } from '../../store/slices/authSlice'
 import { openCartDrawer, selectCartCount } from '../../store/slices/cartSlice'
 import { ButtonCart } from './style'
@@ -23,6 +24,11 @@ const UserActions = ({ compact = false, showAccount = true, showCart = true }) =
   const cartCount = useSelector(selectCartCount)
   const { user, role } = useAuth()
 
+  const handleLogout = async () => {
+    await authService.logout()
+    dispatch(logout())
+  }
+
   const menuItems = user
     ? [
         {
@@ -33,7 +39,7 @@ const UserActions = ({ compact = false, showAccount = true, showCart = true }) =
           key: 'logout',
           label: 'Cerrar sesion',
           icon: <LogOut size={15} />,
-          onClick: () => dispatch(logout()),
+          onClick: handleLogout,
         },
       ]
     : []

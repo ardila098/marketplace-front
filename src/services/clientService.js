@@ -35,6 +35,7 @@ const handleError = error => {
 export const client = axios.create({
   baseURL: env.apiBaseUrl,
   timeout: 30000,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -43,6 +44,7 @@ export const client = axios.create({
 export const fileClient = axios.create({
   baseURL: env.apiBaseUrl,
   timeout: 30000,
+  withCredentials: true,
 })
 
 client.interceptors.request.use(addRequestHeaders)

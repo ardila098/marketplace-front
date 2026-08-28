@@ -1,7 +1,7 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { Button, Space } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
-import CategorySlider from '../../../components/catalog/CategorySlider'
+import CategorySlider from '../../../components/sliders/categorySlider/CategorySlider'
 import { buildRoute, ROUTES } from '../../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'

@@ -1,0 +1,168 @@
+import { Row } from 'antd'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+
+const Section = styled.section`
+  width: 100%;
+  position: relative;
+`
+
+const Container = styled(Row)`
+  align-items: center;
+`
+
+const Header = styled(Row)`
+  align-items: flex-end;
+  gap: 16px;
+  /* justify-self: center; */
+  div {
+    align-content: center !important;
+  }
+`
+
+const Title = styled.h2`
+  color: ${({ theme }) => theme.textColor || '#111827'};
+  font-size: 50px;
+  font-weight: 650;
+  line-height: 1.2;
+  margin: 0;
+`
+
+const Subtitle = styled.p`
+  color: ${({ theme }) => theme.mutedTextColor || '#6b7280'};
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 6px 0 0;
+`
+
+const ArrowButton = styled.button`
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(17, 24, 39, 0.1);
+  border-radius: 999px;
+  background: #ffffff;
+  color: ${({ theme }) => theme.textColor || '#111827'};
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    border-color: ${({ theme }) => theme.primaryColor || '#111111'};
+    transform: translateY(-1px);
+  }
+`
+
+const SideArrow = styled(ArrowButton)`
+  position: absolute;
+  top: 42%;
+  ${({ $side }) => ($side === 'left' ? 'left: -12px;' : 'right: -12px;')}
+  z-index: 3;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.1);
+
+  @media (max-width: 576px) {
+    display: none;
+  }
+`
+
+const Rail = styled.div`
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 160px;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 10px 20px 10px;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 576px) {
+    grid-auto-columns: 136px;
+    gap: 14px;
+  }
+`
+
+const Card = styled(Link)`
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  scroll-snap-align: start;
+
+  &:hover {
+    color: inherit;
+  }
+`
+
+const Circle = styled.div`
+  width: 148px;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+  isolation: isolate;
+  background: #f4f5f7;
+  border: 2px solid
+    ${({ $active, theme }) => ($active ? theme.primaryColor || '#111111' : '#ffffff')};
+  box-shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
+
+  @media (max-width: 576px) {
+    width: 126px;
+  }
+`
+
+const ImageLayer = styled.div`
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(17, 24, 39, 0.02), rgba(17, 24, 39, 0.2)),
+    ${({ $image }) =>
+      $image ? `url(${$image}) center/cover` : 'linear-gradient(135deg, #dfe4ea, #dfe4ea)'};
+  transition: transform 0.32s ease;
+
+  ${Card}:hover & {
+    transform: scale(1.045);
+  }
+`
+
+const EmptyImage = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #9ca3af;
+  z-index: 1;
+`
+
+const Name = styled.h3`
+  color: ${({ theme }) => theme.textColor || '#111827'};
+  font-size: 14px;
+  font-weight: 560;
+  line-height: 1.25;
+  margin: 0;
+  max-width: 148px;
+`
+
+export {
+  Section,
+  Header,
+  Title,
+  Subtitle,
+  SideArrow,
+  Rail,
+  Circle,
+  ImageLayer,
+  EmptyImage,
+  Name,
+  Card,
+  Container,
+}

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom'
 import AgencyItemCard from '../../components/agency/AgencyItemCard'
-import CategorySlider from '../../components/catalog/CategorySlider'
+import CategorySlider from '../../components/sliders/categorySlider/CategorySlider'
 import CreditApplicationForm from '../../components/credit/CreditApplicationForm'
 import ExperienceCard from '../../components/experiences/ExperienceCard'
 import NewsletterSignup from '../../components/newsletter/NewsletterSignup'
@@ -33,31 +33,41 @@ const StorefrontHomePage = () => {
   const [agencyLoading, setAgencyLoading] = useState(false)
   const [experiences, setExperiences] = useState([])
   const [experiencesLoading, setExperiencesLoading] = useState(false)
-  const productsPath = resolutionMode === 'host'
-    ? '/products'
-    : activeStoreSlug
-      ? buildRoute(ROUTES.STOREFRONT_PRODUCTS, { storeSlug: activeStoreSlug })
-      : '/products'
-  const categoriesPath = resolutionMode === 'host'
-    ? '/categories'
-    : activeStoreSlug
-      ? buildRoute(ROUTES.STOREFRONT_CATEGORIES, { storeSlug: activeStoreSlug })
-      : '/categories'
-  const outletPath = resolutionMode === 'host'
-    ? '/outlet'
-    : activeStoreSlug
-      ? buildRoute(ROUTES.STOREFRONT_OUTLET, { storeSlug: activeStoreSlug })
-      : '/outlet'
+  const productsPath =
+    resolutionMode === 'host'
+      ? '/products'
+      : activeStoreSlug
+        ? buildRoute(ROUTES.STOREFRONT_PRODUCTS, { storeSlug: activeStoreSlug })
+        : '/products'
+  const categoriesPath =
+    resolutionMode === 'host'
+      ? '/categories'
+      : activeStoreSlug
+        ? buildRoute(ROUTES.STOREFRONT_CATEGORIES, { storeSlug: activeStoreSlug })
+        : '/categories'
+  const outletPath =
+    resolutionMode === 'host'
+      ? '/outlet'
+      : activeStoreSlug
+        ? buildRoute(ROUTES.STOREFRONT_OUTLET, { storeSlug: activeStoreSlug })
+        : '/outlet'
   const productFilters = useMemo(() => ({ limit: 6 }), [])
-  const { products, loading } = useStoreProducts(isAgencyStore || isExperienceStore ? null : activeStoreSlug, productFilters)
-  const { categories } = useStoreCategories(isAgencyStore || isExperienceStore ? null : activeStoreSlug)
+  const { products, loading } = useStoreProducts(
+    isAgencyStore || isExperienceStore ? null : activeStoreSlug,
+    productFilters
+  )
+  const { categories } = useStoreCategories(
+    isAgencyStore || isExperienceStore ? null : activeStoreSlug
+  )
   const storefront = store?.storefront || {}
-  const storeDescription = storefront.seoDescription || store?.description || `${store?.name || 'Tienda'} en Cooqys`
+  const storeDescription =
+    storefront.seoDescription || store?.description || `${store?.name || 'Tienda'} en Cooqys`
   const storeImage = storefront.socialImage
     ? getUploadUrl(UPLOAD_ROUTES.stores.banners, storefront.socialImage)
     : getUploadUrl(UPLOAD_ROUTES.stores.banners, store?.banner) ||
       getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
-  const storeUrl = storefront.publicUrl ||
+  const storeUrl =
+    storefront.publicUrl ||
     (typeof window !== 'undefined' ? `${window.location.origin}${window.location.pathname}` : '')
 
   useSeoMeta({
@@ -88,7 +98,8 @@ const StorefrontHomePage = () => {
 
     setAgencyLoading(true)
 
-    agencyItemService.listPublicByStore(activeStoreSlug, { limit: 8 })
+    agencyItemService
+      .listPublicByStore(activeStoreSlug, { limit: 8 })
       .then(response => setAgencyItems(response.data || []))
       .catch(() => setAgencyItems([]))
       .finally(() => setAgencyLoading(false))
@@ -102,7 +113,8 @@ const StorefrontHomePage = () => {
 
     setExperiencesLoading(true)
 
-    experienceService.listPublicByStore(activeStoreSlug, { limit: 8 })
+    experienceService
+      .listPublicByStore(activeStoreSlug, { limit: 8 })
       .then(response => setExperiences(response.data || []))
       .catch(() => setExperiences([]))
       .finally(() => setExperiencesLoading(false))
@@ -145,11 +157,7 @@ const StorefrontHomePage = () => {
               </div>
             </section>
 
-            <NewsletterSignup
-              source="storefront"
-              store={store}
-              storeSlug={activeStoreSlug}
-            />
+            <NewsletterSignup source="storefront" store={store} storeSlug={activeStoreSlug} />
           </Space>
         </PageShell>
       </>
@@ -201,11 +209,7 @@ const StorefrontHomePage = () => {
               />
             )}
 
-            <NewsletterSignup
-              source="storefront"
-              store={store}
-              storeSlug={activeStoreSlug}
-            />
+            <NewsletterSignup source="storefront" store={store} storeSlug={activeStoreSlug} />
           </Space>
         </PageShell>
       </>
@@ -231,7 +235,9 @@ const StorefrontHomePage = () => {
           <section>
             <Row align="middle" justify="space-between" gutter={[16, 16]}>
               <Col>
-                <Typography.Text type="secondary">{translate('storefront.catalog')}</Typography.Text>
+                <Typography.Text type="secondary">
+                  {translate('storefront.catalog')}
+                </Typography.Text>
                 <Typography.Title level={3} style={{ margin: 0, letterSpacing: 0 }}>
                   {translate('catalog.featuredProducts')}
                 </Typography.Title>
@@ -252,9 +258,11 @@ const StorefrontHomePage = () => {
             </Row>
 
             <div style={{ marginTop: 18 }}>
-              {loading
-                ? <Spin />
-                : <StorefrontProductGrid products={products} storeSlug={activeStoreSlug} />}
+              {loading ? (
+                <Spin />
+              ) : (
+                <StorefrontProductGrid products={products} storeSlug={activeStoreSlug} />
+              )}
             </div>
           </section>
 
@@ -268,11 +276,7 @@ const StorefrontHomePage = () => {
             />
           )}
 
-          <NewsletterSignup
-            source="storefront"
-            store={store}
-            storeSlug={activeStoreSlug}
-          />
+          <NewsletterSignup source="storefront" store={store} storeSlug={activeStoreSlug} />
         </Space>
       </PageShell>
     </>

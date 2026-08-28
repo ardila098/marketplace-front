@@ -28,6 +28,12 @@ export const authService = {
   },
 
   logout: async () => {
+    try {
+      await DataService.post(API_ROUTES.auth.logout)
+    } catch {
+      // La sesion local se limpia aunque el backend no responda.
+    }
+
     localStorage.removeItem('accessToken')
 
     return normalizeItemResponse({ data: true }, 'Sesion cerrada correctamente')
