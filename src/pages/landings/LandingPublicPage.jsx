@@ -181,7 +181,7 @@ const LandingPublicPage = ({ host, initialLanding = null }) => {
   }
 
   return (
-    <LandingCanvas $theme={landing.theme}>
+    <LandingCanvas $theme={landing.theme} $template={landing.template}>
       <LandingHeader>
         <LandingBrand>
           {logoUrl ? (

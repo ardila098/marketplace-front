@@ -1,12 +1,27 @@
-import { Button, Card, Col, Form, Input, InputNumber, Row, Spin, Typography, message } from 'antd'
+import { Button, Col, Form, Input, Row, Select, Spin, Switch, Typography, message } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
 
 import StoreThemePreview from '../../components/storefront/StoreThemePreview'
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
+import {
+  STOREFRONT_SECTION_DEFAULTS,
+  STOREFRONT_SECTION_OPTIONS,
+  STOREFRONT_TEMPLATES,
+  STOREFRONT_TEMPLATE_OPTIONS,
+} from '../../constants/storefrontTemplates'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { storeService } from '../../services/storeService'
+import { FullWidthInputNumber } from '../../styles/dashboardStyles'
 import { buildStoreTheme, neutralTheme } from '../../styles/themePresets'
+import {
+  DesignCard,
+  SectionSwitchCard,
+  SectionSwitchGrid,
+  SeoPanel,
+  SwitchDescription,
+  SwitchHeader,
+  SwitchTitle,
+} from './storeDesignStyles'
 
 const THEME_FIELDS = [
   'primaryColor',
@@ -17,11 +32,7 @@ const THEME_FIELDS = [
   'borderRadius',
 ]
 
-const SeoPanel = styled.section`
-  border-top: 1px solid #f0f0f0;
-  margin-top: 18px;
-  padding-top: 18px;
-`
+const DEFAULT_TEMPLATE = STOREFRONT_TEMPLATES.CLASSIC.value
 
 const pickThemeValues = values => THEME_FIELDS.reduce((theme, field) => {
   if (values[field] !== undefined) {
@@ -31,12 +42,19 @@ const pickThemeValues = values => THEME_FIELDS.reduce((theme, field) => {
   return theme
 }, {})
 
+const getSectionValues = store => ({
+  ...STOREFRONT_SECTION_DEFAULTS,
+  ...(store?.storefront?.sections || {}),
+})
+
 const getFormValues = store => {
   const theme = buildStoreTheme(store)
   const storefront = store?.storefront || {}
 
   return {
     ...theme,
+    template: storefront.template || DEFAULT_TEMPLATE,
+    sections: getSectionValues(store),
     seoTitle: storefront.seoTitle || '',
     seoDescription: storefront.seoDescription || '',
     seoKeywords: Array.isArray(storefront.seoKeywords)
@@ -57,7 +75,11 @@ const StoreDesignPage = () => {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
-  const [theme, setTheme] = useState(neutralTheme)
+  const [preview, setPreview] = useState({
+    theme: neutralTheme,
+    template: DEFAULT_TEMPLATE,
+    sections: STOREFRONT_SECTION_DEFAULTS,
+  })
 
   const loadStore = useCallback(async () => {
     setLoading(true)
@@ -66,9 +88,15 @@ const StoreDesignPage = () => {
       const response = await storeService.getMyStore()
       const currentStore = response.data
       const currentTheme = buildStoreTheme(currentStore)
+      const currentTemplate = currentStore?.storefront?.template || DEFAULT_TEMPLATE
+      const currentSections = getSectionValues(currentStore)
 
       setStore(currentStore)
-      setTheme(currentTheme)
+      setPreview({
+        theme: currentTheme,
+        template: currentTemplate,
+        sections: currentSections,
+      })
       form.setFieldsValue(getFormValues(currentStore))
     } catch (error) {
       message.error(error?.message || 'No se pudo cargar el diseno de la tienda')
@@ -82,9 +110,16 @@ const StoreDesignPage = () => {
   }, [loadStore])
 
   const handleValuesChange = (_, values) => {
-    setTheme({
-      ...neutralTheme,
-      ...pickThemeValues(values),
+    setPreview({
+      theme: {
+        ...neutralTheme,
+        ...pickThemeValues(values),
+      },
+      template: values.template || DEFAULT_TEMPLATE,
+      sections: {
+        ...STOREFRONT_SECTION_DEFAULTS,
+        ...(values.sections || {}),
+      },
     })
   }
 
@@ -98,6 +133,8 @@ const StoreDesignPage = () => {
 
     try {
       const response = await storeService.updateStorefront(store._id, {
+        template: values.template,
+        sections: values.sections,
         theme: pickThemeValues(values),
         seoTitle: values.seoTitle,
         seoDescription: values.seoDescription,
@@ -109,7 +146,11 @@ const StoreDesignPage = () => {
       const savedTheme = buildStoreTheme(savedStore)
 
       setStore(savedStore)
-      setTheme(savedTheme)
+      setPreview({
+        theme: savedTheme,
+        template: savedStore?.storefront?.template || DEFAULT_TEMPLATE,
+        sections: getSectionValues(savedStore),
+      })
       form.setFieldsValue(getFormValues(savedStore))
       message.success('Diseno guardado correctamente')
     } catch (error) {
@@ -123,7 +164,7 @@ const StoreDesignPage = () => {
     <Spin spinning={loading}>
       <Row gutter={[24, 24]}>
         <Col xs={24} lg={12}>
-          <Card title="Diseno de la tienda">
+          <DesignCard title="Diseno de la tienda">
             <Typography.Paragraph type="secondary">
               Configura una identidad visual simple para que tu tienda publica se sienta propia.
             </Typography.Paragraph>
@@ -131,10 +172,18 @@ const StoreDesignPage = () => {
             <Form
               form={form}
               layout="vertical"
-              initialValues={neutralTheme}
+              initialValues={{
+                ...neutralTheme,
+                template: DEFAULT_TEMPLATE,
+                sections: STOREFRONT_SECTION_DEFAULTS,
+              }}
               onValuesChange={handleValuesChange}
               onFinish={handleSubmit}
             >
+              <Form.Item label="Plantilla" name="template">
+                <Select options={STOREFRONT_TEMPLATE_OPTIONS} />
+              </Form.Item>
+
               <Form.Item label="Color principal" name="primaryColor">
                 <Input type="color" />
               </Form.Item>
@@ -151,8 +200,27 @@ const StoreDesignPage = () => {
                 <Input type="color" />
               </Form.Item>
               <Form.Item label="Radio de borde" name="borderRadius">
-                <InputNumber min={4} max={32} style={{ width: '100%' }} />
+                <FullWidthInputNumber min={4} max={32} />
               </Form.Item>
+
+              <SeoPanel>
+                <Typography.Title level={5}>Secciones visibles</Typography.Title>
+                <SectionSwitchGrid>
+                  {STOREFRONT_SECTION_OPTIONS.map(section => (
+                    <SectionSwitchCard key={section.key}>
+                      <SwitchHeader align="start">
+                        <SwitchTitle>{section.label}</SwitchTitle>
+                        <Form.Item name={['sections', section.key]} valuePropName="checked" noStyle>
+                          <Switch />
+                        </Form.Item>
+                      </SwitchHeader>
+                      <SwitchDescription type="secondary">
+                        {section.description}
+                      </SwitchDescription>
+                    </SectionSwitchCard>
+                  ))}
+                </SectionSwitchGrid>
+              </SeoPanel>
 
               <SeoPanel>
                 <Typography.Title level={5}>SEO y medicion</Typography.Title>
@@ -205,11 +273,15 @@ const StoreDesignPage = () => {
                 Guardar diseno
               </Button>
             </Form>
-          </Card>
+          </DesignCard>
         </Col>
 
         <Col xs={24} lg={12}>
-          <StoreThemePreview theme={theme} />
+          <StoreThemePreview
+            sections={preview.sections}
+            template={preview.template}
+            theme={preview.theme}
+          />
         </Col>
       </Row>
     </Spin>

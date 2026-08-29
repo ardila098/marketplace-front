@@ -104,7 +104,7 @@ const CategorySlider = ({ categories = [], title, subtitle, getPath, activeCateg
           </SideArrow>
           <SideArrow $side="right" type="button" aria-label="Siguiente" onClick={() => scrollBy(1)}>
             <ChevronRight size={18} />
-          </SideArrow>{' '}
+          </SideArrow>
         </Col>
       </Container>
     </Section>

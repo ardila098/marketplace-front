@@ -11,6 +11,10 @@ export const LANDING_PAGE_TEMPLATES = Object.freeze({
     value: 'premium_minimal',
     label: 'Premium minimal',
   },
+  CLAY_OFFER: {
+    value: 'clay_offer',
+    label: 'Clay oferta',
+  },
 })
 
 export const LANDING_PAGE_TEMPLATE_OPTIONS = Object.freeze(

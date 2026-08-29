@@ -3,13 +3,18 @@ import styled, { css } from 'styled-components'
 
 const templateSurface = {
   bundle_drop: css`
-    background:
-      radial-gradient(circle at 15% 15%, rgba(245, 197, 66, 0.2), transparent 30%),
-      linear-gradient(135deg, #111 0%, #272727 100%);
+    background: linear-gradient(135deg, #111 0%, #272727 100%);
     color: #fff;
   `,
   premium_minimal: css`
     background: #f8f7f4;
+  `,
+  clay_offer: css`
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.44);
+    box-shadow:
+      18px 18px 44px rgba(89, 99, 117, 0.13),
+      -14px -14px 34px rgba(255, 255, 255, 0.82);
   `,
 }
 
@@ -18,10 +23,28 @@ export const LandingCanvas = styled.main`
   --landing-accent: ${({ $theme }) => $theme?.accentColor || '#f5c542'};
   --landing-bg: ${({ $theme }) => $theme?.backgroundColor || '#ffffff'};
   --landing-text: ${({ $theme }) => $theme?.textColor || '#111111'};
+  --landing-muted: #4b5563;
+  --landing-button-bg: var(--landing-primary);
+  --landing-button-text: #ffffff;
+  --landing-card-bg: #ffffff;
+  --landing-card-border: #ededed;
+  --landing-card-shadow: none;
 
   min-height: 100vh;
   background: var(--landing-bg);
   color: var(--landing-text);
+
+  ${({ $template }) => $template === 'clay_offer' && css`
+    --landing-bg: #f7f2eb;
+    --landing-muted: #536170;
+    --landing-card-bg: rgba(255, 255, 255, 0.58);
+    --landing-card-border: rgba(255, 255, 255, 0.74);
+    --landing-card-shadow:
+      12px 12px 28px rgba(89, 99, 117, 0.1),
+      -10px -10px 22px rgba(255, 255, 255, 0.78);
+
+    background: linear-gradient(135deg, #f8f3ec 0%, #edf4f1 52%, #f6f1ea 100%);
+  `}
 `
 
 export const LandingHeader = styled.header`
@@ -73,18 +96,28 @@ export const HeroSection = styled.section`
   ${({ $template }) => $template === 'bundle_drop' && css`
     --landing-primary: #ffffff;
     --landing-text: #ffffff;
+    --landing-muted: rgba(255, 255, 255, 0.78);
+    --landing-button-bg: #ffffff;
+    --landing-button-text: #111111;
 
     width: min(1180px, calc(100% - 24px));
     margin-top: 18px;
     padding: 54px;
-    border-radius: 28px;
+    border-radius: 18px;
   `}
 
   ${({ $template }) => $template === 'premium_minimal' && css`
     width: min(1180px, calc(100% - 24px));
     margin-top: 18px;
     padding: 54px;
-    border-radius: 28px;
+    border-radius: 18px;
+  `}
+
+  ${({ $template }) => $template === 'clay_offer' && css`
+    width: min(1180px, calc(100% - 24px));
+    margin-top: 18px;
+    padding: 54px;
+    border-radius: 18px;
   `}
 
   @media (max-width: 860px) {
@@ -92,9 +125,9 @@ export const HeroSection = styled.section`
     padding: 34px 0 28px;
     gap: 28px;
 
-    ${({ $template }) => ['bundle_drop', 'premium_minimal'].includes($template) && css`
+    ${({ $template }) => ['bundle_drop', 'premium_minimal', 'clay_offer'].includes($template) && css`
       padding: 28px;
-      border-radius: 22px;
+      border-radius: 14px;
     `}
   }
 `
@@ -128,7 +161,7 @@ export const HeroDescription = styled(Typography.Paragraph)`
   && {
     max-width: 620px;
     margin: 22px 0 0;
-    color: #4b5563;
+    color: var(--landing-muted);
     font-size: 18px;
     line-height: 1.65;
   }
@@ -166,19 +199,19 @@ export const LandingButton = styled(Button)`
   && {
     min-height: 48px;
     padding: 0 22px;
-    border-radius: 999px;
-    border-color: var(--landing-primary);
-    background: var(--landing-primary);
-    color: #000000;
+    border-radius: 8px;
+    border-color: var(--landing-button-bg);
+    background: var(--landing-button-bg);
+    color: var(--landing-button-text);
     font-weight: 800;
     box-shadow: none;
   }
 
   &&:hover,
   &&:focus {
-    border-color: var(--landing-primary);
-    background: var(--landing-primary);
-    color: #fff;
+    border-color: var(--landing-button-bg);
+    background: var(--landing-button-bg);
+    color: var(--landing-button-text);
     opacity: 0.88;
   }
 `
@@ -191,12 +224,12 @@ export const HeroImage = styled.img`
   width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  border-radius: 28px;
+  border-radius: 18px;
   box-shadow: 0 24px 70px rgba(15, 23, 42, 0.16);
 
   @media (max-width: 860px) {
     aspect-ratio: 1 / 1;
-    border-radius: 22px;
+    border-radius: 14px;
   }
 `
 
@@ -228,9 +261,10 @@ export const BenefitGrid = styled.div`
 
 export const BenefitPanel = styled(Card)`
   && {
-    border-radius: 22px;
-    border-color: #ededed;
-    background: #fff;
+    border-radius: 8px;
+    border-color: var(--landing-card-border);
+    background: var(--landing-card-bg);
+    box-shadow: var(--landing-card-shadow);
   }
 `
 
@@ -246,9 +280,9 @@ export const BenefitCard = styled.div`
   position: relative;
   min-height: 72px;
   padding: 16px 16px 16px 42px;
-  border: 1px solid #ededed;
-  border-radius: 16px;
-  background: #fafafa;
+  border: 1px solid var(--landing-card-border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.64);
   color: #111;
   font-size: 14px;
   line-height: 1.45;
@@ -277,7 +311,8 @@ export const GalleryImage = styled.img`
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 18px;
+  border-radius: 8px;
+  box-shadow: var(--landing-card-shadow);
 `
 
 export const ProductPanel = styled.div`
@@ -293,8 +328,10 @@ export const ProductPanel = styled.div`
 
 export const ProductCopy = styled(Card)`
   && {
-    border-radius: 20px;
-    border-color: #ededed;
+    border-radius: 8px;
+    border-color: var(--landing-card-border);
+    background: var(--landing-card-bg);
+    box-shadow: var(--landing-card-shadow);
   }
 `
 
@@ -322,8 +359,10 @@ export const TestimonialGrid = styled.div`
 
 export const TestimonialCard = styled(Card)`
   && {
-    border-radius: 18px;
-    border-color: #ededed;
+    border-radius: 8px;
+    border-color: var(--landing-card-border);
+    background: var(--landing-card-bg);
+    box-shadow: var(--landing-card-shadow);
   }
 `
 
@@ -334,8 +373,10 @@ export const FaqGrid = styled.div`
 
 export const FaqItem = styled(Card)`
   && {
-    border-radius: 16px;
-    border-color: #ededed;
+    border-radius: 8px;
+    border-color: var(--landing-card-border);
+    background: var(--landing-card-bg);
+    box-shadow: var(--landing-card-shadow);
   }
 `
 
@@ -375,7 +416,7 @@ export const LeadForm = styled(Form)`
 
   .ant-input,
   .ant-select-selector {
-    border-radius: 12px !important;
+    border-radius: 8px !important;
   }
 `
 
@@ -392,9 +433,9 @@ export const LeadFormGrid = styled.div`
 export const LeadSelectionCard = styled.div`
   margin-bottom: 14px;
   padding: 16px;
-  border: 1px solid #ededed;
-  border-radius: 18px;
-  background: #fafafa;
+  border: 1px solid var(--landing-card-border);
+  border-radius: 8px;
+  background: var(--landing-card-bg);
 `
 
 export const LeadSelectionTitle = styled(Typography.Text)`

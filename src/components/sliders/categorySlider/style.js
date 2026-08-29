@@ -22,7 +22,7 @@ const Header = styled(Row)`
 
 const Title = styled.h2`
   color: ${({ theme }) => theme.textColor || '#111827'};
-  font-size: 50px;
+  font-size: clamp(24px, 3.4vw, 38px);
   font-weight: 650;
   line-height: 1.2;
   margin: 0;

@@ -1,19 +1,17 @@
-import { Button, Col, Empty, Row, Space, Spin, Typography } from 'antd'
+import { Col, Empty, Row, Space, Spin, Typography } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import AgencyItemCard from '../../components/agency/AgencyItemCard'
-import CategorySlider from '../../components/sliders/categorySlider/CategorySlider'
 import CreditApplicationForm from '../../components/credit/CreditApplicationForm'
 import ExperienceCard from '../../components/experiences/ExperienceCard'
 import NewsletterSignup from '../../components/newsletter/NewsletterSignup'
 import StorefrontHero from '../../components/storefront/StorefrontHero'
-import StorefrontProductGrid from '../../components/storefront/StorefrontProductGrid'
 import StorefrontTrustStrip from '../../components/storefront/StorefrontTrustStrip'
+import StorefrontTemplateRenderer from '../../components/storefront/templates/StorefrontTemplateRenderer'
 import { isAgencyBusiness, isExperienceBusiness } from '../../constants/businessTypes'
 import { buildRoute, ROUTES } from '../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
-import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 import { useSeoMeta } from '../../hooks/useSeoMeta'
 import { agencyItemService } from '../../services/agencyItemService'
 import { experienceService } from '../../services/experienceService'
@@ -22,7 +20,6 @@ import useStoreCategories from './hooks/useStoreCategories'
 import useStoreProducts from './hooks/useStoreProducts'
 
 const StorefrontHomePage = () => {
-  const { translate } = useDictionaryTranslation()
   const { storeSlug } = useParams()
   const store = useSelector(state => state.storefront.currentStore)
   const resolutionMode = useSelector(state => state.storefront.resolutionMode)
@@ -217,69 +214,16 @@ const StorefrontHomePage = () => {
   }
 
   return (
-    <>
-      <StorefrontHero store={store} />
-      <StorefrontTrustStrip />
-
-      <PageShell>
-        <Space direction="vertical" size={28} style={{ width: '100%' }}>
-          {!!categories.length && (
-            <CategorySlider
-              categories={categories.slice(0, 12)}
-              title={translate('catalog.storeCategorySliderTitle')}
-              // subtitle={translate('catalog.storeCategorySliderSubtitle')}
-              getPath={category => `${productsPath}?category=${category._id}`}
-            />
-          )}
-
-          <section>
-            <Row align="middle" justify="space-between" gutter={[16, 16]}>
-              <Col>
-                <Typography.Text type="secondary">
-                  {translate('storefront.catalog')}
-                </Typography.Text>
-                <Typography.Title level={3} style={{ margin: 0, letterSpacing: 0 }}>
-                  {translate('catalog.featuredProducts')}
-                </Typography.Title>
-              </Col>
-              <Col>
-                <Space wrap>
-                  <Link to={categoriesPath}>
-                    <Button>{translate('categories')}</Button>
-                  </Link>
-                  <Link to={outletPath}>
-                    <Button>{translate('outlet')}</Button>
-                  </Link>
-                  <Link to={productsPath}>
-                    <Button type="primary">{translate('catalog.viewAll')}</Button>
-                  </Link>
-                </Space>
-              </Col>
-            </Row>
-
-            <div style={{ marginTop: 18 }}>
-              {loading ? (
-                <Spin />
-              ) : (
-                <StorefrontProductGrid products={products} storeSlug={activeStoreSlug} />
-              )}
-            </div>
-          </section>
-
-          {store.assignedBroker && (
-            <CreditApplicationForm
-              storeId={store._id}
-              sourceType="store_credit"
-              compact
-              title="Necesitas asesoria de credito?"
-              subtitle={`Un asesor puede contactarte para revisar alternativas relacionadas con ${store.name}.`}
-            />
-          )}
-
-          <NewsletterSignup source="storefront" store={store} storeSlug={activeStoreSlug} />
-        </Space>
-      </PageShell>
-    </>
+    <StorefrontTemplateRenderer
+      activeStoreSlug={activeStoreSlug}
+      categories={categories}
+      categoriesPath={categoriesPath}
+      loading={loading}
+      outletPath={outletPath}
+      products={products}
+      productsPath={productsPath}
+      store={store}
+    />
   )
 }
 
