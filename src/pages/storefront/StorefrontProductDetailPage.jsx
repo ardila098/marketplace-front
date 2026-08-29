@@ -27,6 +27,9 @@ const StorefrontProductDetailPage = () => {
   const activeStoreSlug = storeSlug || store?.slug
   const { product, relatedProducts, loading } = useStoreProductDetail(activeStoreSlug, productSlug)
   const purchase = useItemPucharse(product)
+  const storefront = store?.storefront || {}
+  const detailLayout = storefront.productDetailLayout || 'classic'
+  const cardStyle = storefront.productCardStyle || 'classic'
   const selectedLabel = getItemLabel(purchase.selectedReference)
   const displayItem = purchase.selectedReference || product
   const seoImage = product?.seo?.image ||
@@ -74,19 +77,19 @@ const StorefrontProductDetailPage = () => {
   })
 
   return (
-    <PageContainer>
+    <PageContainer $layout={detailLayout}>
       <Spin spinning={loading}>
         {!product && !loading ? (
           <Empty description={translate('productNotFound')} />
         ) : (
           <>
-            <ProductLayout style={{ marginTop: 20 }}>
+            <ProductLayout $layout={detailLayout}>
               <GalleryColumn>
                 <ItemGallery item={purchase.selectedReference || product} />
                 <TrustBadges />
               </GalleryColumn>
 
-              <InfoColumn>
+              <InfoColumn $layout={detailLayout}>
                 <ItemInfo item={product} selectedReference={purchase.selectedReference} />
                 <ItemPucharse item={product} purchase={purchase} />
                 <ProductTabs product={product} selectedReference={purchase.selectedReference} />
@@ -97,6 +100,7 @@ const StorefrontProductDetailPage = () => {
               data={relatedProducts}
               storeSlug={activeStoreSlug}
               currentProduct={product}
+              cardStyle={cardStyle}
             />
           </>
         )}

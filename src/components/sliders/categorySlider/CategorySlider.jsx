@@ -30,7 +30,14 @@ const getCategoryImage = category => {
   return getUploadUrl(UPLOAD_ROUTES.categories.icons, category?.icon)
 }
 
-const CategorySlider = ({ categories = [], title, subtitle, getPath, activeCategoryId }) => {
+const CategorySlider = ({
+  activeCategoryId,
+  categories = [],
+  getPath,
+  subtitle,
+  title,
+  variant = 'circles',
+}) => {
   const { translate } = useDictionaryTranslation()
   const railRef = useRef(null)
 
@@ -68,7 +75,7 @@ const CategorySlider = ({ categories = [], title, subtitle, getPath, activeCateg
 
   return (
     <Section>
-      <Container>
+      <Container $variant={variant}>
         <Col md={6} xs={24}>
           <Header>
             <Row>
@@ -79,14 +86,17 @@ const CategorySlider = ({ categories = [], title, subtitle, getPath, activeCateg
         </Col>
 
         <Col md={18} xs={24}>
-          <Rail ref={railRef}>
+          <Rail ref={railRef} $variant={variant}>
             {categories.map(category => {
               const image = getCategoryImage(category)
               const path = getPath?.(category) || '#'
 
               return (
-                <Card key={category._id || category.slug || category.name} to={path}>
-                  <Circle $active={String(activeCategoryId || '') === String(category._id)}>
+                <Card key={category._id || category.slug || category.name} to={path} $variant={variant}>
+                  <Circle
+                    $active={String(activeCategoryId || '') === String(category._id)}
+                    $variant={variant}
+                  >
                     <ImageLayer $image={image} />
                     {!image && (
                       <EmptyImage>
@@ -94,15 +104,27 @@ const CategorySlider = ({ categories = [], title, subtitle, getPath, activeCateg
                       </EmptyImage>
                     )}
                   </Circle>
-                  <Name>{category.name}</Name>
+                  <Name $variant={variant}>{category.name}</Name>
                 </Card>
               )
             })}
           </Rail>
-          <SideArrow $side="left" type="button" aria-label="Anterior" onClick={() => scrollBy(-1)}>
+          <SideArrow
+            $side="left"
+            $variant={variant}
+            type="button"
+            aria-label="Anterior"
+            onClick={() => scrollBy(-1)}
+          >
             <ChevronLeft size={18} />
           </SideArrow>
-          <SideArrow $side="right" type="button" aria-label="Siguiente" onClick={() => scrollBy(1)}>
+          <SideArrow
+            $side="right"
+            $variant={variant}
+            type="button"
+            aria-label="Siguiente"
+            onClick={() => scrollBy(1)}
+          >
             <ChevronRight size={18} />
           </SideArrow>
         </Col>

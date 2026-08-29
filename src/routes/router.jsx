@@ -17,6 +17,7 @@ const RegisterPage = createLazyPage(() => import('../pages/public/RegisterPage')
 const StorefrontHomePage = createLazyPage(() => import('../pages/storefront/StorefrontHomePage'))
 const StorefrontProductsPage = createLazyPage(() => import('../pages/storefront/StorefrontProductsPage'))
 const StorefrontCategoriesPage = createLazyPage(() => import('../pages/storefront/StorefrontCategoriesPage'))
+const StorefrontCategoryPage = createLazyPage(() => import('../pages/storefront/StorefrontCategoryPage'))
 const StorefrontProductDetailPage = createLazyPage(
   () => import('../pages/storefront/StorefrontProductDetailPage')
 )
@@ -116,6 +117,7 @@ export const router = createBrowserRouter([
             children: [
               { path: '/products', element: <StorefrontProductsPage /> },
               { path: '/categories', element: <StorefrontCategoriesPage /> },
+              { path: '/categories/:categorySlug', element: <StorefrontCategoryPage /> },
               { path: '/outlet', element: <StorefrontProductsPage /> },
               { path: '/products/:productSlug', element: <StorefrontProductDetailPage /> },
               { path: '/agency-items/:itemSlug', element: <StorefrontAgencyItemDetailPage /> },
@@ -135,6 +137,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.STOREFRONT_HOME, element: <StorefrontHomePage /> },
           { path: ROUTES.STOREFRONT_PRODUCTS, element: <StorefrontProductsPage /> },
           { path: ROUTES.STOREFRONT_CATEGORIES, element: <StorefrontCategoriesPage /> },
+          { path: ROUTES.STOREFRONT_CATEGORY, element: <StorefrontCategoryPage /> },
           { path: ROUTES.STOREFRONT_OUTLET, element: <StorefrontProductsPage /> },
           { path: ROUTES.STOREFRONT_PRODUCT_DETAIL, element: <StorefrontProductDetailPage /> },
           { path: ROUTES.STOREFRONT_AGENCY_ITEM_DETAIL, element: <StorefrontAgencyItemDetailPage /> },

@@ -11,7 +11,7 @@ const getProductKeys = product => {
     .map(String)
 }
 
-const RelatedItems = ({ data = [], storeSlug, currentProduct, verticalId }) => {
+const RelatedItems = ({ cardStyle = 'classic', currentProduct, data = [], storeSlug, verticalId }) => {
   const { translate } = useDictionaryTranslation()
   const { verticalId: routeVerticalId } = useParams()
   const activeVerticalId = verticalId || routeVerticalId
@@ -39,6 +39,7 @@ const RelatedItems = ({ data = [], storeSlug, currentProduct, verticalId }) => {
         title={translate('product.relatedTitle')}
         storeSlug={storeSlug}
         getProductPath={getProductPath}
+        cardStyle={cardStyle}
       />
     </>
   )
@@ -51,4 +52,5 @@ RelatedItems.propTypes = {
   storeSlug: PropTypes.string,
   currentProduct: PropTypes.object,
   verticalId: PropTypes.string,
+  cardStyle: PropTypes.string,
 }

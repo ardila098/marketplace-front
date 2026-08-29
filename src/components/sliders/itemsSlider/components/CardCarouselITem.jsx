@@ -40,7 +40,7 @@ const getCarouselSettings = items => ({
   ],
 })
 
-const CardCarouselITem = ({ title, items = [], storeSlug, getProductPath }) => {
+const CardCarouselITem = ({ cardStyle = 'classic', getProductPath, items = [], storeSlug, title }) => {
   const carouselSettings = useMemo(() => getCarouselSettings(items.length), [items.length])
 
   if (!items.length) return null
@@ -51,6 +51,7 @@ const CardCarouselITem = ({ title, items = [], storeSlug, getProductPath }) => {
         product={item}
         storeSlug={storeSlug}
         detailPath={getProductPath?.(item)}
+        cardStyle={cardStyle}
       />
     </CarouselItem>
   )
@@ -77,4 +78,5 @@ CardCarouselITem.propTypes = {
   items: PropTypes.array,
   storeSlug: PropTypes.string,
   getProductPath: PropTypes.func,
+  cardStyle: PropTypes.string,
 }

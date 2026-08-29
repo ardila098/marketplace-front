@@ -60,6 +60,7 @@ const StorefrontProductsPage = () => {
   const { products, loading } = useStoreProducts(activeStoreSlug, filters)
   const { categories } = useStoreCategories(activeStoreSlug)
   const storefront = store?.storefront || {}
+  const cardStyle = storefront.productCardStyle || 'classic'
   const seoImage = storefront.socialImage
     ? getUploadUrl(UPLOAD_ROUTES.stores.banners, storefront.socialImage)
     : getUploadUrl(UPLOAD_ROUTES.stores.banners, store?.banner) ||
@@ -175,7 +176,13 @@ const StorefrontProductsPage = () => {
 
           {loading
             ? <Spin />
-            : <StorefrontProductGrid products={products} storeSlug={activeStoreSlug} />}
+            : (
+                <StorefrontProductGrid
+                  products={products}
+                  storeSlug={activeStoreSlug}
+                  cardStyle={cardStyle}
+                />
+              )}
         </CatalogContent>
       </CatalogLayout>
     </PageShell>

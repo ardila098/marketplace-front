@@ -4,10 +4,16 @@ import { useCallback, useEffect, useState } from 'react'
 import StoreThemePreview from '../../components/storefront/StoreThemePreview'
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
 import {
+  STOREFRONT_CATEGORY_SLIDER_STYLE_OPTIONS,
+  STOREFRONT_HERO_STYLE_OPTIONS,
+  STOREFRONT_PRODUCT_CARD_STYLE_OPTIONS,
+  STOREFRONT_PRODUCT_DETAIL_LAYOUT_OPTIONS,
   STOREFRONT_SECTION_DEFAULTS,
   STOREFRONT_SECTION_OPTIONS,
+  STOREFRONT_STYLE_DEFAULTS,
   STOREFRONT_TEMPLATES,
   STOREFRONT_TEMPLATE_OPTIONS,
+  STOREFRONT_VISUAL_SECTION_STYLE_OPTIONS,
 } from '../../constants/storefrontTemplates'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { storeService } from '../../services/storeService'
@@ -47,6 +53,21 @@ const getSectionValues = store => ({
   ...(store?.storefront?.sections || {}),
 })
 
+const getStyleValues = store => {
+  const storefront = store?.storefront || {}
+
+  return {
+    heroStyle: storefront.heroStyle || STOREFRONT_STYLE_DEFAULTS.heroStyle,
+    productCardStyle: storefront.productCardStyle || STOREFRONT_STYLE_DEFAULTS.productCardStyle,
+    categorySliderStyle:
+      storefront.categorySliderStyle || STOREFRONT_STYLE_DEFAULTS.categorySliderStyle,
+    productDetailLayout:
+      storefront.productDetailLayout || STOREFRONT_STYLE_DEFAULTS.productDetailLayout,
+    visualSectionStyle:
+      storefront.visualSectionStyle || STOREFRONT_STYLE_DEFAULTS.visualSectionStyle,
+  }
+}
+
 const getFormValues = store => {
   const theme = buildStoreTheme(store)
   const storefront = store?.storefront || {}
@@ -54,6 +75,14 @@ const getFormValues = store => {
   return {
     ...theme,
     template: storefront.template || DEFAULT_TEMPLATE,
+    heroStyle: storefront.heroStyle || STOREFRONT_STYLE_DEFAULTS.heroStyle,
+    productCardStyle: storefront.productCardStyle || STOREFRONT_STYLE_DEFAULTS.productCardStyle,
+    categorySliderStyle:
+      storefront.categorySliderStyle || STOREFRONT_STYLE_DEFAULTS.categorySliderStyle,
+    productDetailLayout:
+      storefront.productDetailLayout || STOREFRONT_STYLE_DEFAULTS.productDetailLayout,
+    visualSectionStyle:
+      storefront.visualSectionStyle || STOREFRONT_STYLE_DEFAULTS.visualSectionStyle,
     sections: getSectionValues(store),
     seoTitle: storefront.seoTitle || '',
     seoDescription: storefront.seoDescription || '',
@@ -78,6 +107,7 @@ const StoreDesignPage = () => {
   const [preview, setPreview] = useState({
     theme: neutralTheme,
     template: DEFAULT_TEMPLATE,
+    styles: STOREFRONT_STYLE_DEFAULTS,
     sections: STOREFRONT_SECTION_DEFAULTS,
   })
 
@@ -90,11 +120,13 @@ const StoreDesignPage = () => {
       const currentTheme = buildStoreTheme(currentStore)
       const currentTemplate = currentStore?.storefront?.template || DEFAULT_TEMPLATE
       const currentSections = getSectionValues(currentStore)
+      const currentStyles = getStyleValues(currentStore)
 
       setStore(currentStore)
       setPreview({
         theme: currentTheme,
         template: currentTemplate,
+        styles: currentStyles,
         sections: currentSections,
       })
       form.setFieldsValue(getFormValues(currentStore))
@@ -116,6 +148,14 @@ const StoreDesignPage = () => {
         ...pickThemeValues(values),
       },
       template: values.template || DEFAULT_TEMPLATE,
+      styles: {
+        ...STOREFRONT_STYLE_DEFAULTS,
+        heroStyle: values.heroStyle,
+        productCardStyle: values.productCardStyle,
+        categorySliderStyle: values.categorySliderStyle,
+        productDetailLayout: values.productDetailLayout,
+        visualSectionStyle: values.visualSectionStyle,
+      },
       sections: {
         ...STOREFRONT_SECTION_DEFAULTS,
         ...(values.sections || {}),
@@ -134,6 +174,11 @@ const StoreDesignPage = () => {
     try {
       const response = await storeService.updateStorefront(store._id, {
         template: values.template,
+        heroStyle: values.heroStyle,
+        productCardStyle: values.productCardStyle,
+        categorySliderStyle: values.categorySliderStyle,
+        productDetailLayout: values.productDetailLayout,
+        visualSectionStyle: values.visualSectionStyle,
         sections: values.sections,
         theme: pickThemeValues(values),
         seoTitle: values.seoTitle,
@@ -149,6 +194,7 @@ const StoreDesignPage = () => {
       setPreview({
         theme: savedTheme,
         template: savedStore?.storefront?.template || DEFAULT_TEMPLATE,
+        styles: getStyleValues(savedStore),
         sections: getSectionValues(savedStore),
       })
       form.setFieldsValue(getFormValues(savedStore))
@@ -176,6 +222,7 @@ const StoreDesignPage = () => {
                 ...neutralTheme,
                 template: DEFAULT_TEMPLATE,
                 sections: STOREFRONT_SECTION_DEFAULTS,
+                ...STOREFRONT_STYLE_DEFAULTS,
               }}
               onValuesChange={handleValuesChange}
               onFinish={handleSubmit}
@@ -183,6 +230,37 @@ const StoreDesignPage = () => {
               <Form.Item label="Plantilla" name="template">
                 <Select options={STOREFRONT_TEMPLATE_OPTIONS} />
               </Form.Item>
+
+              <SeoPanel>
+                <Typography.Title level={5}>Presets visuales</Typography.Title>
+                <Row gutter={[12, 12]}>
+                  <Col xs={24} sm={12}>
+                    <Form.Item label="Portada" name="heroStyle">
+                      <Select options={STOREFRONT_HERO_STYLE_OPTIONS} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item label="Cards de producto" name="productCardStyle">
+                      <Select options={STOREFRONT_PRODUCT_CARD_STYLE_OPTIONS} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item label="Slider de categorias" name="categorySliderStyle">
+                      <Select options={STOREFRONT_CATEGORY_SLIDER_STYLE_OPTIONS} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item label="Detalle de producto" name="productDetailLayout">
+                      <Select options={STOREFRONT_PRODUCT_DETAIL_LAYOUT_OPTIONS} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24}>
+                    <Form.Item label="Bloque visual de portada" name="visualSectionStyle">
+                      <Select options={STOREFRONT_VISUAL_SECTION_STYLE_OPTIONS} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </SeoPanel>
 
               <Form.Item label="Color principal" name="primaryColor">
                 <Input type="color" />
@@ -279,6 +357,7 @@ const StoreDesignPage = () => {
         <Col xs={24} lg={12}>
           <StoreThemePreview
             sections={preview.sections}
+            styles={preview.styles}
             template={preview.template}
             theme={preview.theme}
           />

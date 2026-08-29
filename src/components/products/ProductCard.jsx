@@ -34,7 +34,7 @@ const getItemId = item => {
   return String(item?.itemId || item?._id || item?.sku || item?.image || '')
 }
 
-const ProductCard = ({ product, storeSlug, detailPath }) => {
+const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) => {
   const { translate } = useDictionaryTranslation()
   const resolutionMode = useSelector(state => state.storefront.resolutionMode)
   const previews = useMemo(() => {
@@ -67,9 +67,9 @@ const ProductCard = ({ product, storeSlug, detailPath }) => {
     : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id }))
 
   return (
-    <ProductCardWrapper hoverable bordered={false}>
+    <ProductCardWrapper hoverable bordered={false} $variant={cardStyle}>
       <ProductImageLink to={targetRoute} aria-label={`Ver detalle de ${product.name}`}>
-        <ImageWrap>
+        <ImageWrap $variant={cardStyle}>
           {product.isNew && <NewBadge>{translate('new')}</NewBadge>}
           {mainImage ? (
             <ProductImage
@@ -82,12 +82,12 @@ const ProductCard = ({ product, storeSlug, detailPath }) => {
         </ImageWrap>
       </ProductImageLink>
 
-      <ProductInfo>
-        <ProductName>{product.name}</ProductName>
+      <ProductInfo $variant={cardStyle}>
+        <ProductName $variant={cardStyle}>{product.name}</ProductName>
 
         {shouldShowItemLabel && <ProductMeta>{selectedItemLabel}</ProductMeta>}
 
-        <PriceRow>
+        <PriceRow $variant={cardStyle}>
           <ProductPrice>{currency(price)}</ProductPrice>
           {compareAtPrice > price && <ComparePrice>{currency(compareAtPrice)}</ComparePrice>}
           {discountPercentage > 0 && (
@@ -98,7 +98,7 @@ const ProductCard = ({ product, storeSlug, detailPath }) => {
         </PriceRow>
 
         {!!previews.length && (
-          <VariantPreview>
+          <VariantPreview $variant={cardStyle}>
             {previews.map((variant, index) => {
               const image = getImage(variant)
               const itemId = getItemId(variant)
@@ -108,6 +108,7 @@ const ProductCard = ({ product, storeSlug, detailPath }) => {
                 <PreviewButton
                   key={key}
                   type="button"
+                  $variant={cardStyle}
                   $active={itemId === selectedItemKey}
                   title={getItemLabel(variant) || product.name}
                   onClick={() => setSelectedItemId(itemId)}

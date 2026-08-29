@@ -1,6 +1,28 @@
 import { Card } from 'antd'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
+const cardVariants = {
+  compact: css`
+    .ant-card-body {
+      padding: 10px;
+    }
+  `,
+  editorial: css`
+    border-color: rgba(17, 24, 39, 0.08);
+    box-shadow: 0 18px 38px rgba(17, 24, 39, 0.08);
+
+    .ant-card-body {
+      padding: 12px;
+    }
+  `,
+  glass: css`
+    border-color: rgba(255, 255, 255, 0.58);
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 18px 42px rgba(17, 24, 39, 0.1);
+  `,
+}
 
 export const ProductLink = styled(Link)`
   display: block;
@@ -32,10 +54,17 @@ export const ProductCardWrapper = styled(Card)`
   .ant-card-body {
     padding: 12px;
   }
+
+  ${({ $variant }) => cardVariants[$variant]}
 `
 
 export const ImageWrap = styled.div`
-  aspect-ratio: 1 / 1;
+  aspect-ratio: ${({ $variant }) => {
+    if ($variant === 'compact') return '4 / 3'
+    if ($variant === 'editorial') return '4 / 5'
+
+    return '1 / 1'
+  }};
   border-radius: 8px;
   overflow: hidden;
   background: #f4f4f5;
@@ -85,13 +114,13 @@ export const ImagePlaceholder = styled.div`
 export const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-top: 12px;
+  gap: ${({ $variant }) => ($variant === 'compact' ? '1px' : '2px')};
+  margin-top: ${({ $variant }) => ($variant === 'compact' ? '9px' : '12px')};
 `
 
 export const ProductName = styled.div`
   font-weight: 560;
-  font-size: 14px;
+  font-size: ${({ $variant }) => ($variant === 'editorial' ? '15px' : '14px')};
   line-height: 1.35;
   color: #111111;
 `
@@ -110,7 +139,7 @@ export const ProductPrice = styled.div`
 export const PriceRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: ${({ $variant }) => ($variant === 'compact' ? '6px' : '8px')};
   flex-wrap: wrap;
 `
 
@@ -131,13 +160,13 @@ export const DiscountBadge = styled.span`
 
 export const VariantPreview = styled.div`
   display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  gap: ${({ $variant }) => ($variant === 'compact' ? '6px' : '8px')};
+  margin-top: ${({ $variant }) => ($variant === 'compact' ? '8px' : '10px')};
 `
 
 export const PreviewButton = styled.button`
-  width: 30px;
-  height: 30px;
+  width: ${({ $variant }) => ($variant === 'compact' ? '26px' : '30px')};
+  height: ${({ $variant }) => ($variant === 'compact' ? '26px' : '30px')};
   padding: 1px;
   border-radius: 999px;
   border: 1px solid ${({ $active }) => ($active ? '#111111' : '#e5e7eb')};

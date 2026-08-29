@@ -1,7 +1,7 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const PageContainer = styled.div`
-  max-width: 1180px;
+  max-width: ${({ $layout }) => ($layout === 'gallery_focus' ? '1280px' : '1180px')};
   margin: 0 auto;
   padding: 40px 20px 70px;
   font-family: var(--app-font-family);
@@ -16,6 +16,26 @@ export const ProductLayout = styled.div`
   grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
   gap: 48px;
   align-items: start;
+  margin-top: 20px;
+
+  ${({ $layout }) => $layout === 'split' && css`
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 0.82fr);
+    gap: 56px;
+  `}
+
+  ${({ $layout }) => $layout === 'gallery_focus' && css`
+    grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.72fr);
+    gap: 42px;
+  `}
+
+  ${({ $layout }) => $layout === 'glass' && css`
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.62);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.52);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 20px 48px rgba(17, 24, 39, 0.08);
+  `}
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
@@ -32,8 +52,17 @@ export const InfoColumn = styled.div`
   position: sticky;
   top: 24px;
 
+  ${({ $layout }) => $layout === 'glass' && css`
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.74);
+    backdrop-filter: blur(14px);
+  `}
+
   @media (max-width: 900px) {
     position: static;
+    padding: ${({ $layout }) => ($layout === 'glass' ? '14px' : '0')};
   }
 `
 

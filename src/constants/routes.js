@@ -16,6 +16,7 @@ export const ROUTES = {
   STOREFRONT_HOME: '/stores/:storeSlug',
   STOREFRONT_PRODUCTS: '/stores/:storeSlug/products',
   STOREFRONT_CATEGORIES: '/stores/:storeSlug/categories',
+  STOREFRONT_CATEGORY: '/stores/:storeSlug/categories/:categorySlug',
   STOREFRONT_OUTLET: '/stores/:storeSlug/outlet',
   STOREFRONT_PRODUCT_DETAIL: '/stores/:storeSlug/products/:productSlug',
   STOREFRONT_AGENCY_ITEM_DETAIL: '/stores/:storeSlug/agency-items/:itemSlug',

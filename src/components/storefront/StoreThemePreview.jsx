@@ -1,7 +1,14 @@
 import { Button, Card, Space, Typography } from 'antd'
 import styled from 'styled-components'
 import {
+  STOREFRONT_CATEGORY_SLIDER_STYLES,
+  STOREFRONT_HERO_STYLES,
+  STOREFRONT_PRODUCT_CARD_STYLES,
+  STOREFRONT_PRODUCT_DETAIL_LAYOUTS,
   STOREFRONT_SECTION_OPTIONS,
+  STOREFRONT_STYLE_DEFAULTS,
+  STOREFRONT_VISUAL_SECTION_STYLES,
+  getStorefrontStyleMeta,
   getStorefrontTemplateMeta,
 } from '../../constants/storefrontTemplates'
 
@@ -65,7 +72,15 @@ const SectionChip = styled.span`
   font-weight: 650;
 `
 
-const StoreThemePreview = ({ sections = {}, template, theme }) => {
+const styleCollections = [
+  ['Portada', STOREFRONT_HERO_STYLES, 'heroStyle'],
+  ['Card', STOREFRONT_PRODUCT_CARD_STYLES, 'productCardStyle'],
+  ['Categorias', STOREFRONT_CATEGORY_SLIDER_STYLES, 'categorySliderStyle'],
+  ['Detalle', STOREFRONT_PRODUCT_DETAIL_LAYOUTS, 'productDetailLayout'],
+  ['Visual', STOREFRONT_VISUAL_SECTION_STYLES, 'visualSectionStyle'],
+]
+
+const StoreThemePreview = ({ sections = {}, styles = STOREFRONT_STYLE_DEFAULTS, template, theme }) => {
   const templateMeta = getStorefrontTemplateMeta(template)
 
   return (
@@ -78,6 +93,17 @@ const StoreThemePreview = ({ sections = {}, template, theme }) => {
         <TemplateLabel $theme={theme}>
           Plantilla: {templateMeta.label}
         </TemplateLabel>
+        <SectionChips>
+          {styleCollections.map(([label, collection, key]) => {
+            const meta = getStorefrontStyleMeta(collection, styles[key])
+
+            return (
+              <SectionChip key={key} $active $theme={theme}>
+                {label}: {meta.label}
+              </SectionChip>
+            )
+          })}
+        </SectionChips>
         <SectionChips>
           {STOREFRONT_SECTION_OPTIONS.map(section => (
             <SectionChip

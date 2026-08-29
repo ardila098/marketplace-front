@@ -98,11 +98,12 @@ const StorefrontCategoriesPage = () => {
     ? getUploadUrl(UPLOAD_ROUTES.stores.banners, storefront.socialImage)
     : getUploadUrl(UPLOAD_ROUTES.stores.banners, store?.banner) ||
       getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
-  const productsPath = resolutionMode === 'host'
-    ? '/products'
+  const categoriesPath = resolutionMode === 'host'
+    ? '/categories'
     : activeStoreSlug
-      ? buildRoute(ROUTES.STOREFRONT_PRODUCTS, { storeSlug: activeStoreSlug })
-      : '/products'
+      ? buildRoute(ROUTES.STOREFRONT_CATEGORIES, { storeSlug: activeStoreSlug })
+      : '/categories'
+  const getCategoryPath = category => `${categoriesPath}/${category.slug || category._id}`
 
   useSeoMeta({
     title: store?.name ? `Categorias - ${store.name}` : translate('categories'),
@@ -140,7 +141,7 @@ const StorefrontCategoriesPage = () => {
 
             return (
               <Col xs={24} sm={12} lg={8} key={category._id}>
-                <CategoryCard to={`${productsPath}?category=${category._id}`}>
+                <CategoryCard to={getCategoryPath(category)}>
                   <CategoryImage $image={image}>
                     {!image && <ImageIcon size={28} />}
                   </CategoryImage>

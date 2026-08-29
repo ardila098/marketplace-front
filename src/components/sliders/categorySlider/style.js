@@ -1,6 +1,6 @@
 import { Row } from 'antd'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const Section = styled.section`
   width: 100%;
@@ -9,6 +9,15 @@ const Section = styled.section`
 
 const Container = styled(Row)`
   align-items: center;
+
+  ${({ $variant }) => $variant === 'glass' && css`
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.62);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.48);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 18px 42px rgba(17, 24, 39, 0.08);
+  `}
 `
 
 const Header = styled(Row)`
@@ -63,6 +72,11 @@ const SideArrow = styled(ArrowButton)`
   z-index: 3;
   box-shadow: 0 10px 24px rgba(17, 24, 39, 0.1);
 
+  ${({ $variant }) => $variant === 'glass' && css`
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(12px);
+  `}
+
   @media (max-width: 576px) {
     display: none;
   }
@@ -71,8 +85,8 @@ const SideArrow = styled(ArrowButton)`
 const Rail = styled.div`
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 160px;
-  gap: 18px;
+  grid-auto-columns: ${({ $variant }) => ($variant === 'tiles' ? '204px' : '160px')};
+  gap: ${({ $variant }) => ($variant === 'tiles' ? '14px' : '18px')};
   overflow-x: auto;
   padding: 10px 20px 10px;
   scroll-behavior: smooth;
@@ -84,7 +98,7 @@ const Rail = styled.div`
   }
 
   @media (max-width: 576px) {
-    grid-auto-columns: 136px;
+    grid-auto-columns: ${({ $variant }) => ($variant === 'tiles' ? '164px' : '136px')};
     gap: 14px;
   }
 `
@@ -98,15 +112,20 @@ const Card = styled(Link)`
   text-align: center;
   scroll-snap-align: start;
 
+  ${({ $variant }) => $variant === 'tiles' && css`
+    align-items: stretch;
+    text-align: left;
+  `}
+
   &:hover {
     color: inherit;
   }
 `
 
 const Circle = styled.div`
-  width: 148px;
-  aspect-ratio: 1;
-  border-radius: 999px;
+  width: ${({ $variant }) => ($variant === 'tiles' ? '100%' : '148px')};
+  aspect-ratio: ${({ $variant }) => ($variant === 'tiles' ? '16 / 11' : '1')};
+  border-radius: ${({ $variant }) => ($variant === 'tiles' ? '8px' : '999px')};
   overflow: hidden;
   position: relative;
   isolation: isolate;
@@ -115,8 +134,15 @@ const Circle = styled.div`
     ${({ $active, theme }) => ($active ? theme.primaryColor || '#111111' : '#ffffff')};
   box-shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
 
+  ${({ $variant }) => $variant === 'glass' && css`
+    border-color: rgba(255, 255, 255, 0.78);
+    box-shadow:
+      12px 12px 26px rgba(89, 99, 117, 0.12),
+      -10px -10px 22px rgba(255, 255, 255, 0.7);
+  `}
+
   @media (max-width: 576px) {
-    width: 126px;
+    width: ${({ $variant }) => ($variant === 'tiles' ? '100%' : '126px')};
   }
 `
 
@@ -149,7 +175,11 @@ const Name = styled.h3`
   font-weight: 560;
   line-height: 1.25;
   margin: 0;
-  max-width: 148px;
+  max-width: ${({ $variant }) => ($variant === 'tiles' ? '100%' : '148px')};
+
+  ${({ $variant }) => $variant === 'tiles' && css`
+    padding: 0 4px;
+  `}
 `
 
 export {

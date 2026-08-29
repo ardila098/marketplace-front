@@ -1,6 +1,4 @@
-import { Button, Drawer, Empty, Input, List, Space, Tag, Typography } from 'antd'
 import { Search } from 'lucide-react'
-import { Link } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 
 import { buildRoute, ROUTES } from '../../constants/routes'
@@ -10,6 +8,22 @@ import useStoreCategories from '../../pages/storefront/hooks/useStoreCategories'
 import useStoreProducts from '../../pages/storefront/hooks/useStoreProducts'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
+import {
+  CategoryPill,
+  CategoryRail,
+  ResultBody,
+  ResultFallback,
+  ResultImage,
+  ResultLink,
+  ResultPrice,
+  ResultsList,
+  ResultTitle,
+  SearchDrawerPanel,
+  SearchEmpty,
+  SearchInput,
+  SearchStack,
+  SearchTrigger,
+} from './StorefrontSearchDrawer.styles'
 
 const getImage = product => {
   return product?.image ||
@@ -34,11 +48,11 @@ const StorefrontSearchDrawer = ({ storeSlug, resolutionMode }) => {
   const { categories } = useStoreCategories(activeStoreSlug)
   const { products } = useStoreProducts(activeStoreSlug, productFilters)
 
-  const productsPath = resolutionMode === 'host'
-    ? '/products'
+  const categoriesPath = resolutionMode === 'host'
+    ? '/categories'
     : storeSlug
-      ? buildRoute(ROUTES.STOREFRONT_PRODUCTS, { storeSlug })
-      : '/products'
+      ? buildRoute(ROUTES.STOREFRONT_CATEGORIES, { storeSlug })
+      : '/categories'
 
   const productPath = product => {
     return resolutionMode === 'host'
@@ -49,23 +63,25 @@ const StorefrontSearchDrawer = ({ storeSlug, resolutionMode }) => {
         })
   }
 
+  const categoryPath = category => `${categoriesPath}/${category.slug || category._id}`
+
   return (
     <>
-      <Button
+      <SearchTrigger
         type="text"
         icon={<Search size={18} />}
         onClick={() => setOpen(true)}
       />
 
-      <Drawer
+      <SearchDrawerPanel
         title={translate('catalog.searchInStore')}
         placement="top"
         size="default"
         open={open}
         onClose={() => setOpen(false)}
       >
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-          <Input.Search
+        <SearchStack>
+          <SearchInput
             autoFocus
             allowClear
             placeholder={translate('catalog.searchStorePlaceholder')}
@@ -75,64 +91,51 @@ const StorefrontSearchDrawer = ({ storeSlug, resolutionMode }) => {
           />
 
           {!!categories.length && (
-            <Space wrap>
+            <CategoryRail>
               {categories.slice(0, 8).map(category => (
-                <Link
+                <CategoryPill
                   key={category._id}
-                  to={`${productsPath}?category=${category._id}`}
+                  to={categoryPath(category)}
                   onClick={() => setOpen(false)}
                 >
-                  <Tag style={{ padding: '7px 10px', borderRadius: 8 }}>
-                    {category.name}
-                  </Tag>
-                </Link>
+                  {category.name}
+                </CategoryPill>
               ))}
-            </Space>
+            </CategoryRail>
           )}
 
           {!products.length ? (
-            <Empty description={translate('catalog.searchStoreEmpty')} />
+            <SearchEmpty description={translate('catalog.searchStoreEmpty')} />
           ) : (
-            <List
-              itemLayout="horizontal"
-              dataSource={products}
-              renderItem={product => {
+            <ResultsList>
+              {products.map(product => {
                 const image = getImage(product)
 
                 return (
-                  <List.Item>
-                    <Link
-                      to={productPath(product)}
-                      onClick={() => setOpen(false)}
-                      style={{ width: '100%', color: 'inherit' }}
-                    >
-                      <List.Item.Meta
-                        avatar={
-                          image
-                            ? (
-                                <img
-                                  src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
-                                  alt={product.name}
-                                  style={{ width: 54, height: 54, objectFit: 'cover', borderRadius: 8 }}
-                                />
-                              )
-                            : null
-                        }
-                        title={product.name}
-                        description={
-                          <Typography.Text type="secondary">
-                            {currency(product.minPrice || 0)}
-                          </Typography.Text>
-                        }
+                  <ResultLink
+                    key={product._id || product.slug}
+                    to={productPath(product)}
+                    onClick={() => setOpen(false)}
+                  >
+                    {image ? (
+                      <ResultImage
+                        src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
+                        alt={product.name}
                       />
-                    </Link>
-                  </List.Item>
+                    ) : (
+                      <ResultFallback>{product.name?.charAt(0) || 'P'}</ResultFallback>
+                    )}
+                    <ResultBody>
+                      <ResultTitle>{product.name}</ResultTitle>
+                      <ResultPrice>{currency(product.minPrice || 0)}</ResultPrice>
+                    </ResultBody>
+                  </ResultLink>
                 )
-              }}
-            />
+              })}
+            </ResultsList>
           )}
-        </Space>
-      </Drawer>
+        </SearchStack>
+      </SearchDrawerPanel>
     </>
   )
 }

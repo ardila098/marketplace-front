@@ -8,6 +8,7 @@ import StorefrontProductGrid from '../StorefrontProductGrid'
 import StorefrontTrustStrip from '../StorefrontTrustStrip'
 import {
   STOREFRONT_SECTION_DEFAULTS,
+  STOREFRONT_STYLE_DEFAULTS,
   STOREFRONT_TEMPLATES,
 } from '../../../constants/storefrontTemplates'
 import { UPLOAD_ROUTES, getUploadUrl } from '../../../constants/uploadRoutes'
@@ -37,6 +38,12 @@ import {
   StorefrontCanvas,
   TemplateHero,
   TemplateSection,
+  VisualCopy,
+  VisualImage,
+  VisualImageCard,
+  VisualGrid,
+  VisualSection,
+  VisualTitle,
 } from './styles'
 
 const DEFAULT_TEMPLATE = STOREFRONT_TEMPLATES.CLASSIC.value
@@ -58,6 +65,70 @@ const getStoreImage = store => {
 
 const getLogoUrl = store => getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
 
+const getCategoryPath = (categoriesPath, category) => (
+  `${categoriesPath}/${category?.slug || category?._id || ''}`
+)
+
+const getProductImage = product => (
+  product?.image ||
+  product?.images?.[0] ||
+  product?.selectedItem?.image ||
+  product?.itemsPreview?.[0]?.image ||
+  product?.variants?.[0]?.image ||
+  product?.variants?.[0]?.images?.[0]
+)
+
+const getCategoryImage = category => {
+  if (category?.image) {
+    return getUploadUrl(UPLOAD_ROUTES.categories.icons, category.image)
+  }
+
+  if (category?.banner) {
+    return getUploadUrl(UPLOAD_ROUTES.categories.banners, category.banner)
+  }
+
+  return getUploadUrl(UPLOAD_ROUTES.categories.icons, category?.icon)
+}
+
+const getVisualImages = ({ categories, products, store, storeImage }) => {
+  const productImages = products
+    .map(getProductImage)
+    .map(image => getUploadUrl(UPLOAD_ROUTES.products.images, image))
+
+  const categoryImages = categories.map(getCategoryImage)
+
+  return [
+    storeImage,
+    ...productImages,
+    ...categoryImages,
+    getLogoUrl(store),
+  ].filter(Boolean).slice(0, 5)
+}
+
+const StorefrontVisualBlock = ({ categories, products, store, storeImage, style }) => {
+  if (!style || style === 'none') return null
+
+  const images = getVisualImages({ categories, products, store, storeImage })
+
+  if (!images.length) return null
+
+  return (
+    <VisualSection $variant={style}>
+      <VisualCopy $variant={style}>
+        <SectionEyebrow>Marca visual</SectionEyebrow>
+        <VisualTitle $variant={style}>{store?.name || 'Tienda'}</VisualTitle>
+      </VisualCopy>
+      <VisualGrid $variant={style}>
+        {images.map((image, index) => (
+          <VisualImageCard key={`${image}-${index}`} $variant={style} $index={index}>
+            <VisualImage src={image} alt={`${store?.name || 'Tienda'} ${index + 1}`} />
+          </VisualImageCard>
+        ))}
+      </VisualGrid>
+    </VisualSection>
+  )
+}
+
 const StorefrontTemplateRenderer = ({
   activeStoreSlug,
   categories = [],
@@ -71,6 +142,13 @@ const StorefrontTemplateRenderer = ({
   const { translate } = useDictionaryTranslation()
   const template = getTemplate(store)
   const sections = getSections(store)
+  const storefront = store?.storefront || {}
+  const heroStyle = storefront.heroStyle || STOREFRONT_STYLE_DEFAULTS.heroStyle
+  const productCardStyle = storefront.productCardStyle || STOREFRONT_STYLE_DEFAULTS.productCardStyle
+  const categorySliderStyle =
+    storefront.categorySliderStyle || STOREFRONT_STYLE_DEFAULTS.categorySliderStyle
+  const visualSectionStyle =
+    storefront.visualSectionStyle || STOREFRONT_STYLE_DEFAULTS.visualSectionStyle
   const storeImage = getStoreImage(store)
   const logoUrl = getLogoUrl(store)
   const heroEyebrow = template === STOREFRONT_TEMPLATES.EDITORIAL_CLEAN.value
@@ -82,11 +160,11 @@ const StorefrontTemplateRenderer = ({
 
   return (
     <StorefrontCanvas $template={template}>
-      <TemplateHero $template={template}>
+      <TemplateHero $template={template} $heroStyle={heroStyle} $heroImage={storeImage}>
         <HeroContent>
-          <HeroEyebrow>{heroEyebrow}</HeroEyebrow>
-          <HeroTitle $template={template}>{heroTitle}</HeroTitle>
-          <HeroDescription>{heroDescription}</HeroDescription>
+          <HeroEyebrow $heroStyle={heroStyle}>{heroEyebrow}</HeroEyebrow>
+          <HeroTitle $template={template} $heroStyle={heroStyle}>{heroTitle}</HeroTitle>
+          <HeroDescription $heroStyle={heroStyle}>{heroDescription}</HeroDescription>
 
           <HeroActions>
             <Link to={productsPath}>
@@ -102,21 +180,23 @@ const StorefrontTemplateRenderer = ({
           </HeroActions>
         </HeroContent>
 
-        <HeroMedia>
-          <HeroImageFrame $template={template}>
-            {storeImage ? (
-              <HeroImage src={storeImage} alt={heroTitle} />
-            ) : (
-              <HeroImageFallback>{heroTitle}</HeroImageFallback>
+        {heroStyle !== 'background' && (
+          <HeroMedia>
+            <HeroImageFrame $template={template} $heroStyle={heroStyle}>
+              {storeImage ? (
+                <HeroImage src={storeImage} alt={heroTitle} />
+              ) : (
+                <HeroImageFallback>{heroTitle}</HeroImageFallback>
+              )}
+            </HeroImageFrame>
+            {(logoUrl || store?.name) && (
+              <HeroLogoBadge $heroStyle={heroStyle}>
+                {logoUrl && <HeroLogo src={logoUrl} alt={store?.name || 'Logo'} />}
+                <HeroLogoText>{store?.name || 'Tienda'}</HeroLogoText>
+              </HeroLogoBadge>
             )}
-          </HeroImageFrame>
-          {(logoUrl || store?.name) && (
-            <HeroLogoBadge>
-              {logoUrl && <HeroLogo src={logoUrl} alt={store?.name || 'Logo'} />}
-              <HeroLogoText>{store?.name || 'Tienda'}</HeroLogoText>
-            </HeroLogoBadge>
-          )}
-        </HeroMedia>
+          </HeroMedia>
+        )}
       </TemplateHero>
 
       {sections.showTrustStrip && <StorefrontTrustStrip />}
@@ -128,7 +208,8 @@ const StorefrontTemplateRenderer = ({
               categories={categories.slice(0, 12)}
               title={translate('catalog.storeCategorySliderTitle')}
               subtitle={translate('catalog.storeCategorySliderSubtitle')}
-              getPath={category => `${productsPath}?category=${category._id}`}
+              getPath={category => getCategoryPath(categoriesPath, category)}
+              variant={categorySliderStyle}
             />
           </TemplateSection>
         )}
@@ -157,12 +238,26 @@ const StorefrontTemplateRenderer = ({
               {loading ? (
                 <LoadingBlock><Spin /></LoadingBlock>
               ) : products.length ? (
-                <StorefrontProductGrid products={products} storeSlug={activeStoreSlug} />
+                <StorefrontProductGrid
+                  products={products}
+                  storeSlug={activeStoreSlug}
+                  cardStyle={productCardStyle}
+                />
               ) : (
                 <Empty description={translate('catalog.noStoreProducts')} />
               )}
             </ProductsWrap>
           </TemplateSection>
+        )}
+
+        {sections.showVisualSection && (
+          <StorefrontVisualBlock
+            categories={categories}
+            products={products}
+            store={store}
+            storeImage={storeImage}
+            style={visualSectionStyle}
+          />
         )}
 
         {store?.assignedBroker && sections.showCreditForm && (
