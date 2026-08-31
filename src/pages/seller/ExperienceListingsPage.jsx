@@ -26,12 +26,9 @@ import {
   ThumbnailImage,
   Toolbar,
 } from '../../styles/dashboardStyles'
-import { currency } from '../../utils/formatters'
+import { arrayToText, currency, datesToText, textToArray, textToDates } from '../../utils/formatters'
 
-const arrayToText = values => (values || []).join(', ')
-const textToArray = value => String(value || '').split(',').map(item => item.trim()).filter(Boolean)
-const datesToText = values => (values || []).map(value => String(value).slice(0, 10)).join(', ')
-const textToDates = value => textToArray(value).map(item => item.slice(0, 10))
+
 
 const getFormValues = listing => ({
   title: listing?.title,
