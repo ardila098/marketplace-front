@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Form, Space, Table, Tag, Typography } from 'antd'
-import { useCallback, useMemo, useState } from 'react'
+import { Button, Space, Table, Tag, Typography } from 'antd'
+import { useMemo } from 'react'
 
 import {
   getLandingDomainStatusColor,
@@ -22,8 +22,8 @@ import {
 } from '../../styles/dashboardStyles'
 import { currency } from '../../utils/formatters'
 import { PublicPathText } from './styles'
-import LandingPageDrawer from './LandingPageDrawer'
 import useLanding from './hooks/useLanding'
+import { useNavigate } from 'react-router-dom'
 
 const getPublicUrl = landing => {
   if (landing?.domain?.url) return landing.domain.url
@@ -45,25 +45,10 @@ const renderImage = landing => {
 }
 
 const LandingPagesPage = () => {
-  const [form] = Form.useForm()
   const { role } = useAuth()
-  const [selectedLanding, setSelectedLanding] = useState(null)
-  const [drawerOpen, setDrawerOpen] = useState(false)
   const isAdmin = Number(role) === ROLES.ADMIN.value
-  const { landings, loading, loadData } = useLanding()
-
-  const openDrawer = useCallback(landing => {
-    setSelectedLanding(landing || null)
-    setDrawerOpen(true)
-  }, [])
-
-  const closeDrawer = () => {
-    setDrawerOpen(false)
-    setSelectedLanding(null)
-    loadData()
-
-    form.resetFields()
-  }
+  const { loading, landings } = useLanding()
+  const Navigate = useNavigate()
 
   const columns = useMemo(
     () => [
@@ -126,10 +111,12 @@ const LandingPagesPage = () => {
       {
         title: 'Acciones',
         align: 'right',
-        render: (_, landing) => <Button onClick={() => openDrawer(landing)}>Editar</Button>,
+        render: (_, landing) => (
+          <Button onClick={() => Navigate(`/landing/builder/${landing._id}`)}>Editar</Button>
+        ),
       },
     ],
-    [openDrawer]
+    []
   )
 
   return (
@@ -142,7 +129,7 @@ const LandingPagesPage = () => {
           </PageDescription>
         </PageIntro>
 
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => openDrawer(null)}>
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => Navigate(`/landing/builder`)}>
           Nueva landing
         </Button>
       </Toolbar>
@@ -153,13 +140,6 @@ const LandingPagesPage = () => {
         dataSource={landings}
         loading={loading}
         scroll={{ x: 960 }}
-      />
-
-      <LandingPageDrawer
-        closeDrawer={closeDrawer}
-        drawerOpen={drawerOpen}
-        selectedLanding={selectedLanding}
-        isAdmin={isAdmin}
       />
     </PageStack>
   )

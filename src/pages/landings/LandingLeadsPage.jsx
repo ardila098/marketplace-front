@@ -6,7 +6,6 @@ import {
   getLandingLeadStatusColor,
   getLandingLeadStatusLabel,
 } from '../../constants/landingPages'
-import { landingPageService } from '../../services/landingPageService'
 import {
   PageDescription,
   PageIntro,
@@ -16,6 +15,7 @@ import {
 } from '../../styles/dashboardStyles'
 import { currency } from '../../utils/formatters'
 import { LeadStatusSelect } from './styles'
+import { landingPageService } from '../../services/landingPageService'
 
 const formatDate = value => {
   if (!value) return '-'

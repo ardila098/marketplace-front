@@ -1,28 +1,3 @@
-export const LANDING_PAGE_TEMPLATES = Object.freeze({
-  PRODUCT_FOCUS: {
-    value: 'product_focus',
-    label: 'Producto destacado',
-  },
-  BUNDLE_DROP: {
-    value: 'bundle_drop',
-    label: 'Pack promocional',
-  },
-  PREMIUM_MINIMAL: {
-    value: 'premium_minimal',
-    label: 'Premium minimal',
-  },
-  CLAY_OFFER: {
-    value: 'clay_offer',
-    label: 'Clay oferta',
-  },
-})
-
-export const LANDING_PAGE_TEMPLATE_OPTIONS = Object.freeze(
-  Object.values(LANDING_PAGE_TEMPLATES).map(template => ({
-    label: template.label,
-    value: template.value,
-  }))
-)
 
 export const LANDING_PAGE_STATUS = Object.freeze({
   DRAFT: {

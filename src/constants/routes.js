@@ -78,12 +78,15 @@ export const ROUTES = {
   ADMIN_COUPONS: '/admin/coupons',
   ADMIN_CUSTOMERS: '/admin/customers',
   ADMIN_CREDIT_APPLICATIONS: '/admin/credit-applications',
+  ADMIN_LANDING_BUILDER: '/landing/builder/:id',
+
 
   COURIER_SHIPMENTS: '/courier/shipments',
 
   LANDING_DASHBOARD: '/landing',
   LANDING_PAGES: '/landing/pages',
   LANDING_LEADS: '/landing/leads',
+  LANDING_BUILDER: '/landing/builder/:id',
 
   ADMIN_LANDINGS: '/admin/landings',
 
