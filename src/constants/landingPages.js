@@ -1,19 +1,23 @@
 export const LANDING_PAGE_TEMPLATES = Object.freeze({
-  PRODUCT_FOCUS: {
-    value: 'product_focus',
-    label: 'Producto destacado',
+  PRODUCT_ESSENTIALS: {
+    value: 'product_essentials',
+    label: 'Producto clásico',
   },
-  BUNDLE_DROP: {
-    value: 'bundle_drop',
+  BUNDLE_SALE: {
+    value: 'bundle_sale',
     label: 'Pack promocional',
   },
-  PREMIUM_MINIMAL: {
-    value: 'premium_minimal',
-    label: 'Premium minimal',
+  AGENCY_CLEAN: {
+    value: 'agency_clean',
+    label: 'Agencia / servicios',
   },
-  CLAY_OFFER: {
-    value: 'clay_offer',
-    label: 'Clay oferta',
+  INFO_PRODUCT: {
+    value: 'infoproduct_launch',
+    label: 'Lanzamiento de infoproducto',
+  },
+  LEAD_CAPTURE: {
+    value: 'lead_capture',
+    label: 'Captura de leads',
   },
 })
 
@@ -23,6 +27,55 @@ export const LANDING_PAGE_TEMPLATE_OPTIONS = Object.freeze(
     value: template.value,
   }))
 )
+
+export const LANDING_PAGE_TYPES = Object.freeze({
+  PRODUCT: {
+    value: 'product',
+    label: 'Producto físico',
+  },
+  SERVICE: {
+    value: 'service',
+    label: 'Agencia / servicios',
+  },
+  INFO_PRODUCT: {
+    value: 'infoproduct',
+    label: 'Infoproducto',
+  },
+  LEAD: {
+    value: 'lead',
+    label: 'Captura de leads',
+  },
+})
+
+export const LANDING_PAGE_TYPE_OPTIONS = Object.freeze(
+  Object.values(LANDING_PAGE_TYPES).map(type => ({
+    label: type.label,
+    value: type.value,
+  }))
+)
+
+export const getLandingTypeLabel = type => (
+  Object.values(LANDING_PAGE_TYPES).find(item => item.value === type)?.label || type
+)
+
+export const LANDING_SECTION_TYPES = Object.freeze({
+  HEADER: 'header',
+  HERO: 'hero',
+  FEATURES: 'features',
+  GALLERY: 'gallery',
+  TESTIMONIALS: 'testimonials',
+  FAQ: 'faq',
+  GUARANTEE: 'guarantee',
+  CONTENT: 'content',
+  CTA: 'cta',
+  CONVERSION: 'conversion',
+  FOOTER: 'footer',
+})
+
+export const LANDING_CONVERSION_MODES = Object.freeze({
+  ORDER: 'order',
+  LEAD: 'lead',
+})
 
 export const LANDING_PAGE_STATUS = Object.freeze({
   DRAFT: {

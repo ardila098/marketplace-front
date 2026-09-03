@@ -83,9 +83,11 @@ export const ROUTES = {
 
   LANDING_DASHBOARD: '/landing',
   LANDING_PAGES: '/landing/pages',
+  LANDING_EDITOR: '/landing/pages/:landingId/editor',
   LANDING_LEADS: '/landing/leads',
 
   ADMIN_LANDINGS: '/admin/landings',
+  ADMIN_LANDING_EDITOR: '/admin/landings/:landingId/editor',
 
 }
 

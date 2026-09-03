@@ -28,12 +28,26 @@ const formatDate = value => {
 const renderSelections = selections => {
   const values = (selections || [])
     .map(item => {
-      const options = [item.color, item.size].filter(Boolean).join(' / ')
-      return [item.label, options].filter(Boolean).join(': ')
+      const options = [
+        ...(item.options || []).map(option => `${option.label || option.key || ''}: ${option.value}`),
+        item.color,
+        item.size,
+      ]
+        .filter(Boolean)
+        .join(' / ')
+      return [item.label || item.item, options].filter(Boolean).join(': ')
     })
     .filter(Boolean)
 
   return values.length ? values.join(', ') : '-'
+}
+
+const renderAnswers = answers => {
+  const values = (answers || [])
+    .map(answer => [answer.label || answer.key, answer.value].filter(Boolean).join(': '))
+    .filter(Boolean)
+
+  return values.length ? values.join(' · ') : '-'
 }
 
 const LandingLeadsPage = () => {
@@ -101,8 +115,12 @@ const LandingLeadsPage = () => {
       ),
     },
     {
-      title: 'Seleccion',
+      title: 'Selección',
       render: (_, lead) => renderSelections(lead.selections),
+    },
+    {
+      title: 'Respuestas',
+      render: (_, lead) => renderAnswers(lead.answers),
     },
     {
       title: 'Direccion',

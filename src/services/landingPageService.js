@@ -18,6 +18,11 @@ export const landingPageService = {
     return normalizeItemResponse(response)
   },
 
+  getById: async id => {
+    const response = await DataService.get(API_ROUTES.landingPages.byId(id))
+    return normalizeItemResponse(response)
+  },
+
   resolvePublic: async params => {
     const response = await DataService.get(API_ROUTES.landingPages.publicResolve, params)
     return normalizeItemResponse(response)

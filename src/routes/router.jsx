@@ -82,6 +82,7 @@ const AdvisorStoresPage = createLazyPage(() => import('../pages/advisor/AdvisorS
 const AdvisorPayoutsPage = createLazyPage(() => import('../pages/advisor/AdvisorPayoutsPage'))
 const LandingPagesPage = createLazyPage(() => import('../pages/landings/LandingPagesPage'))
 const LandingLeadsPage = createLazyPage(() => import('../pages/landings/LandingLeadsPage'))
+const LandingEditorPage = createLazyPage(() => import('../landings/editor/LandingEditorPage'))
 
 const UnauthorizedPage = createLazyPage(() => import('../pages/system/UnauthorizedPage'))
 
@@ -219,6 +220,7 @@ export const router = createBrowserRouter([
         children: [
           { path: ROUTES.LANDING_DASHBOARD, element: <LandingPagesPage /> },
           { path: ROUTES.LANDING_PAGES, element: <LandingPagesPage /> },
+          { path: ROUTES.LANDING_EDITOR, element: <LandingEditorPage /> },
           { path: ROUTES.LANDING_LEADS, element: <LandingLeadsPage /> },
         ],
       },
@@ -236,6 +238,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_AGENCY_LEADS, element: <AgencyLeadsPage /> },
           { path: ROUTES.ADMIN_EXPERIENCE_BOOKINGS, element: <ExperienceBookingsPage /> },
           { path: ROUTES.ADMIN_LANDINGS, element: <LandingPagesPage /> },
+          { path: ROUTES.ADMIN_LANDING_EDITOR, element: <LandingEditorPage /> },
           { path: ROUTES.ADMIN_CONTACTS, element: <CustomerContactsPage /> },
           { path: ROUTES.ADMIN_VERTICALS, element: <AdminVerticalsPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },

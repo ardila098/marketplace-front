@@ -37,7 +37,7 @@ const getFileNameFromResponse = response => {
 
 const getImagesKey = images => normalizeValue(images).join('|')
 
-const ImageUploadInput = ({
+export const ImageUploadInput = ({
   value,
   onChange,
   onValueChange,
