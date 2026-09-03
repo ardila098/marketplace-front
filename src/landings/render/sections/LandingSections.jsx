@@ -17,6 +17,14 @@ import {
 const imageUrl = (fileName, route = UPLOAD_ROUTES.landings.images) =>
   getUploadUrl(route, fileName)
 
+const videoSourceUrl = value => {
+  const raw = String(value || '').trim()
+
+  if (!raw || /^(?:https?:)?\/\//i.test(raw)) return raw
+
+  return getUploadUrl(UPLOAD_ROUTES.landings.videos, raw)
+}
+
 const whatsappLink = value => {
   if (!value) return ''
   return `https://wa.me/${String(value).replace(/\D/g, '')}`
@@ -323,7 +331,7 @@ const videoEmbed = url => {
     }
   }
 
-  if (/\.(mp4|webm|ogv)(\?|$)/i.test(value)) {
+  if (/\.(mp4|webm|ogv|mov)(\?|$)/i.test(value)) {
     return { kind: 'file', src: value }
   }
 
@@ -348,7 +356,8 @@ const buildEmbedQuery = (video, data) => {
 }
 
 const VideoPlayer = ({ section, data }) => {
-  const video = videoEmbed(data.videoUrl)
+  const rawSource = data.externalVideoUrl || data.videoUrl
+  const video = videoEmbed(videoSourceUrl(rawSource))
   const poster = imageUrl(data.poster)
   const sharedStyle = {
     width: '100%',
@@ -380,7 +389,7 @@ const VideoPlayer = ({ section, data }) => {
         ) : (
           <div>
             <div style={{ fontSize: 44, marginBottom: 8 }}>🎬</div>
-            Pega una URL de YouTube, Vimeo o un video .mp4
+            Sube un video MP4 o WebM desde el editor
           </div>
         )}
       </div>

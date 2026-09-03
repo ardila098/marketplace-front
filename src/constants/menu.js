@@ -22,6 +22,7 @@ import {
   Sparkles,
   RotateCcw,
   Truck,
+  CreditCard,
 } from 'lucide-react'
 import { isAgencyBusiness, isExperienceBusiness } from './businessTypes'
 import { PERMISSIONS } from './permissions'
@@ -293,6 +294,13 @@ export const adminMenu = [
     permission: PERMISSIONS.ADMIN_LANDINGS_MANAGE,
   },
   {
+    key: ROUTES.ADMIN_LANDING_SUBSCRIPTIONS,
+    label: 'Plan correo landings',
+    path: ROUTES.ADMIN_LANDING_SUBSCRIPTIONS,
+    icon: CreditCard,
+    permission: PERMISSIONS.ADMIN_LANDING_SUBSCRIPTIONS_MANAGE,
+  },
+  {
     key: ROUTES.ADMIN_CONTACTS,
     label: 'Contactos',
     path: ROUTES.ADMIN_CONTACTS,
@@ -409,6 +417,13 @@ export const landingMenu = [
     path: ROUTES.LANDING_LEADS,
     icon: Mail,
     permission: PERMISSIONS.LANDING_LEADS_VIEW,
+  },
+  {
+    key: ROUTES.LANDING_MAIL_PLAN,
+    label: 'Plan de correo',
+    path: ROUTES.LANDING_MAIL_PLAN,
+    icon: CreditCard,
+    permission: PERMISSIONS.LANDING_MAIL_PLAN_VIEW,
   },
 ]
 

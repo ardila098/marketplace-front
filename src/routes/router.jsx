@@ -30,6 +30,11 @@ const StorefrontExperienceDetailPage = createLazyPage(
 const StoresPage = createLazyPage(() => import('../pages/stores/StoresPage'))
 const BrokerPublicPage = createLazyPage(() => import('../pages/brokers/BrokerPublicPage'))
 const LandingPublicPage = createLazyPage(() => import('../pages/landings/LandingPublicPage'))
+const LandingPaymentResultPage = createLazyPage(() => import('../pages/landings/LandingPaymentResultPage'))
+const LandingMailPlanPage = createLazyPage(() => import('../pages/landings/LandingMailPlanPage'))
+const AdminLandingSubscriptionsPage = createLazyPage(
+  () => import('../pages/admin/AdminLandingSubscriptionsPage')
+)
 
 const CartPage = createLazyPage(() => import('../pages/customer/CartPage'))
 const CheckoutPage = createLazyPage(() => import('../pages/checkout/CheckoutPage'))
@@ -87,6 +92,7 @@ const LandingEditorPage = createLazyPage(() => import('../landings/editor/Landin
 const UnauthorizedPage = createLazyPage(() => import('../pages/system/UnauthorizedPage'))
 
 export const router = createBrowserRouter([
+  { path: ROUTES.LANDING_PAYMENT_RESULT, element: <LandingPaymentResultPage /> },
   { path: ROUTES.LANDING_PUBLIC, element: <LandingPublicPage /> },
   {
     element: <PublicLayout />,
@@ -222,6 +228,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.LANDING_PAGES, element: <LandingPagesPage /> },
           { path: ROUTES.LANDING_EDITOR, element: <LandingEditorPage /> },
           { path: ROUTES.LANDING_LEADS, element: <LandingLeadsPage /> },
+          { path: ROUTES.LANDING_MAIL_PLAN, element: <LandingMailPlanPage /> },
         ],
       },
     ],
@@ -239,6 +246,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.ADMIN_EXPERIENCE_BOOKINGS, element: <ExperienceBookingsPage /> },
           { path: ROUTES.ADMIN_LANDINGS, element: <LandingPagesPage /> },
           { path: ROUTES.ADMIN_LANDING_EDITOR, element: <LandingEditorPage /> },
+          { path: ROUTES.ADMIN_LANDING_SUBSCRIPTIONS, element: <AdminLandingSubscriptionsPage /> },
           { path: ROUTES.ADMIN_CONTACTS, element: <CustomerContactsPage /> },
           { path: ROUTES.ADMIN_VERTICALS, element: <AdminVerticalsPage /> },
           { path: ROUTES.ADMIN_PRODUCTS, element: <AdminProductsPage /> },

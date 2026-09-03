@@ -18,6 +18,7 @@ export const PERMISSIONS = {
   ADMIN_SHIPMENTS_MANAGE: 'admin.shipments.manage',
   ADMIN_RETURNS_MANAGE: 'admin.returns.manage',
   ADMIN_LANDINGS_MANAGE: 'admin.landings.manage',
+  ADMIN_LANDING_SUBSCRIPTIONS_MANAGE: 'admin.landingSubscriptions.manage',
 
   SELLER_DASHBOARD_VIEW: 'seller.dashboard.view',
   SELLER_STORE_MANAGE: 'seller.store.manage',
@@ -48,6 +49,7 @@ export const PERMISSIONS = {
 
   LANDING_PAGES_MANAGE: 'landing.pages.manage',
   LANDING_LEADS_VIEW: 'landing.leads.view',
+  LANDING_MAIL_PLAN_VIEW: 'landing.mailPlan.view',
 
   CUSTOMER_CART_MANAGE: 'customer.cart.manage',
   CUSTOMER_ORDERS_VIEW: 'customer.orders.view',
@@ -72,6 +74,7 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.ADMIN_SHIPMENTS_MANAGE,
     PERMISSIONS.ADMIN_RETURNS_MANAGE,
     PERMISSIONS.ADMIN_LANDINGS_MANAGE,
+    PERMISSIONS.ADMIN_LANDING_SUBSCRIPTIONS_MANAGE,
   ],
   [ROLES.SELLER.value]: [
     PERMISSIONS.SELLER_DASHBOARD_VIEW,
@@ -108,5 +111,6 @@ export const ROLE_PERMISSIONS = {
   [ROLES.LANDING.value]: [
     PERMISSIONS.LANDING_PAGES_MANAGE,
     PERMISSIONS.LANDING_LEADS_VIEW,
+    PERMISSIONS.LANDING_MAIL_PLAN_VIEW,
   ],
 }

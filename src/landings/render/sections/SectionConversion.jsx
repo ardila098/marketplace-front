@@ -1,5 +1,9 @@
 import { useState } from 'react'
 import { UPLOAD_ROUTES, getUploadUrl } from '../../../constants/uploadRoutes'
+import {
+  LANDING_PAYMENT_METHODS,
+  LANDING_WOMPI_DISCOUNT_PERCENT,
+} from '../../../constants/landingPages'
 import { currency as formatCurrency } from '../../../utils/formatters'
 import { resolveConversion } from '../../defaults'
 import {
@@ -68,6 +72,9 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
   const [submitted, setSubmitted] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState(
+    isOrder ? LANDING_PAYMENT_METHODS.WOMPI.value : null
+  )
 
   const fields = conversion.fields || []
   const title = section?.data?.title || conversion.title || 'Completa tus datos'
@@ -139,6 +146,7 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
       items,
       message: values.message || '',
       termsAccepted,
+      paymentMethod: isOrder ? paymentMethod : undefined,
     }
   }
 
@@ -154,6 +162,12 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
 
     return sum + price * item.quantity
   }, 0)
+
+  const wompiDiscount =
+    paymentMethod === LANDING_PAYMENT_METHODS.WOMPI.value
+      ? Math.round((total * LANDING_WOMPI_DISCOUNT_PERCENT) / 100)
+      : 0
+  const payableTotal = Math.max(total - wompiDiscount, 0)
 
   const packGroups = new Set(
     orderItems.filter(item => item.packItem).map(item => item.product.key)
@@ -207,7 +221,13 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
     setSaving(true)
 
     try {
-      await onSubmit?.(buildPayload())
+      const response = await onSubmit?.(buildPayload())
+
+      if (response?.data?.paymentCheckout?.paymentUrl) {
+        window.location.href = response.data.paymentCheckout.paymentUrl
+        return
+      }
+
       setSubmitted(true)
     } catch (submitError) {
       setError(submitError?.message || 'No se pudo enviar la solicitud')
@@ -226,6 +246,25 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
             <LpSubtitle $center style={{ margin: '14px auto 0' }}>
               {conversion.successMessage || 'Recibimos tu solicitud. Te contactaremos muy pronto.'}
             </LpSubtitle>
+            {landing?.brand?.whatsapp ? (
+              <a
+                href={`https://wa.me/${String(landing.brand.whatsapp).replace(/\D/g, '')}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: 'inline-block',
+                  marginTop: 20,
+                  padding: '11px 20px',
+                  borderRadius: 999,
+                  background: '#25D366',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  textDecoration: 'none',
+                }}
+              >
+                Escríbenos por WhatsApp
+              </a>
+            ) : null}
           </LpCard>
         </LpContainer>
       </LpSection>
@@ -375,7 +414,70 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
 
           <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.05rem', paddingTop: 14 }}>
             <span>Total ({totalItems} item{totalItems === 1 ? '' : 's'})</span>
-            <span>{formatCurrency(total)}</span>
+            <span>
+              {paymentMethod === LANDING_PAYMENT_METHODS.WOMPI.value && wompiDiscount > 0 ? (
+                <span style={{ color: 'var(--lp-muted)', textDecoration: 'line-through', marginRight: 8, fontSize: '0.9rem' }}>
+                  {formatCurrency(total)}
+                </span>
+              ) : null}
+              {formatCurrency(payableTotal)}
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gap: 10, marginTop: 18, padding: '16px 0 4px', borderTop: '1px solid rgba(0,0,0,0.08)' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 800, marginBottom: 2 }}>
+              ¿Cómo quieres pagar?
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod(LANDING_PAYMENT_METHODS.WOMPI.value)}
+                disabled={isPreview}
+                style={{
+                  textAlign: 'left',
+                  padding: '12px 14px',
+                  borderRadius: 12,
+                  cursor: 'pointer',
+                  border:
+                    paymentMethod === LANDING_PAYMENT_METHODS.WOMPI.value
+                      ? '2px solid var(--lp-primary)'
+                      : '1px solid rgba(0,0,0,0.16)',
+                  background:
+                    paymentMethod === LANDING_PAYMENT_METHODS.WOMPI.value
+                      ? 'color-mix(in srgb, var(--lp-primary) 8%, transparent)'
+                      : 'transparent',
+                }}
+              >
+                <strong>Pagar con Wompi</strong>
+                <div style={{ color: 'var(--lp-muted)', fontSize: '0.78rem' }}>
+                  En línea · {LANDING_WOMPI_DISCOUNT_PERCENT}% de descuento
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod(LANDING_PAYMENT_METHODS.CASH_ON_DELIVERY.value)}
+                disabled={isPreview}
+                style={{
+                  textAlign: 'left',
+                  padding: '12px 14px',
+                  borderRadius: 12,
+                  cursor: 'pointer',
+                  border:
+                    paymentMethod === LANDING_PAYMENT_METHODS.CASH_ON_DELIVERY.value
+                      ? '2px solid var(--lp-primary)'
+                      : '1px solid rgba(0,0,0,0.16)',
+                  background:
+                    paymentMethod === LANDING_PAYMENT_METHODS.CASH_ON_DELIVERY.value
+                      ? 'color-mix(in srgb, var(--lp-primary) 8%, transparent)'
+                      : 'transparent',
+                }}
+              >
+                <strong>Contra entrega</strong>
+                <div style={{ color: 'var(--lp-muted)', fontSize: '0.78rem' }}>
+                  Pagas cuando recibes
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       )}

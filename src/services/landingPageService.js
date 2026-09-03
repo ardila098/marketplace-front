@@ -58,9 +58,25 @@ export const landingPageService = {
     return normalizeListResponse(response)
   },
 
+  getLead: async id => {
+    const response = await DataService.get(API_ROUTES.landingPages.leadById(id))
+    return normalizeItemResponse(response)
+  },
+
   updateLead: async (id, payload) => {
     const response = await DataService.patch(API_ROUTES.landingPages.leadById(id), payload)
     return normalizeItemResponse(response, 'Solicitud actualizada correctamente')
+  },
+
+  getLandingPaymentResult: async params => {
+    const cleanParams = Object.fromEntries(
+      Object.entries(params || {}).filter(([, value]) => value)
+    )
+    const response = await DataService.get(
+      API_ROUTES.landingPages.publicPaymentResult,
+      cleanParams
+    )
+    return normalizeItemResponse(response)
   },
 
   addLeadNote: async (id, text) => {

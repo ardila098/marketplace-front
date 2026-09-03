@@ -1,6 +1,7 @@
 import { Input, InputNumber, Select, Switch, Typography } from 'antd'
 import { Plus, Trash2 } from 'lucide-react'
 import { ImageUploadInput } from '../../components/uploads/ImageUploadField/ImageUploadField'
+import VideoUploadField from '../../components/uploads/VideoUploadField/VideoUploadField'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 
 export const FieldLabel = ({ children, hint }) => (
@@ -97,6 +98,18 @@ export const BuilderField = ({ field, value, onChange }) => {
             uploadRoute={UPLOAD_ROUTES.landings.images}
             maxCount={1}
             multiple={false}
+          />
+        </FieldWrap>
+      )
+
+    case 'video':
+      return (
+        <FieldWrap label={field.label} hint={field.hint}>
+          <VideoUploadField
+            value={value || ''}
+            onChange={onChange}
+            folder={UPLOAD_FOLDERS.landings.videos}
+            uploadRoute={UPLOAD_ROUTES.landings.videos}
           />
         </FieldWrap>
       )

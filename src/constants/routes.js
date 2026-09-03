@@ -23,6 +23,7 @@ export const ROUTES = {
   STOREFRONT_EXPERIENCE_DETAIL: '/stores/:storeSlug/experiences/:experienceSlug',
   BROKER_PUBLIC_PROFILE: '/brokers/:slug',
   LANDING_PUBLIC: '/l/:slug',
+  LANDING_PAYMENT_RESULT: '/l/:slug/result',
   ORDER_LOOKUP: '/order-lookup',
   RETURN_REQUEST: '/returns',
   ORDER_DETAIL: '/orderDetail/:id',
@@ -85,9 +86,11 @@ export const ROUTES = {
   LANDING_PAGES: '/landing/pages',
   LANDING_EDITOR: '/landing/pages/:landingId/editor',
   LANDING_LEADS: '/landing/leads',
+  LANDING_MAIL_PLAN: '/landing/plan-correo',
 
   ADMIN_LANDINGS: '/admin/landings',
   ADMIN_LANDING_EDITOR: '/admin/landings/:landingId/editor',
+  ADMIN_LANDING_SUBSCRIPTIONS: '/admin/landing-plan-correo',
 
 }
 

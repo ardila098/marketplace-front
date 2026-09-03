@@ -182,7 +182,7 @@ export const SECTION_DEFINITIONS = Object.freeze({
   video: {
     type: 'video',
     label: 'Video',
-    description: 'Video de YouTube, Vimeo o MP4, a todo lo ancho o acompañado de texto.',
+    description: 'Video en MP4/WebM subido a la plataforma, a todo lo ancho o acompañado de texto.',
     group: 'contenido',
     defaultVariant: 'contained',
     variants: [
@@ -195,6 +195,7 @@ export const SECTION_DEFINITIONS = Object.freeze({
       title: '',
       subtitle: '',
       videoUrl: '',
+      externalVideoUrl: '',
       poster: '',
       autoplay: false,
       loop: false,
@@ -206,7 +207,8 @@ export const SECTION_DEFINITIONS = Object.freeze({
     defaultSettings: { variant: 'contained', aspectRatio: '16 / 9' },
     fields: [
       { path: 'settings.variant', label: 'Variante', type: 'select', options: [] },
-      { path: 'data.videoUrl', label: 'URL del video', type: 'text', hint: 'Pega una URL de YouTube, Vimeo o un archivo .mp4' },
+      { path: 'data.videoUrl', label: 'Video', type: 'video', hint: 'Sube un archivo MP4 o WebM' },
+      { path: 'data.externalVideoUrl', label: 'URL externa (opcional)', type: 'text', hint: 'Tambien puedes pegar una URL de YouTube o Vimeo' },
       { path: 'data.poster', label: 'Imagen de portada / poster', type: 'image' },
       { path: 'data.autoplay', label: 'Reproducir automáticamente', type: 'switch' },
       { path: 'data.loop', label: 'Repetir video', type: 'switch' },

@@ -78,6 +78,30 @@ export const LANDING_CONVERSION_MODES = Object.freeze({
   LEAD: 'lead',
 })
 
+export const LANDING_PAYMENT_METHODS = Object.freeze({
+  WOMPI: {
+    value: 'wompi',
+    label: 'Wompi',
+  },
+  CASH_ON_DELIVERY: {
+    value: 'cash_on_delivery',
+    label: 'Contra entrega',
+  },
+})
+
+export const LANDING_PAYMENT_METHOD_OPTIONS = Object.freeze(
+  Object.values(LANDING_PAYMENT_METHODS).map(method => ({
+    label: method.label,
+    value: method.value,
+  }))
+)
+
+export const LANDING_WOMPI_DISCOUNT_PERCENT = 5
+
+export const getLandingPaymentMethodLabel = value => (
+  Object.values(LANDING_PAYMENT_METHODS).find(method => method.value === value)?.label || value
+)
+
 export const LANDING_PAGE_STATUS = Object.freeze({
   DRAFT: {
     value: 'draft',

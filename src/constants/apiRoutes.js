@@ -102,10 +102,17 @@ export const API_ROUTES = {
     publicResolve: '/landing-pages/public/resolve',
     publicBySlug: slug => `/landing-pages/public/${slug}`,
     publicLead: slug => `/landing-pages/public/${slug}/leads`,
+    publicPaymentResult: '/landing-pages/public/payment-result',
     domainSync: id => `/landing-pages/${id}/domain/sync`,
     leads: '/landing-pages/leads',
     leadById: id => `/landing-pages/leads/${id}`,
     leadNotes: id => `/landing-pages/leads/${id}/notes`,
+  },
+
+  landingSubscriptions: {
+    base: '/landing-subscriptions',
+    mine: '/landing-subscriptions/mine',
+    byId: id => `/landing-subscriptions/${id}`,
   },
 
   products: {

@@ -35,6 +35,7 @@ export const UPLOAD_FOLDERS = Object.freeze({
   landings: {
     logos: 'landings/logos',
     images: 'landings/images',
+    videos: 'landings/videos',
   },
   brokers: {
     profileImages: 'brokers/profile-images',
@@ -75,6 +76,7 @@ export const UPLOAD_ROUTES = Object.freeze({
   landings: {
     logos: buildUploadRoute('/uploads/landings/logos'),
     images: buildUploadRoute('/uploads/landings/images'),
+    videos: buildUploadRoute('/uploads/landings/videos'),
   },
   brokers: {
     profileImages: buildUploadRoute('/uploads/brokers/profile-images'),

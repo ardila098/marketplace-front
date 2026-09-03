@@ -11,4 +11,15 @@ export const uploadService = {
       onUploadProgress
     )
   },
+
+  video: ({ file, folder, onUploadProgress }) => {
+    const params = new URLSearchParams({ folder })
+
+    return DataService.postFile(
+      `/uploads/video?${params.toString()}`,
+      file,
+      'video',
+      onUploadProgress
+    )
+  },
 }

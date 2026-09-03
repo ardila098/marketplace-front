@@ -41,7 +41,7 @@ const LandingPublicPage = ({ host, initialLanding = null }) => {
 
   const submitLead = async payload => {
     if (!landing?.slug) return
-    await landingPageService.createLead(landing.slug, payload)
+    return landingPageService.createLead(landing.slug, payload)
   }
 
   if (loading) {
