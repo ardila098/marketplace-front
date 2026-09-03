@@ -11,6 +11,7 @@ import {
   SectionGuarantee,
   SectionHeader,
   SectionHero,
+  SectionVideo,
   SectionTestimonials,
 } from './sections/LandingSections'
 import SectionConversion from './sections/SectionConversion'
@@ -19,6 +20,7 @@ const SECTION_RENDERERS = {
   header: SectionHeader,
   hero: SectionHero,
   content: SectionContent,
+  video: SectionVideo,
   features: SectionFeatures,
   gallery: SectionGallery,
   testimonials: SectionTestimonials,

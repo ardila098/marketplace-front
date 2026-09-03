@@ -247,6 +247,7 @@ const PackItemEditor = ({ item, index, onChange, onRemove }) => {
 
 const ProductEditor = ({ product, index, onChange, onRemove }) => {
   const update = patch => onChange({ ...product, ...patch })
+  const isPack = (product.packItems || []).length > 0
 
   const updatePackItem = (itemIndex, nextItem) => {
     const packItems = (product.packItems || []).map((current, currentIndex) =>
@@ -303,33 +304,41 @@ const ProductEditor = ({ product, index, onChange, onRemove }) => {
         />
       </FieldWrap>
 
-      <Typography.Text strong style={{ display: 'block', margin: '16px 0 8px' }}>
-        Propiedades (tallas, colores, etc.)
-      </Typography.Text>
-      {(product.options || []).map((option, optionIndex) => (
-        <ProductOptionEditor
-          key={`${option.key}-${optionIndex}`}
-          option={option}
-          onChange={nextOption => {
-            const options = (product.options || []).map((current, currentIndex) =>
-              currentIndex === optionIndex ? nextOption : current
-            )
-            update({ options })
-          }}
-          onRemove={() => {
-            const options = (product.options || []).filter((_, currentIndex) => currentIndex !== optionIndex)
-            update({ options })
-          }}
-        />
-      ))}
-      <Button
-        size="small"
-        type="dashed"
-        icon={<Plus size={13} />}
-        onClick={() => update({ options: [...(product.options || []), makeOption({ label: 'Nueva propiedad' })] })}
-      >
-        Agregar propiedad (talla, color…)
-      </Button>
+      {!isPack ? (
+        <>
+          <Typography.Text strong style={{ display: 'block', margin: '16px 0 8px' }}>
+            Propiedades (tallas, colores, etc.)
+          </Typography.Text>
+          {(product.options || []).map((option, optionIndex) => (
+            <ProductOptionEditor
+              key={`${option.key}-${optionIndex}`}
+              option={option}
+              onChange={nextOption => {
+                const options = (product.options || []).map((current, currentIndex) =>
+                  currentIndex === optionIndex ? nextOption : current
+                )
+                update({ options })
+              }}
+              onRemove={() => {
+                const options = (product.options || []).filter((_, currentIndex) => currentIndex !== optionIndex)
+                update({ options })
+              }}
+            />
+          ))}
+          <Button
+            size="small"
+            type="dashed"
+            icon={<Plus size={13} />}
+            onClick={() => update({ options: [...(product.options || []), makeOption({ label: 'Nueva propiedad' })] })}
+          >
+            Agregar propiedad (talla, color…)
+          </Button>
+        </>
+      ) : (
+        <Typography.Paragraph type="secondary" style={{ fontSize: 13, marginTop: 4 }}>
+          Como este producto tiene componentes internos, las propiedades se configuran dentro de cada ítem del pack.
+        </Typography.Paragraph>
+      )}
 
       <Typography.Text strong style={{ display: 'block', margin: '20px 0 6px' }}>
         Componentes internos del pack (opcional)
@@ -352,20 +361,21 @@ const ProductEditor = ({ product, index, onChange, onRemove }) => {
         size="small"
         type="dashed"
         icon={<Plus size={13} />}
-        onClick={() =>
-          update({
-            packItems: [
-              ...(product.packItems || []),
-              {
-                key: `item-${Date.now()}`,
-                name: '',
-                description: '',
-                image: '',
-                options: [],
-              },
-            ],
-          })
-        }
+        onClick={() => {
+          const nextPackItems = [
+            ...(product.packItems || []),
+            {
+              key: `item-${Date.now()}`,
+              name: '',
+              description: '',
+              image: '',
+              options: [],
+            },
+          ]
+          const nextProduct = { ...product, packItems: nextPackItems }
+          if (nextPackItems.length === 1) nextProduct.options = []
+          onChange(nextProduct)
+        }}
       >
         Agregar ítem al pack
       </Button>

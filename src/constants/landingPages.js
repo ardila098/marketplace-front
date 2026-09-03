@@ -67,6 +67,7 @@ export const LANDING_SECTION_TYPES = Object.freeze({
   FAQ: 'faq',
   GUARANTEE: 'guarantee',
   CONTENT: 'content',
+  VIDEO: 'video',
   CTA: 'cta',
   CONVERSION: 'conversion',
   FOOTER: 'footer',

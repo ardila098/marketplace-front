@@ -298,6 +298,161 @@ export const SectionContent = ({ section }) => {
   )
 }
 
+const videoEmbed = url => {
+  const value = String(url || '').trim()
+  if (!value) return null
+
+  const youtubeMatch =
+    value.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{6,})/) ||
+    value.match(/^https:\/\/www\.youtube\.com\/embed\/([A-Za-z0-9_-]{6,})/)
+  const vimeoMatch = value.match(/vimeo\.com\/(?:video\/)?(\d+)/)
+
+  if (youtubeMatch?.[1]) {
+    return {
+      kind: 'youtube',
+      id: youtubeMatch[1],
+      embedUrl: `https://www.youtube.com/embed/${youtubeMatch[1]}`,
+    }
+  }
+
+  if (vimeoMatch?.[1]) {
+    return {
+      kind: 'vimeo',
+      id: vimeoMatch[1],
+      embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}`,
+    }
+  }
+
+  if (/\.(mp4|webm|ogv)(\?|$)/i.test(value)) {
+    return { kind: 'file', src: value }
+  }
+
+  return null
+}
+
+const buildEmbedQuery = (video, data) => {
+  const params = new URLSearchParams()
+  if (video.kind === 'youtube') {
+    params.set('rel', '0')
+    params.set('autoplay', data.autoplay ? '1' : '0')
+    params.set('loop', data.loop ? '1' : '0')
+    params.set('controls', data.showControls === false ? '0' : '1')
+  } else if (video.kind === 'vimeo') {
+    params.set('autoplay', data.autoplay ? '1' : '0')
+    params.set('loop', data.loop ? '1' : '0')
+    params.set('controls', data.showControls === false ? '0' : '1')
+  }
+
+  const query = params.toString()
+  return query ? `?${query}` : ''
+}
+
+const VideoPlayer = ({ section, data }) => {
+  const video = videoEmbed(data.videoUrl)
+  const poster = imageUrl(data.poster)
+  const sharedStyle = {
+    width: '100%',
+    aspectRatio: section?.settings?.aspectRatio || '16 / 9',
+    border: 0,
+    borderRadius: 18,
+    background: '#0f172a',
+    display: 'block',
+    boxShadow: '0 24px 64px rgba(15, 23, 42, 0.16)',
+  }
+
+  if (!video) {
+    return (
+      <div
+        style={{
+          width: '100%',
+          aspectRatio: section?.settings?.aspectRatio || '16 / 9',
+          borderRadius: 18,
+          display: 'grid',
+          placeItems: 'center',
+          background: 'color-mix(in srgb, var(--lp-primary) 9%, transparent)',
+          color: 'var(--lp-muted)',
+          textAlign: 'center',
+          padding: 24,
+        }}
+      >
+        {poster ? (
+          <img src={poster} alt="Poster del video" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 18 }} />
+        ) : (
+          <div>
+            <div style={{ fontSize: 44, marginBottom: 8 }}>🎬</div>
+            Pega una URL de YouTube, Vimeo o un video .mp4
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  if (video.kind === 'file') {
+    return (
+      <video
+        src={video.src}
+        poster={poster}
+        autoPlay={data.autoplay}
+        loop={data.loop}
+        controls={data.showControls !== false}
+        playsInline
+        style={sharedStyle}
+      />
+    )
+  }
+
+  const iframeSrc = `${video.embedUrl}${buildEmbedQuery(video, data)}`
+
+  return (
+    <iframe
+      src={iframeSrc}
+      title="Video"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerPolicy="strict-origin-when-cross-origin"
+      allowFullScreen
+      style={sharedStyle}
+    />
+  )
+}
+
+export const SectionVideo = ({ section }) => {
+  const data = section?.data || {}
+  const variant = section?.settings?.variant || 'contained'
+
+  if (variant === 'fullWidth') {
+    return (
+      <LpSection>
+        <LpContainer style={{ maxWidth: 1200, textAlign: 'center' }}>
+          {heading(section)}
+        </LpContainer>
+        <div style={{ width: '100%' }}>
+          <VideoPlayer section={section} data={data} />
+        </div>
+      </LpSection>
+    )
+  }
+
+  if (variant === 'split') {
+    return (
+      <LpSection>
+        <LpContainer style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 0.85fr) minmax(0, 1.15fr)', gap: 'clamp(24px, 5vw, 64px)', alignItems: 'center' }}>
+          <div>{heading(section, false)}</div>
+          <VideoPlayer section={section} data={data} />
+        </LpContainer>
+      </LpSection>
+    )
+  }
+
+  return (
+    <LpSection>
+      <LpContainer style={{ maxWidth: 920, textAlign: 'center' }}>
+        {heading(section)}
+        <VideoPlayer section={section} data={data} />
+      </LpContainer>
+    </LpSection>
+  )
+}
+
 export const SectionFeatures = ({ section }) => {
   const data = section?.data || {}
   const items = data.items || []
@@ -654,6 +809,7 @@ export default {
   SectionHeader,
   SectionHero,
   SectionContent,
+  SectionVideo,
   SectionFeatures,
   SectionGallery,
   SectionTestimonials,
