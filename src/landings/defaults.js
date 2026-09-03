@@ -58,6 +58,7 @@ export const makeProduct = (overrides = {}) => ({
   image: '',
   images: [],
   options: [],
+  packItems: [],
   includes: [],
   ...overrides,
 })

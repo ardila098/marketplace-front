@@ -181,11 +181,87 @@ const ProductOptionEditor = ({ option, onChange, onRemove }) => {
   )
 }
 
+const PackItemEditor = ({ item, index, onChange, onRemove }) => {
+  const update = patch => onChange({ ...item, ...patch })
+
+  const updateOption = (optionIndex, nextOption) => {
+    const options = (item.options || []).map((current, currentIndex) =>
+      currentIndex === optionIndex ? nextOption : current
+    )
+    update({ options })
+  }
+
+  const removeOption = optionIndex => {
+    const options = (item.options || []).filter((_, currentIndex) => currentIndex !== optionIndex)
+    update({ options })
+  }
+
+  return (
+    <div style={{ border: '1px dashed #94a3b8', borderRadius: 12, padding: 12, marginBottom: 10, background: '#fff' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <Typography.Text strong style={{ fontSize: 13 }}>Ítem del pack {index + 1}</Typography.Text>
+        <button type="button" onClick={onRemove} style={{ ...smallButtonStyle, color: '#dc2626' }} aria-label="Eliminar ítem">
+          <Trash2 size={14} />
+        </button>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0 10px' }}>
+        <TextFieldRow label="Nombre" value={item.name} onChange={name => update({ name })} placeholder="Camisa 1" />
+        <TextFieldRow label="Clave (key)" value={item.key} onChange={key => update({ key })} placeholder="camisa-1" />
+      </div>
+      <TextFieldRow label="Descripción" type="textarea" value={item.description} onChange={description => update({ description })} />
+
+      <FieldWrap label="Imagen de este ítem">
+        <ImageUploadInput
+          value={item.image || ''}
+          onChange={image => update({ image })}
+          folder={UPLOAD_FOLDERS.landings.images}
+          uploadRoute={UPLOAD_ROUTES.landings.images}
+          maxCount={1}
+          multiple={false}
+        />
+      </FieldWrap>
+
+      <Typography.Text strong style={{ display: 'block', margin: '14px 0 8px', fontSize: 13 }}>
+        Propiedades de este ítem (color, talla…)
+      </Typography.Text>
+      {(item.options || []).map((option, optionIndex) => (
+        <ProductOptionEditor
+          key={`${option.key}-${optionIndex}`}
+          option={option}
+          onChange={nextOption => updateOption(optionIndex, nextOption)}
+          onRemove={() => removeOption(optionIndex)}
+        />
+      ))}
+      <Button
+        size="small"
+        type="dashed"
+        icon={<Plus size={13} />}
+        onClick={() => update({ options: [...(item.options || []), makeOption({ label: 'Nueva propiedad' })] })}
+      >
+        Agregar propiedad
+      </Button>
+    </div>
+  )
+}
+
 const ProductEditor = ({ product, index, onChange, onRemove }) => {
   const update = patch => onChange({ ...product, ...patch })
 
+  const updatePackItem = (itemIndex, nextItem) => {
+    const packItems = (product.packItems || []).map((current, currentIndex) =>
+      currentIndex === itemIndex ? nextItem : current
+    )
+    update({ packItems })
+  }
+
+  const removePackItem = itemIndex => {
+    const packItems = (product.packItems || []).filter((_, currentIndex) => currentIndex !== itemIndex)
+    update({ packItems })
+  }
+
   return (
-    <PanelCard title={`Producto / pack ${index + 1}`} onRemove={onRemove}>
+    <PanelCard title={`Producto / ítem del pack ${index + 1}`} onRemove={onRemove}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0,1fr))', gap: '0 12px' }}>
         <TextFieldRow label="Nombre" value={product.name} onChange={name => update({ name })} placeholder="Camiseta premium / Pack x3" />
         <TextFieldRow label="Clave interna (key)" value={product.key} onChange={key => update({ key })} placeholder="producto-1" />
@@ -254,6 +330,46 @@ const ProductEditor = ({ product, index, onChange, onRemove }) => {
       >
         Agregar propiedad (talla, color…)
       </Button>
+
+      <Typography.Text strong style={{ display: 'block', margin: '20px 0 6px' }}>
+        Componentes internos del pack (opcional)
+      </Typography.Text>
+      <Typography.Paragraph type="secondary" style={{ fontSize: 13, marginTop: 0 }}>
+        Úsalo cuando vendas un pack: agrega aquí “Camisa 1”, “Camisa 2”, etc., y cada componente tendrá
+        sus propios atributos (color, talla). El precio configurado arriba se cobra una sola vez por el pack.
+      </Typography.Paragraph>
+
+      {(product.packItems || []).map((packItem, itemIndex) => (
+        <PackItemEditor
+          key={packItem.key || itemIndex}
+          item={packItem}
+          index={itemIndex}
+          onChange={nextItem => updatePackItem(itemIndex, nextItem)}
+          onRemove={() => removePackItem(itemIndex)}
+        />
+      ))}
+      <Button
+        size="small"
+        type="dashed"
+        icon={<Plus size={13} />}
+        onClick={() =>
+          update({
+            packItems: [
+              ...(product.packItems || []),
+              {
+                key: `item-${Date.now()}`,
+                name: '',
+                description: '',
+                image: '',
+                options: [],
+              },
+            ],
+          })
+        }
+      >
+        Agregar ítem al pack
+      </Button>
+
     </PanelCard>
   )
 }
@@ -341,7 +457,9 @@ const ConversionPanel = ({ conversion, landingType, onChange }) => {
       {isOrder && (
         <PanelCard title="Productos / packs">
           <Typography.Paragraph type="secondary" style={{ fontSize: 13 }}>
-            Cada tarjeta es un producto o componente de un pack. Agrega propiedades (color, talla, sabor…) y cada cliente podrá escogerlas antes de enviar su pedido.
+            Cada tarjeta es un producto o un componente del pack. Para un pack de camisas, agrega
+            “Camisa 1”, “Camisa 2” y “Camisa 3”; cada una tendrá sus propias propiedades (color, talla…)
+            que el cliente podrá escoger antes de enviar el pedido.
           </Typography.Paragraph>
           {(conversion?.products || []).map((product, index) => (
             <ProductEditor
@@ -366,7 +484,7 @@ const ConversionPanel = ({ conversion, landingType, onChange }) => {
             onClick={() => update({ products: [...(conversion.products || []), makeProduct()] })}
             block
           >
-            Agregar producto / componente del pack
+            Agregar producto / ítem del pack
           </Button>
         </PanelCard>
       )}

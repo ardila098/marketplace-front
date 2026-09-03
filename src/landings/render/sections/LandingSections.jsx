@@ -25,12 +25,28 @@ const whatsappLink = value => {
 const heading = (section, center = true) => {
   const { eyebrow, title, subtitle } = section?.data || {}
   if (!title && !subtitle && !eyebrow) return null
+  const titleStyle = {}
+  const subtitleStyle = {}
+  const eyebrowStyle = {}
+
+  if (Number(section?.data?.titleFontSize) > 0) {
+    titleStyle.fontSize = `${section.data.titleFontSize}px`
+  }
+  if (section?.data?.titleColor) titleStyle.color = section.data.titleColor
+  if (Number(section?.data?.subtitleFontSize) > 0) {
+    subtitleStyle.fontSize = `${section.data.subtitleFontSize}px`
+  }
+  if (section?.data?.subtitleColor) subtitleStyle.color = section.data.subtitleColor
+  if (Number(section?.data?.eyebrowFontSize) > 0) {
+    eyebrowStyle.fontSize = `${section.data.eyebrowFontSize}px`
+  }
+  if (section?.data?.eyebrowColor) eyebrowStyle.color = section.data.eyebrowColor
 
   return (
     <LpSectionHead $center={center}>
-      {eyebrow ? <LpEyebrow>{eyebrow}</LpEyebrow> : null}
-      {title ? <LpTitle>{title}</LpTitle> : null}
-      {subtitle ? <LpSubtitle $center={center}>{subtitle}</LpSubtitle> : null}
+      {eyebrow ? <LpEyebrow style={eyebrowStyle}>{eyebrow}</LpEyebrow> : null}
+      {title ? <LpTitle style={titleStyle}>{title}</LpTitle> : null}
+      {subtitle ? <LpSubtitle $center={center} style={subtitleStyle}>{subtitle}</LpSubtitle> : null}
     </LpSectionHead>
   )
 }
@@ -110,13 +126,25 @@ export const SectionHero = ({ landing: _landing, section }) => {
   const align = section?.settings?.align || 'left'
   const src = imageUrl(data.image)
   const centered = variant === 'centered' || align === 'center'
+  const titleStyle = {}
+  const eyebrowStyle = {}
+  const subtitleStyle = {}
+
+  if (Number(data.titleFontSize) > 0) titleStyle.fontSize = `${data.titleFontSize}px`
+  if (data.titleColor) titleStyle.color = data.titleColor
+  if (Number(data.eyebrowFontSize) > 0) eyebrowStyle.fontSize = `${data.eyebrowFontSize}px`
+  if (data.eyebrowColor) eyebrowStyle.color = data.eyebrowColor
+  if (Number(data.subtitleFontSize) > 0) subtitleStyle.fontSize = `${data.subtitleFontSize}px`
+  if (data.subtitleColor) subtitleStyle.color = data.subtitleColor
 
   const content = (
     <div style={{ maxWidth: variant === 'centered' ? 760 : 620, textAlign: centered ? 'center' : 'left', minWidth: 0 }}>
-      {data.eyebrow ? <LpEyebrow>{data.eyebrow}</LpEyebrow> : null}
-      <h1 style={{ fontSize: 'clamp(2.5rem, 7vw, 4.8rem)', marginTop: 12 }}>{data.title || 'Título principal'}</h1>
+      {data.eyebrow ? <LpEyebrow style={eyebrowStyle}>{data.eyebrow}</LpEyebrow> : null}
+      <h1 style={{ fontSize: 'clamp(2.5rem, 7vw, 4.8rem)', marginTop: 12, ...titleStyle }}>
+        {data.title || 'Título principal'}
+      </h1>
       {data.subtitle ? (
-        <p style={{ color: 'var(--lp-muted)', fontSize: '1.16rem', lineHeight: 1.7, margin: '20px auto 0', maxWidth: 620 }}>
+        <p style={{ color: 'var(--lp-muted)', fontSize: '1.16rem', lineHeight: 1.7, margin: '20px auto 0', maxWidth: 620, ...subtitleStyle }}>
           {data.subtitle}
         </p>
       ) : null}
@@ -178,10 +206,10 @@ export const SectionHero = ({ landing: _landing, section }) => {
         <LpContainer style={{ position: 'relative', padding: 'clamp(60px, 12vw, 120px) 0', color: '#fff' }}>
           <div style={{ maxWidth: 680, color: '#fff' }}>
             {data.eyebrow ? (
-              <span style={{ color: 'var(--lp-accent)', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{data.eyebrow}</span>
+              <span style={{ color: 'var(--lp-accent)', fontWeight: 800, letterSpacing: '0.08em', textTransform: 'uppercase', ...eyebrowStyle }}>{data.eyebrow}</span>
             ) : null}
-            <h1 style={{ color: '#fff', fontSize: 'clamp(2.5rem, 7vw, 4.8rem)', marginTop: 14 }}>{data.title || 'Título principal'}</h1>
-            {data.subtitle ? <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '1.15rem', marginTop: 18 }}>{data.subtitle}</p> : null}
+            <h1 style={{ color: '#fff', fontSize: 'clamp(2.5rem, 7vw, 4.8rem)', marginTop: 14, ...titleStyle }}>{data.title || 'Título principal'}</h1>
+            {data.subtitle ? <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: '1.15rem', marginTop: 18, ...subtitleStyle }}>{data.subtitle}</p> : null}
             <div style={{ marginTop: 28 }}>
               <LpButton href="#conversion" style={{ color: '#111', background: '#fff', borderColor: '#fff' }}>
                 {data.primaryLabel || 'Comenzar'}
@@ -325,61 +353,90 @@ export const SectionGallery = ({ section }) => {
   const variant = section?.settings?.variant || 'grid'
   const cardStyle = section?.settings?.cardStyle || 'rounded'
   const columns = Number(section?.settings?.columns) || 3
+  const backgroundType = data.backgroundType || 'none'
+  const backgroundUrl = imageUrl(data.backgroundImage)
+  const frameEnabled = data.frameEnabled === true
+  const framePadding = Number(data.contentPadding) || 0
+  const overlayColor = data.overlayColor || 'rgba(2, 6, 23, 0.55)'
+  const frameColor = data.frameColor || 'rgba(15, 23, 42, 0.16)'
+  const frameWidth = Number(data.frameWidth) || 1
 
   const visibleItems = items.filter(item => item.image || item.title)
-  if (!visibleItems.length) return null
-
-  if (variant === 'slider') {
-    return (
-      <LpSection>
-        <LpContainer>
-          {heading(section)}
-          <div style={{ display: 'flex', gap: 16, overflowX: 'auto', scrollSnapType: 'x mandatory', paddingBottom: 8 }}>
-            {visibleItems.map((item, index) => (
-              <LpCard
-                key={`${item.title}-${index}`}
-                $cardStyle={cardStyle}
-                style={{ minWidth: 'min(340px, 84vw)', scrollSnapAlign: 'start', padding: item.title || item.description ? 14 : 0 }}
-              >
-                <div style={{ aspectRatio: '4 / 5', overflow: 'hidden', borderRadius: cardStyle === 'bordered' ? 'var(--lp-radius)' : 12, position: 'relative' }}>
-                  {item.image ? (
-                    <LpImage src={imageUrl(item.image)} alt={item.title} />
-                  ) : (
-                    <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', background: 'color-mix(in srgb, var(--lp-primary) 8%, transparent)', color: 'var(--lp-muted)' }}>
-                      Sube una imagen
-                    </div>
-                  )}
+  const body = visibleItems.length ? (
+    variant === 'slider' ? (
+      <div style={{ display: 'flex', gap: 16, overflowX: 'auto', scrollSnapType: 'x mandatory', paddingBottom: 8 }}>
+        {visibleItems.map((item, index) => (
+          <LpCard
+            key={`${item.title}-${index}`}
+            $cardStyle={cardStyle}
+            style={{ minWidth: 'min(340px, 84vw)', scrollSnapAlign: 'start', padding: item.title || item.description ? 14 : 0 }}
+          >
+            <div style={{ aspectRatio: '4 / 5', overflow: 'hidden', borderRadius: cardStyle === 'bordered' ? 'var(--lp-radius)' : 12, position: 'relative' }}>
+              {item.image ? (
+                <LpImage src={imageUrl(item.image)} alt={item.title} />
+              ) : (
+                <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', background: 'color-mix(in srgb, var(--lp-primary) 8%, transparent)', color: 'var(--lp-muted)' }}>
+                  Sube una imagen
                 </div>
-                {item.title ? <h3 style={{ fontSize: '1.02rem', margin: '12px 2px 4px' }}>{item.title}</h3> : null}
-                {item.description ? <p style={{ color: 'var(--lp-muted)', fontSize: '0.9rem', margin: 0 }}>{item.description}</p> : null}
-              </LpCard>
-            ))}
-          </div>
-        </LpContainer>
-      </LpSection>
+              )}
+            </div>
+            {item.title ? <h3 style={{ fontSize: '1.02rem', margin: '12px 2px 4px' }}>{item.title}</h3> : null}
+            {item.description ? <p style={{ color: 'var(--lp-muted)', fontSize: '0.9rem', margin: 0 }}>{item.description}</p> : null}
+          </LpCard>
+        ))}
+      </div>
+    ) : (
+      <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(${Math.round(1040 / Math.min(columns, 4))}px, 1fr))`, gap: 18 }}>
+        {visibleItems.map((item, index) => (
+          <LpCard key={`${item.title}-${index}`} $cardStyle={cardStyle} style={{ padding: item.title || item.description ? 12 : 0 }}>
+            <div style={{ aspectRatio: '1 / 1', overflow: 'hidden', borderRadius: 10, position: 'relative' }}>
+              {item.image ? (
+                <LpImage src={imageUrl(item.image)} alt={item.title} />
+              ) : (
+                <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', background: 'color-mix(in srgb, var(--lp-primary) 8%, transparent)', color: 'var(--lp-muted)' }}>
+                  Sube una imagen
+                </div>
+              )}
+            </div>
+            {item.title ? <h3 style={{ fontSize: '1rem', margin: '12px 4px 4px' }}>{item.title}</h3> : null}
+            {item.description ? <p style={{ color: 'var(--lp-muted)', fontSize: '0.9rem', margin: '0 4px 4px' }}>{item.description}</p> : null}
+          </LpCard>
+        ))}
+      </div>
     )
+  ) : null
+
+  const containerStyle = {
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: data.frameRadius ? `${Number(data.frameRadius)}px` : undefined,
+    border: frameEnabled ? `${frameWidth}px solid ${frameColor}` : undefined,
+    padding: frameEnabled || backgroundType !== 'none' ? framePadding : 0,
+    background: backgroundType === 'color' ? data.backgroundColor || 'var(--lp-surface)' : undefined,
   }
 
   return (
     <LpSection>
       <LpContainer>
-        {heading(section)}
-        <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(${Math.round(1040 / Math.min(columns, 4))}px, 1fr))`, gap: 18 }}>
-          {visibleItems.map((item, index) => (
-            <LpCard key={`${item.title}-${index}`} $cardStyle={cardStyle} style={{ padding: item.title || item.description ? 12 : 0 }}>
-              <div style={{ aspectRatio: '1 / 1', overflow: 'hidden', borderRadius: 10, position: 'relative' }}>
-                {item.image ? (
-                  <LpImage src={imageUrl(item.image)} alt={item.title} />
-                ) : (
-                  <div style={{ position: 'absolute', inset: 0, display: 'grid', placeItems: 'center', background: 'color-mix(in srgb, var(--lp-primary) 8%, transparent)', color: 'var(--lp-muted)' }}>
-                    Sube una imagen
-                  </div>
-                )}
-              </div>
-              {item.title ? <h3 style={{ fontSize: '1rem', margin: '12px 4px 4px' }}>{item.title}</h3> : null}
-              {item.description ? <p style={{ color: 'var(--lp-muted)', fontSize: '0.9rem', margin: '0 4px 4px' }}>{item.description}</p> : null}
-            </LpCard>
-          ))}
+        <div style={containerStyle}>
+          {backgroundType === 'image' && backgroundUrl ? (
+            <>
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  backgroundImage: `url(${backgroundUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+              <div style={{ position: 'absolute', inset: 0, background: overlayColor }} />
+            </>
+          ) : null}
+          <div style={{ position: 'relative' }}>
+            {heading(section)}
+            {body}
+          </div>
         </div>
       </LpContainer>
     </LpSection>

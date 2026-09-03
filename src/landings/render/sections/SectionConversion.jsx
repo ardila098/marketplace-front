@@ -34,9 +34,9 @@ const CUSTOMER_KEYS = [
 
 const toImage = (fileName, route) => getUploadUrl(route, fileName)
 
-const buildOptionState = product =>
+const buildOptionState = source =>
   Object.fromEntries(
-    (product?.options || [])
+    (source?.options || [])
       .filter(option => option?.key)
       .map(option => [option.key, ''])
   )
@@ -47,11 +47,20 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
   const isOrder = conversion.mode === 'order' || landing?.landingType === 'product'
   const isLeadMode = !isOrder
 
-  const productItems = (products || []).map(product => ({
-    product,
-    quantity: 1,
-    options: buildOptionState(product),
-  }))
+  const productItems = (products || []).flatMap(product => {
+    const packItems = product.packItems?.length ? product.packItems : []
+
+    if (!packItems.length) {
+      return [{ product, packItem: null, quantity: 1, options: buildOptionState(product) }]
+    }
+
+    return packItems.map(packItem => ({
+      product,
+      packItem,
+      quantity: 1,
+      options: buildOptionState(packItem),
+    }))
+  })
 
   const [orderItems, setOrderItems] = useState(productItems)
   const [values, setValues] = useState({})
@@ -71,20 +80,25 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
     setValues(current => ({ ...current, [key]: value }))
   }
 
-  const updateProductOption = (productKey, optionKey, value) => {
+  const updateProductOption = (productKey, itemKey, optionKey, value) => {
     setOrderItems(items =>
       items.map(item => {
         if (item.product.key !== productKey) return item
+        const currentItemKey = item.packItem?.key || ''
+        if (currentItemKey !== (itemKey || '')) return item
         return { ...item, options: { ...item.options, [optionKey]: value } }
       })
     )
   }
 
-  const updateQuantity = (productKey, quantity) => {
+  const updateQuantity = (productKey, itemKey, quantity) => {
     setOrderItems(items =>
-      items.map(item =>
-        item.product.key === productKey ? { ...item, quantity: Math.max(Number(quantity) || 1, 1) } : item
-      )
+      items.map(item => {
+        if (item.product.key !== productKey) return item
+        const currentItemKey = item.packItem?.key || ''
+        if (currentItemKey !== (itemKey || '')) return item
+        return { ...item, quantity: Math.max(Number(quantity) || 1, 1) }
+      })
     )
   }
 
@@ -104,13 +118,15 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
 
     const items = isOrder
       ? orderItems.map(item => ({
-          key: item.product.key,
-          label: item.product.name,
-          quantity: item.quantity,
+          productKey: item.product.key,
+          itemKey: item.packItem?.key || '',
+          label: item.packItem?.name || item.product.name,
+          quantity: item.packItem ? 1 : item.quantity,
           options: Object.entries(item.options)
             .filter(([, value]) => value)
             .map(([key, value]) => {
-              const option = (item.product.options || []).find(optionItem => optionItem.key === key)
+              const source = item.packItem || item.product
+              const option = (source.options || []).find(optionItem => optionItem.key === key)
               const choice = (option?.options || []).find(itemChoice => itemChoice.value === value)
               return { key, label: option?.label || key, value: choice?.label || value }
             }),
@@ -126,12 +142,25 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
     }
   }
 
-  const total = orderItems.reduce(
-    (sum, item) => sum + (Number(item.product.price) || 0) * item.quantity,
-    0
-  )
+  const countedPacks = new Set()
+  const total = orderItems.reduce((sum, item) => {
+    const price = Number(item.product.price) || 0
 
-  const totalItems = orderItems.reduce((sum, item) => sum + item.quantity, 0)
+    if (item.packItem) {
+      if (countedPacks.has(item.product.key)) return sum
+      countedPacks.add(item.product.key)
+      return sum + price
+    }
+
+    return sum + price * item.quantity
+  }, 0)
+
+  const packGroups = new Set(
+    orderItems.filter(item => item.packItem).map(item => item.product.key)
+  )
+  const totalItems =
+    packGroups.size +
+    orderItems.filter(item => !item.packItem).reduce((sum, item) => sum + item.quantity, 0)
 
   const handleSubmit = async event => {
     event?.preventDefault()
@@ -158,9 +187,11 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
     if (isOrder) {
       const missingOptions = []
       orderItems.forEach(item => {
-        ;(item.product.options || []).forEach(option => {
+        const source = item.packItem || item.product
+        const entityLabel = item.packItem?.name || item.product.name
+        ;(source.options || []).forEach(option => {
           if (option.required && !item.options[option.key]) {
-            missingOptions.push(`${item.product.name}: ${option.label || option.key}`)
+            missingOptions.push(`${entityLabel}: ${option.label || option.key}`)
           }
         })
       })
@@ -208,53 +239,84 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
     >
       {isOrder && products?.length > 0 && (
         <div style={{ marginBottom: 22 }}>
-          {orderItems.map(item => (
-            <div key={item.product.key} style={{ borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: 16, marginBottom: 14 }}>
+          {orderItems.map((item, index) => {
+            const entity = item.packItem || item.product
+            const entityName = item.packItem?.name || item.product.name
+            const image = entity.image || item.product.image || item.product.images?.[0]
+            const isPackLead =
+              item.packItem &&
+              orderItems.findIndex(candidate => candidate.product.key === item.product.key) === index
+            const isPackProduct = Boolean(item.packItem)
+
+            return (
+            <div
+              key={`${item.product.key}-${item.packItem?.key || 'producto'}`}
+              style={{ borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: 16, marginBottom: 14 }}
+            >
               <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 12 }}>
-                {item.product.image || item.product.images?.[0] ? (
+                {image ? (
                   <div style={{ width: 72, height: 72, borderRadius: 12, overflow: 'hidden', flex: '0 0 auto' }}>
                     <img
-                      src={toImage(item.product.image || item.product.images[0], UPLOAD_ROUTES.landings.images)}
-                      alt={item.product.name}
+                      src={toImage(image, UPLOAD_ROUTES.landings.images)}
+                      alt={entityName}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   </div>
                 ) : null}
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 800 }}>{item.product.name}</div>
-                  {item.product.description && (
-                    <div style={{ color: 'var(--lp-muted)', fontSize: '0.86rem' }}>{item.product.description}</div>
+                  {item.packItem && item.product.name ? (
+                    <div style={{ color: 'var(--lp-muted)', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      {item.product.name}
+                    </div>
+                  ) : null}
+                  <div style={{ fontWeight: 800 }}>{entityName}</div>
+                  {(entity.description || item.product.description) && (
+                    <div style={{ color: 'var(--lp-muted)', fontSize: '0.86rem' }}>
+                      {entity.description || item.product.description}
+                    </div>
                   )}
-                  <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginTop: 8 }}>
-                    <strong>{formatCurrency(item.product.price)}</strong>
-                    {item.product.compareAtPrice > item.product.price && (
-                      <span style={{ color: 'var(--lp-muted)', textDecoration: 'line-through', fontSize: '0.9rem' }}>
-                        {formatCurrency(item.product.compareAtPrice)}
-                      </span>
-                    )}
-                  </div>
+                  {(!isPackProduct || isPackLead) && (
+                    <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginTop: 8 }}>
+                      <strong>{formatCurrency(item.product.price)}</strong>
+                      {item.product.compareAtPrice > item.product.price && (
+                        <span style={{ color: 'var(--lp-muted)', textDecoration: 'line-through', fontSize: '0.9rem' }}>
+                          {formatCurrency(item.product.compareAtPrice)}
+                        </span>
+                      )}
+                      {isPackProduct && item.product.badge ? (
+                        <span style={{ color: 'var(--lp-accent)', fontSize: '0.8rem', fontWeight: 800 }}>{item.product.badge}</span>
+                      ) : null}
+                    </div>
+                  )}
                 </div>
-                <div style={{ flex: '0 0 auto' }}>
+                {!isPackProduct ? (
+                  <div style={{ flex: '0 0 auto' }}>
                   <label style={{ fontSize: '0.82rem', fontWeight: 700 }}>Cantidad</label>
                   <input
                     type="number"
                     min={1}
                     value={item.quantity}
                     disabled={isPreview}
-                    onChange={event => updateQuantity(item.product.key, event.target.value)}
+                    onChange={event => updateQuantity(item.product.key, '', event.target.value)}
                     style={{ width: 64, minHeight: 36, marginLeft: 6, borderRadius: 8, border: '1px solid rgba(0,0,0,0.16)', padding: '0 8px' }}
                   />
-                </div>
+                  </div>
+                ) : (
+                  <span style={{ color: 'var(--lp-muted)', fontSize: '0.82rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                    Incluido en el pack
+                  </span>
+                )}
               </div>
 
               <div style={{ display: 'grid', gap: 10 }}>
-                {(item.product.options || []).map(option => {
+                {(entity.options || []).map(option => {
                   const selected = item.options[option.key]
 
                   return (
                     <div key={option.key}>
                       <div style={{ fontSize: '0.85rem', fontWeight: 800, marginBottom: 6 }}>
                         {option.label || option.key}
+                        {isPackProduct && item.packItem?.name ? ` · ${item.packItem.name}` : ''}
                         {option.required && <span style={{ color: 'var(--lp-accent)' }}> *</span>}
                       </div>
 
@@ -264,7 +326,7 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
                             <button
                               type="button"
                               key={choice.value}
-                              onClick={() => updateProductOption(item.product.key, option.key, choice.value)}
+                              onClick={() => updateProductOption(item.product.key, item.packItem?.key || '', option.key, choice.value)}
                               aria-label={choice.label}
                               title={choice.label}
                               disabled={isPreview}
@@ -285,7 +347,7 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
                             <button
                               type="button"
                               key={choice.value}
-                              onClick={() => updateProductOption(item.product.key, option.key, choice.value)}
+                              onClick={() => updateProductOption(item.product.key, item.packItem?.key || '', option.key, choice.value)}
                               disabled={isPreview}
                               style={{
                                 minHeight: 34,
@@ -308,7 +370,8 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
                 })}
               </div>
             </div>
-          ))}
+            )
+          })}
 
           <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.05rem', paddingTop: 14 }}>
             <span>Total ({totalItems} item{totalItems === 1 ? '' : 's'})</span>

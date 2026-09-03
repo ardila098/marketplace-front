@@ -15,6 +15,21 @@ const productCommon = (productName, options) =>
     options,
   })
 
+const clonePackOptions = options =>
+  options.map(option => ({
+    ...option,
+    options: (option.options || []).map(choice => ({ ...choice })),
+  }))
+
+const packShirtItems = count =>
+  Array.from({ length: count }, (_, index) => ({
+    key: `camisa-${index + 1}`,
+    name: `Camisa ${index + 1}`,
+    description: '',
+    image: '',
+    options: clonePackOptions(colorSizeOptions),
+  }))
+
 const colorSizeOptions = [
   {
     key: 'color',
@@ -168,30 +183,17 @@ export const TEMPLATES = Object.freeze({
     conversion: buildConversion({
       landingType: 'product',
       products: [
-        productCommon('Pack camisetas x3', [
-          {
-            key: 'color',
-            label: 'Colores del pack',
-            control: 'radio',
-            required: true,
-            options: [
-              { label: 'Negro x3', value: 'negro-x3' },
-              { label: 'Mezcla', value: 'mezcla' },
-            ],
-          },
-          {
-            key: 'size',
-            label: 'Talla',
-            control: 'radio',
-            required: true,
-            options: [
-              { label: 'S', value: 'S' },
-              { label: 'M', value: 'M' },
-              { label: 'L', value: 'L' },
-              { label: 'XL', value: 'XL' },
-            ],
-          },
-        ]),
+        makeProduct({
+          key: 'pack-camisetas',
+          name: 'Pack 3 camisetas',
+          description: 'Escoge el color y la talla de cada una de las tres camisas del pack.',
+          price: 189900,
+          compareAtPrice: 259700,
+          currency: 'COP',
+          badge: 'Ahorra 27%',
+          options: [],
+          packItems: packShirtItems(3),
+        }),
       ],
       title: 'Arma tu pack',
       subtitle: 'Escoge las opciones de tu pack y confirma los datos de envío.',
