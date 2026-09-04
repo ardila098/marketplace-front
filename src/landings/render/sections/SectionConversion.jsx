@@ -292,7 +292,7 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
               key={`${item.product.key}-${item.packItem?.key || 'producto'}`}
               style={{ borderBottom: '1px solid rgba(0,0,0,0.08)', paddingBottom: 16, marginBottom: 14 }}
             >
-              <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 12 }}>
+              <div className="LpPackItemHead">
                 {image ? (
                   <div style={{ width: 72, height: 72, borderRadius: 12, overflow: 'hidden', flex: '0 0 auto' }}>
                     <img
@@ -412,7 +412,7 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
             )
           })}
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.05rem', paddingTop: 14 }}>
+          <div className="LpTotalRow">
             <span>Total ({totalItems} item{totalItems === 1 ? '' : 's'})</span>
             <span>
               {paymentMethod === LANDING_PAYMENT_METHODS.WOMPI.value && wompiDiscount > 0 ? (
@@ -428,7 +428,7 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
             <div style={{ fontSize: '0.85rem', fontWeight: 800, marginBottom: 2 }}>
               ¿Cómo quieres pagar?
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            <div className="LpPaymentMethods">
               <button
                 type="button"
                 onClick={() => setPaymentMethod(LANDING_PAYMENT_METHODS.WOMPI.value)}
@@ -565,12 +565,8 @@ const SectionConversion = ({ landing, section, isPreview, onSubmit }) => {
   return (
     <LpSection>
       <LpContainer
-        style={{
-          display: 'grid',
-          gridTemplateColumns: sideImage || isLeadMode ? 'minmax(0, 1fr) minmax(360px, 0.8fr)' : '1fr',
-          gap: 40,
-          alignItems: 'center',
-        }}
+        className={sideImage || isLeadMode ? 'LpConversionGrid' : ''}
+        style={sideImage || isLeadMode ? undefined : { display: 'block' }}
       >
         {sideImage || isLeadMode ? (
           <div style={{ minWidth: 0 }}>

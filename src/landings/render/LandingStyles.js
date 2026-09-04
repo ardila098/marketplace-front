@@ -28,6 +28,78 @@ export const LandingRoot = styled.main`
   img {
     max-width: 100%;
   }
+
+  .LpConversionGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.8fr);
+    gap: clamp(28px, 5vw, 48px);
+    align-items: center;
+  }
+
+  .LpConversionGrid > * {
+    min-width: 0;
+  }
+
+  @media (max-width: 980px) {
+    .LpConversionGrid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+  }
+
+  .LpSplitMediaGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(24px, 5vw, 64px);
+    align-items: center;
+  }
+
+  .LpSplitMediaGrid > * {
+    min-width: 0;
+  }
+
+  @media (max-width: 860px) {
+    .LpSplitMediaGrid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+  }
+
+  .LpVideoPlayer {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .LpPackItemHead {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .LpPaymentMethods {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .LpTotalRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-weight: 800;
+    font-size: 1.05rem;
+    padding-top: 14px;
+  }
+
+  @media (max-width: 560px) {
+    .LpPaymentMethods {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
 `
 
 export const LpContainer = styled.div`

@@ -338,17 +338,19 @@ const videoEmbed = url => {
   return null
 }
 
-const buildEmbedQuery = (video, data) => {
+const buildEmbedQuery = (video, player) => {
   const params = new URLSearchParams()
   if (video.kind === 'youtube') {
     params.set('rel', '0')
-    params.set('autoplay', data.autoplay ? '1' : '0')
-    params.set('loop', data.loop ? '1' : '0')
-    params.set('controls', data.showControls === false ? '0' : '1')
+    params.set('autoplay', player.autoplay ? '1' : '0')
+    if (player.autoplay) params.set('mute', '1')
+    params.set('loop', player.loop ? '1' : '0')
+    params.set('controls', player.showControls ? '1' : '0')
   } else if (video.kind === 'vimeo') {
-    params.set('autoplay', data.autoplay ? '1' : '0')
-    params.set('loop', data.loop ? '1' : '0')
-    params.set('controls', data.showControls === false ? '0' : '1')
+    params.set('autoplay', player.autoplay ? '1' : '0')
+    if (player.autoplay) params.set('muted', '1')
+    params.set('loop', player.loop ? '1' : '0')
+    params.set('controls', player.showControls ? '1' : '0')
   }
 
   const query = params.toString()
@@ -359,6 +361,11 @@ const VideoPlayer = ({ section, data }) => {
   const rawSource = data.externalVideoUrl || data.videoUrl
   const video = videoEmbed(videoSourceUrl(rawSource))
   const poster = imageUrl(data.poster)
+  const player = {
+    autoplay: data.autoplay === true || data.autoplay === 'true',
+    loop: data.loop === true || data.loop === 'true',
+    showControls: data.showControls !== false && data.showControls !== 'false',
+  }
   const sharedStyle = {
     width: '100%',
     aspectRatio: section?.settings?.aspectRatio || '16 / 9',
@@ -399,21 +406,24 @@ const VideoPlayer = ({ section, data }) => {
   if (video.kind === 'file') {
     return (
       <video
+        className="LpVideoPlayer"
         src={video.src}
         poster={poster}
-        autoPlay={data.autoplay}
-        loop={data.loop}
-        controls={data.showControls !== false}
+        autoPlay={player.autoplay}
+        muted={player.autoplay}
+        loop={player.loop}
+        controls={player.showControls}
         playsInline
         style={sharedStyle}
       />
     )
   }
 
-  const iframeSrc = `${video.embedUrl}${buildEmbedQuery(video, data)}`
+  const iframeSrc = `${video.embedUrl}${buildEmbedQuery(video, player)}`
 
   return (
     <iframe
+      className="LpVideoPlayer"
       src={iframeSrc}
       title="Video"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -444,7 +454,7 @@ export const SectionVideo = ({ section }) => {
   if (variant === 'split') {
     return (
       <LpSection>
-        <LpContainer style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 0.85fr) minmax(0, 1.15fr)', gap: 'clamp(24px, 5vw, 64px)', alignItems: 'center' }}>
+        <LpContainer className="LpSplitMediaGrid">
           <div>{heading(section, false)}</div>
           <VideoPlayer section={section} data={data} />
         </LpContainer>
