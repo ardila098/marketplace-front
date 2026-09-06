@@ -10,11 +10,13 @@ import SelectCategory from '../../../../../../components/selects/selectCategory/
 import SelectProductType from '../../../../../../components/selects/selectProductType/SelectProductType'
 import { useDictionaryTranslation } from '../../../../../../hooks/useDictionaryTranslation'
 import { storeService } from '../../../../../../services/storeService'
+import { storeCategoryService } from '../../../../../../services/storeCategoryService'
 
 const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) => {
   const { translate } = useDictionaryTranslation()
   const [form] = Form.useForm()
   const [storeVerticals, setStoreVerticals] = useState([])
+  const [storeCategoryOptions, setStoreCategoryOptions] = useState([])
   const productType = Form.useWatch('productType', form)
   const selectedVertical = Form.useWatch('vertical', form)
   const categoryParams = useMemo(() => {
@@ -68,6 +70,7 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
       vertical: data?.vertical?._id || data?.vertical,
       isNewArrival: data?.isNewArrival ?? data?.isNew ?? false,
       category: data?.category?._id || data?.category,
+      storeCategory: data?.storeCategory?._id || data?.storeCategory || undefined,
       seo: {
         ...(data?.seo || {}),
         keywords: Array.isArray(data?.seo?.keywords)
@@ -80,6 +83,26 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
   useEffect(() => {
     loadStoreVerticals()
   }, [loadStoreVerticals])
+
+  const loadStoreCategories = useCallback(async () => {
+    try {
+      const response = await storeCategoryService.listMine({ includeInactive: true })
+      const options = (response.data || [])
+        .filter(category => category.isActive !== false)
+        .map(category => ({
+          label: category.name,
+          value: category._id,
+        }))
+
+      setStoreCategoryOptions(options)
+    } catch (error) {
+      message.error(error?.message || 'No se pudieron cargar tus categorias')
+    }
+  }, [])
+
+  useEffect(() => {
+    loadStoreCategories()
+  }, [loadStoreCategories])
 
   const renderProductTypeFields = () => {
     if (productType === PRODUCT_TYPES.CONFIGURABLE_SET.value) {
@@ -146,6 +169,22 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
               placeholder={selectedVertical
                 ? translate('products.form.category')
                 : translate('products.form.categoryFirst')}
+            />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item
+            label="Categoria de mi tienda"
+            name="storeCategory"
+            extra="Organiza este producto en tus propias categorias para tu tienda."
+          >
+            <Select
+              allowClear
+              showSearch
+              optionFilterProp="label"
+              options={storeCategoryOptions}
+              placeholder="Selecciona una categoria propia"
             />
           </Form.Item>
         </Col>

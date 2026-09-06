@@ -32,6 +32,12 @@ export const API_ROUTES = {
     approve: id => `/stores/${id}/approve`,
   },
 
+  storeCategories: {
+    base: '/store-categories',
+    mine: '/store-categories/mine',
+    byId: id => `/store-categories/${id}`,
+  },
+
   brokers: {
     public: '/brokers/public',
     publicBySlug: slug => `/brokers/public/${slug}`,

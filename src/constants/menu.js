@@ -86,6 +86,13 @@ const sellerRetailMenu = [
     permission: PERMISSIONS.SELLER_PRODUCTS_MANAGE,
   },
   {
+    key: ROUTES.SELLER_STORE_CATEGORIES,
+    label: 'Categorias',
+    path: ROUTES.SELLER_STORE_CATEGORIES,
+    icon: Tags,
+    permission: PERMISSIONS.SELLER_STORE_CATEGORIES_MANAGE,
+  },
+  {
     key: ROUTES.SELLER_COUPONS,
     label: 'Cupones',
     path: ROUTES.SELLER_COUPONS,

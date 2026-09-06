@@ -49,7 +49,7 @@ const StorefrontProductsPage = () => {
 
   const filters = useMemo(() => ({
     search,
-    category: category === 'all' ? undefined : category,
+    storeCategory: category === 'all' ? undefined : category,
     discounted: isOutlet ? 'true' : undefined,
     minPrice: minPrice || undefined,
     maxPrice: maxPrice || undefined,

@@ -53,6 +53,9 @@ const StoreDesignPage = createLazyPage(() => import('../pages/seller/StoreDesign
 const SellerProductsPage = createLazyPage(
   () => import('../pages/seller/components/SellerProducts/SellerProductsPage')
 )
+const SellerStoreCategoriesPage = createLazyPage(
+  () => import('../pages/seller/StoreCategoriesPage')
+)
 const AgencyItemsPage = createLazyPage(() => import('../pages/seller/AgencyItemsPage'))
 const AgencyLeadsPage = createLazyPage(() => import('../pages/agency/AgencyLeadsPage'))
 const ExperienceListingsPage = createLazyPage(() => import('../pages/seller/ExperienceListingsPage'))
@@ -175,6 +178,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.SELLER_STORE, element: <StoreFormPage /> },
           { path: ROUTES.SELLER_DESIGN, element: <StoreDesignPage /> },
           { path: ROUTES.SELLER_PRODUCTS, element: <SellerProductsPage /> },
+          { path: ROUTES.SELLER_STORE_CATEGORIES, element: <SellerStoreCategoriesPage /> },
           { path: ROUTES.SELLER_AGENCY_ITEMS, element: <AgencyItemsPage /> },
           { path: ROUTES.SELLER_AGENCY_LEADS, element: <AgencyLeadsPage /> },
           { path: ROUTES.SELLER_EXPERIENCES, element: <ExperienceListingsPage /> },

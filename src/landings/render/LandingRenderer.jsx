@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { themeToCssVariables } from '../theme'
+import { getFontLoaderUrl, themeToCssVariables } from '../theme'
 import { LandingRoot } from './LandingStyles'
 import {
   SectionCta,
@@ -48,6 +48,24 @@ const LandingRenderer = ({
       document.title = previous
     }
   }, [landing?.metaTitle, landing?.name])
+
+  useEffect(() => {
+    const fontUrl = getFontLoaderUrl(landing?.theme?.fontFamily)
+    if (!fontUrl) return undefined
+
+    const existing = document.querySelector(`link[data-landing-font="${fontUrl}"]`)
+    if (existing) return undefined
+
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = fontUrl
+    link.dataset.landingFont = fontUrl
+    document.head.appendChild(link)
+
+    return () => {
+      link.remove()
+    }
+  }, [landing?.theme?.fontFamily])
 
   if (!landing || (!sections.length && !isPreview)) {
     return null

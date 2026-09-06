@@ -65,7 +65,7 @@ const StorefrontCategoryPage = () => {
   const { products, loading: loadingProducts } = useStoreProducts(
     resolvedCategoryId ? activeStoreSlug : null,
     {
-      category: resolvedCategoryId,
+      storeCategory: resolvedCategoryId,
       pageSize: 48,
       sort: 'newest',
     }

@@ -2,22 +2,37 @@ export const FONT_PRESETS = Object.freeze({
   modern: {
     label: 'Moderna',
     stack: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif",
+    family: 'Inter',
   },
   editorial: {
     label: 'Editorial',
-    stack: "Georgia, 'Times New Roman', serif",
+    stack: "'Playfair Display', Georgia, 'Times New Roman', serif",
+    family: 'Playfair Display',
   },
   clean: {
-    label: 'Limpia',
-    stack: "'Avenir Next', 'Nunito Sans', 'Segoe UI', system-ui, sans-serif",
+    label: 'Redondeada amigable',
+    stack: "'Nunito Sans', 'Avenir Next', 'Segoe UI', system-ui, sans-serif",
+    family: 'Nunito Sans',
   },
-  condensed: {
-    label: 'Condensada',
-    stack: "'Archivo Narrow', 'Arial Narrow', 'Segoe UI', sans-serif",
+  display: {
+    label: 'Display moderna',
+    stack: "'Poppins', 'Segoe UI', system-ui, sans-serif",
+    family: 'Poppins',
+  },
+  space: {
+    label: 'Space moderna',
+    stack: "'Space Grotesk', 'Segoe UI', system-ui, sans-serif",
+    family: 'Space Grotesk',
+  },
+  elegant: {
+    label: 'Elegante',
+    stack: "'Cormorant Garamond', Georgia, serif",
+    family: 'Cormorant Garamond',
   },
   mono: {
     label: 'Técnica / mono',
     stack: "'JetBrains Mono', 'SFMono-Regular', Consolas, monospace",
+    family: 'JetBrains Mono',
   },
 })
 
@@ -56,6 +71,13 @@ export const buildTheme = (theme = {}) => ({
 })
 
 export const getFontStack = fontFamily => FONT_PRESETS[fontFamily]?.stack || FONT_PRESETS.modern.stack
+
+export const getFontLoaderUrl = fontFamily => {
+  const family = FONT_PRESETS[fontFamily]?.family
+  if (!family) return ''
+
+  return `https://fonts.googleapis.com/css2?family=${family.replace(/ /g, '+')}:wght@400;600;700;800&display=swap`
+}
 
 export const themeToCssVariables = theme => {
   const resolved = buildTheme(theme)

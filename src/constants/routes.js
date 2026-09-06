@@ -38,6 +38,7 @@ export const ROUTES = {
   SELLER_STORE: '/seller/store',
   SELLER_DESIGN: '/seller/design',
   SELLER_PRODUCTS: '/seller/products',
+  SELLER_STORE_CATEGORIES: '/seller/categories',
   SELLER_AGENCY_ITEMS: '/seller/agency-items',
   SELLER_AGENCY_LEADS: '/seller/agency-leads',
   SELLER_EXPERIENCES: '/seller/experiences',

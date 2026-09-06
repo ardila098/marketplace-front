@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import CartDrawer from '../components/cart/CartDrawer'
 import UserActions from '../components/navigation/UserActions'
 import { appMenuByArea, getSellerMenuByBusinessType, sellerBaseMenu } from '../constants/menu'
 import { ROLES } from '../constants/roles'
@@ -218,14 +217,13 @@ const DashboardLayout = ({ area }) => {
           </MobileHeaderStart>
 
           <HeaderActions>
-            <UserActions compact={!screens.lg} />
+            <UserActions compact={!screens.lg} showCart={false} />
           </HeaderActions>
         </StyledHeader>
         <StyledContent>
           <Outlet />
         </StyledContent>
       </Layout>
-      <CartDrawer />
     </StyledLayout>
   )
 }
