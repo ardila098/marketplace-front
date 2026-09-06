@@ -13,6 +13,11 @@ export const catalogService = {
     return normalizeListResponse(response)
   },
 
+  getFeatured: async () => {
+    const response = await DataService.get(API_ROUTES.catalogs.featured)
+    return normalizeListResponse(response)
+  },
+
   getCatalogItem: async id => {
     const response = await DataService.get(API_ROUTES.catalogs.byId(id))
     return normalizeItemResponse(response)

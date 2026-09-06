@@ -1,4 +1,5 @@
 import { Empty, Spin } from 'antd'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import CategorySlider from '../../sliders/categorySlider/CategorySlider'
@@ -105,6 +106,46 @@ const getVisualImages = ({ categories, products, store, storeImage }) => {
   ].filter(Boolean).slice(0, 5)
 }
 
+const StoreHeroSlider = ({ images, template, heroStyle, title }) => {
+  const [active, setActive] = useState(0)
+  const total = images.length
+
+  useEffect(() => {
+    if (total < 2) {
+      setActive(0)
+      return undefined
+    }
+
+    const timer = window.setInterval(() => {
+      setActive(current => (current + 1) % total)
+    }, 6000)
+
+    return () => window.clearInterval(timer)
+  }, [total])
+
+  return (
+    <HeroImageFrame $template={template} $heroStyle={heroStyle}>
+      {total ? (
+        images.map((src, index) => (
+          <HeroImage
+            key={`${src}-${index}`}
+            src={src}
+            alt={index === active ? title : ''}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              opacity: index === active ? 1 : 0,
+              transition: 'opacity 0.7s ease',
+            }}
+          />
+        ))
+      ) : (
+        <HeroImageFallback>{title}</HeroImageFallback>
+      )}
+    </HeroImageFrame>
+  )
+}
+
 const StorefrontVisualBlock = ({ categories, products, store, storeImage, style }) => {
   if (!style || style === 'none') return null
 
@@ -151,6 +192,13 @@ const StorefrontTemplateRenderer = ({
     storefront.visualSectionStyle || STOREFRONT_STYLE_DEFAULTS.visualSectionStyle
   const storeImage = getStoreImage(store)
   const logoUrl = getLogoUrl(store)
+  const heroSlides = [
+    storeImage,
+    ...products
+      .map(getProductImage)
+      .filter(Boolean)
+      .map(image => getUploadUrl(UPLOAD_ROUTES.products.images, image)),
+  ].filter(Boolean).slice(0, 6)
   const heroEyebrow = template === STOREFRONT_TEMPLATES.EDITORIAL_CLEAN.value
     ? 'Seleccion curada'
     : translate('storefront.officialStore')
@@ -182,13 +230,12 @@ const StorefrontTemplateRenderer = ({
 
         {heroStyle !== 'background' && (
           <HeroMedia>
-            <HeroImageFrame $template={template} $heroStyle={heroStyle}>
-              {storeImage ? (
-                <HeroImage src={storeImage} alt={heroTitle} />
-              ) : (
-                <HeroImageFallback>{heroTitle}</HeroImageFallback>
-              )}
-            </HeroImageFrame>
+            <StoreHeroSlider
+              images={heroSlides}
+              template={template}
+              heroStyle={heroStyle}
+              title={heroTitle}
+            />
             {(logoUrl || store?.name) && (
               <HeroLogoBadge $heroStyle={heroStyle}>
                 {logoUrl && <HeroLogo src={logoUrl} alt={store?.name || 'Logo'} />}

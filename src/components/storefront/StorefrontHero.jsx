@@ -6,7 +6,7 @@ import { buildRoute, ROUTES } from '../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 
-const StorefrontHero = ({ store }) => {
+const StorefrontHero = ({ store, images = [] }) => {
   const { translate } = useDictionaryTranslation()
   const { storeSlug } = useParams()
   const resolutionMode = useSelector(state => state.storefront.resolutionMode)
@@ -24,9 +24,10 @@ const StorefrontHero = ({ store }) => {
   const banner = store?.banner?.startsWith('http')
     ? store.banner
     : getUploadUrl(UPLOAD_ROUTES.stores.banners, store?.banner)
+  const heroImages = [banner, ...(Array.isArray(images) ? images : [])].filter(Boolean)
 
   return (
-    <CoverHero image={banner}>
+    <CoverHero image={undefined} images={heroImages}>
       <Space direction="vertical" size={20}>
         <Typography.Text>{translate('storefront.officialStore')}</Typography.Text>
 

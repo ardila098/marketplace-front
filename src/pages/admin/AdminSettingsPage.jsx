@@ -1,10 +1,25 @@
-import { Button, Card, Col, Form, Input, Row, Space, Spin, Typography, message } from 'antd'
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Row,
+  Select,
+  Slider,
+  Space,
+  Spin,
+  Switch,
+  Typography,
+  message,
+} from 'antd'
 import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
 import { UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { platformService } from '../../services/platformService'
+import FeaturedProductsPicker from './components/FeaturedProductsPicker'
 import {
   mergePlatformSettings,
   setPlatformSettings,
@@ -109,8 +124,175 @@ const AdminSettingsPage = () => {
             </Row>
           </Card>
 
+          <Card title="Navegacion" style={{ marginBottom: 18 }}>
+            <Row gutter={20}>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Navbar transparente sobre la portada"
+                  name={['navigation', 'transparentOnHome']}
+                  valuePropName="checked"
+                  extra="El navbar queda integrado en la portada y toma color al hacer scroll."
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Color del navbar"
+                  name={['navigation', 'backgroundColor']}
+                  extra="Se usa al hacer scroll o cuando no esta en modo transparente."
+                >
+                  <Input type="color" style={{ width: '100%', height: 42, padding: 4 }} />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Color del texto del navbar"
+                  name={['navigation', 'textColor']}
+                  extra="Aplica a marca, menu y acciones internas del navbar."
+                >
+                  <Input type="color" style={{ width: '100%', height: 42, padding: 4 }} />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Card>
+
           <Card title="Portada" style={{ marginBottom: 18 }}>
             <Row gutter={20}>
+              <Col span={24}>
+                <Typography.Text strong style={{ display: 'block', marginBottom: 4 }}>
+                  Showcase de productos (portada premium)
+                </Typography.Text>
+                <Typography.Paragraph type="secondary" style={{ margin: '0 0 18px' }}>
+                  Activalo, elige productos del catalogo o imagenes PNG y configura fondo, texto y contenedor.
+                </Typography.Paragraph>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Mostrar showcase de productos"
+                  name={['hero', 'showcaseEnabled']}
+                  valuePropName="checked"
+                  extra="Al activarlo, la portada muestra los productos seleccionados con slider."
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Texto del boton del producto"
+                  name={['hero', 'productCtaLabel']}
+                >
+                  <Input placeholder="Ver producto" />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Productos del slider de la portada"
+                  name={['hero', 'featuredProducts']}
+                  extra="Filtra por vertical para encontrar productos del catalogo. El orden de la lista es el orden del slider."
+                >
+                  <FeaturedProductsPicker />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Contenido del slider"
+                  name={['hero', 'showcaseContentType']}
+                  extra="Productos usa el catalogo; Imagenes usa PNG/WebP subidos a continuacion."
+                >
+                  <Select
+                    options={[
+                      { label: 'Slider de productos', value: 'products' },
+                      { label: 'Slider de imagenes / marca', value: 'brand' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Estilo del contenedor del slider"
+                  name={['hero', 'slideFrameStyle']}
+                  extra="Cristal y transparente dejan resaltar las imagenes PNG sobre el fondo."
+                >
+                  <Select
+                    options={[
+                      { label: 'Solido (blanco)', value: 'solid' },
+                      { label: 'Efecto cristal', value: 'glass' },
+                      { label: 'Transparente', value: 'transparent' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <ImageUploadField
+                  label="Imagenes del slider de marca (PNG / WebP)"
+                  name={['hero', 'slideImages']}
+                  folder={UPLOAD_FOLDERS.platform.banners}
+                  uploadRoute={UPLOAD_ROUTES.platform.banners}
+                  maxCount={12}
+                  multiple
+                  onUploadingChange={setUploading}
+                />
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Tipo de fondo"
+                  name={['hero', 'backgroundType']}
+                  extra="El color usa el fondo seleccionado; la imagen usa la imagen de portada."
+                >
+                  <Select
+                    options={[
+                      { label: 'Color solido', value: 'color' },
+                      { label: 'Imagen', value: 'image' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Alto del slider de verticales"
+                  name={['hero', 'verticalsImageHeight']}
+                  extra="Controla que tan grande se ve el banner de cada vertical."
+                >
+                  <Slider min={260} max={720} step={10} />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item label="Color de fondo" name={['hero', 'backgroundColor']}>
+                  <Input type="color" style={{ width: '100%', height: 42, padding: 4 }} />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Posicion de la imagen"
+                  name={['hero', 'backgroundPosition']}
+                >
+                  <Select
+                    options={[
+                      { label: 'Centro', value: 'center' },
+                      { label: 'Superior', value: 'top' },
+                      { label: 'Inferior', value: 'bottom' },
+                      { label: 'Izquierda', value: 'left' },
+                      { label: 'Derecha', value: 'right' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Overlay sobre la imagen"
+                  name={['hero', 'overlayEnabled']}
+                  valuePropName="checked"
+                  extra="Usalo para mejorar la legibilidad del texto."
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item label="Opacidad del overlay" name={['hero', 'overlayOpacity']}>
+                  <Slider min={0} max={0.85} step={0.05} />
+                </Form.Item>
+              </Col>
               <Col xs={24} md={12}>
                 <Form.Item label="Texto superior" name={['hero', 'eyebrow']}>
                   <Input placeholder="Marketplace multi-vertical" />
@@ -152,11 +334,150 @@ const AdminSettingsPage = () => {
                 </Form.Item>
               </Col>
               <Col span={24}>
+                <Typography.Text strong style={{ display: 'block', marginBottom: 4 }}>
+                  Seccion de verticales
+                </Typography.Text>
+                <Typography.Paragraph type="secondary" style={{ margin: '0 0 18px' }}>
+                  Controla como se presentan las verticales debajo de la portada.
+                </Typography.Paragraph>
+              </Col>
+              <Col xs={24} md={12}>
                 <Form.Item
-                  label="Texto antes del slider de verticales"
+                  label="Mostrar seccion de verticales"
+                  name={['hero', 'verticalsEnabled']}
+                  valuePropName="checked"
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Formato de verticales"
+                  name={['hero', 'verticalsLayout']}
+                  extra="Showcase rota automáticamente cada vertical; Slider usa el carrusel de tarjetas."
+                >
+                  <Select
+                    options={[
+                      { label: 'Showcase automatico', value: 'showcase' },
+                      { label: 'Slider de tarjetas', value: 'slider' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Titulo de la seccion"
+                  name={['hero', 'verticalsTitle']}
+                >
+                  <Input placeholder="Verticales destacadas" />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Texto antes de la seccion"
                   name={['hero', 'verticalsSubtitle']}
                 >
                   <Input />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Typography.Text strong style={{ display: 'block', marginBottom: 4 }}>
+                  Apariencia del showcase de verticales
+                </Typography.Text>
+                <Typography.Paragraph type="secondary" style={{ margin: '0 0 14px' }}>
+                  Aplica cuando el formato elegido es Showcase automatico.
+                </Typography.Paragraph>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Posicion del slider"
+                  name={['hero', 'verticalsImageSide']}
+                >
+                  <Select
+                    options={[
+                      { label: 'Imagen a la izquierda', value: 'left' },
+                      { label: 'Imagen a la derecha', value: 'right' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Estilo del contenedor del slider"
+                  name={['hero', 'verticalsFrameStyle']}
+                >
+                  <Select
+                    options={[
+                      { label: 'Solido', value: 'solid' },
+                      { label: 'Efecto cristal', value: 'glass' },
+                      { label: 'Transparente', value: 'transparent' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Tipo de fondo de la seccion"
+                  name={['hero', 'verticalsBackgroundType']}
+                >
+                  <Select
+                    options={[
+                      { label: 'Color solido', value: 'color' },
+                      { label: 'Imagen', value: 'image' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Color de fondo de la seccion"
+                  name={['hero', 'verticalsBackgroundColor']}
+                >
+                  <Input type="color" style={{ width: '100%', height: 42, padding: 4 }} />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <ImageUploadField
+                  label="Imagen de fondo de la seccion"
+                  name={['hero', 'verticalsBackgroundImage']}
+                  folder={UPLOAD_FOLDERS.platform.banners}
+                  uploadRoute={UPLOAD_ROUTES.platform.banners}
+                  maxCount={1}
+                  multiple={false}
+                  onUploadingChange={setUploading}
+                />
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Posicion de la imagen de fondo"
+                  name={['hero', 'verticalsBackgroundPosition']}
+                >
+                  <Select
+                    options={[
+                      { label: 'Centro', value: 'center' },
+                      { label: 'Superior', value: 'top' },
+                      { label: 'Inferior', value: 'bottom' },
+                      { label: 'Izquierda', value: 'left' },
+                      { label: 'Derecha', value: 'right' },
+                    ]}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} md={12}>
+                <Form.Item
+                  label="Overlay sobre el fondo"
+                  name={['hero', 'verticalsOverlayEnabled']}
+                  valuePropName="checked"
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Opacidad del overlay"
+                  name={['hero', 'verticalsOverlayOpacity']}
+                >
+                  <Slider min={0} max={0.85} step={0.05} />
                 </Form.Item>
               </Col>
             </Row>

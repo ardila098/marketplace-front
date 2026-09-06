@@ -1,4 +1,4 @@
-import { Collapse } from 'antd'
+import { Carousel, Collapse } from 'antd'
 import { UPLOAD_ROUTES, getUploadUrl } from '../../../constants/uploadRoutes'
 import {
   LpButton,
@@ -133,6 +133,7 @@ export const SectionHero = ({ landing: _landing, section }) => {
   const variant = section?.settings?.variant || 'split'
   const align = section?.settings?.align || 'left'
   const src = imageUrl(data.image)
+  const slideImages = (data.slides || []).map(fileName => imageUrl(fileName))
   const centered = variant === 'centered' || align === 'center'
   const titleStyle = {}
   const eyebrowStyle = {}
@@ -224,6 +225,50 @@ export const SectionHero = ({ landing: _landing, section }) => {
               </LpButton>
             </div>
           </div>
+        </LpContainer>
+      </LpSection>
+    )
+  }
+
+  if (variant === 'showcase' && slideImages.length) {
+    return (
+      <LpSection id="inicio">
+        <LpContainer
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0, 1fr) minmax(320px, 1fr)',
+            gap: 'clamp(28px, 6vw, 80px)',
+            alignItems: 'center',
+          }}
+        >
+          {content}
+          <LpMediaFrame $ratio="4 / 5" style={{ height: '100%' }}>
+            <div style={{ width: '100%', height: '100%' }}>
+              <Carousel
+                autoplay
+                autoplaySpeed={5000}
+                dots
+                draggable
+                effect="fade"
+                style={{ height: '100%' }}
+              >
+                {slideImages.map((slide, index) => (
+                  <div key={`${slide}-${index}`} style={{ width: '100%', height: '100%' }}>
+                    <img
+                      src={slide}
+                      alt={data.imageAlt || `${data.title || 'Imagen'} ${index + 1}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        display: 'block',
+                      }}
+                    />
+                  </div>
+                ))}
+              </Carousel>
+            </div>
+          </LpMediaFrame>
         </LpContainer>
       </LpSection>
     )

@@ -194,6 +194,7 @@ export const API_ROUTES = {
   catalogs: {
     base: '/catalogs',
     catalogVerticals: '/catalogs/catalogVerticals',
+    featured: '/catalogs/featured',
     byId: id => `/catalogs/products/${id}`,
   },
 

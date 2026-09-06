@@ -122,7 +122,18 @@ const StorefrontHomePage = () => {
   if (isExperienceStore) {
     return (
       <>
-        <StorefrontHero store={store} />
+        <StorefrontHero
+          store={store}
+          images={experiences
+            .slice(0, 6)
+            .map(experience =>
+              getUploadUrl(
+                UPLOAD_ROUTES.experiences.images,
+                experience.images?.[0] || experience.coverImage
+              )
+            )
+            .filter(Boolean)}
+        />
         <StorefrontTrustStrip />
 
         <PageShell>
@@ -164,7 +175,18 @@ const StorefrontHomePage = () => {
   if (isAgencyStore) {
     return (
       <>
-        <StorefrontHero store={store} />
+        <StorefrontHero
+          store={store}
+          images={agencyItems
+            .slice(0, 6)
+            .map(item =>
+              getUploadUrl(
+                UPLOAD_ROUTES.agencyItems.images,
+                item.images?.[0] || item.coverImage
+              )
+            )
+            .filter(Boolean)}
+        />
         <StorefrontTrustStrip />
 
         <PageShell>

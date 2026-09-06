@@ -4,7 +4,7 @@ import { getUploadUrl, UPLOAD_ROUTES } from '../../../../../constants/uploadRout
 import { useDictionaryTranslation } from '../../../../../hooks/useDictionaryTranslation'
 import useVerticals from '../../../../../hooks/useVerticals'
 
-const VerticalsSlider = () => {
+const VerticalsSlider = ({ title }) => {
   const navigate = useNavigate()
   const { translate } = useDictionaryTranslation()
   const { data } = useVerticals()
@@ -21,7 +21,7 @@ const VerticalsSlider = () => {
 
   return (
     <CardCarousel
-      title={translate('home.verticalsTitle')}
+      title={title || translate('home.verticalsTitle')}
       items={items}
       onItemClick={item => navigate(`/vertical/${item.id}`)}
     />

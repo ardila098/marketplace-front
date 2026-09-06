@@ -6,8 +6,9 @@ import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslatio
 import { useSeoMeta } from '../../../hooks/useSeoMeta'
 import { selectPlatformSettings } from '../../../store/slices/platformSlice'
 import { PageShell } from '../../../styles/layoutStyles'
-import HeaderHome from './HeaderHome'
+import MarketplaceShowcase from './MarketplaceShowcase'
 import NewProductsSection from './NewProductsSection'
+import VerticalShowcase from '../../../components/marketplace/VerticalShowcase/VerticalShowcase'
 import VerticalsSlider from '../../../components/common/verticals/components/verticalsSlider/VerticaslSlider'
 
 const ContainerHome = () => {
@@ -15,6 +16,24 @@ const ContainerHome = () => {
   const platformSettings = useSelector(selectPlatformSettings)
   const verticalsSubtitle =
     platformSettings.hero?.verticalsSubtitle || translate('home.verticalsSubtitle')
+  const verticalsLayout = platformSettings.hero?.verticalsLayout || 'showcase'
+  const verticalsEnabled = platformSettings.hero?.verticalsEnabled !== false
+  const verticalsTitle =
+    platformSettings.hero?.verticalsTitle || translate('home.verticalsTitle')
+  const verticalsConfig = {
+    imageSide: platformSettings.hero?.verticalsImageSide || 'right',
+    backgroundType: platformSettings.hero?.verticalsBackgroundType || 'color',
+    backgroundColor: platformSettings.hero?.verticalsBackgroundColor || '#f7f4ef',
+    backgroundImage: getUploadUrl(
+      UPLOAD_ROUTES.platform.banners,
+      platformSettings.hero?.verticalsBackgroundImage
+    ),
+    backgroundPosition: platformSettings.hero?.verticalsBackgroundPosition || 'center',
+    overlayEnabled: platformSettings.hero?.verticalsOverlayEnabled === true,
+    overlayOpacity: Number(platformSettings.hero?.verticalsOverlayOpacity) || 0,
+    frameStyle: platformSettings.hero?.verticalsFrameStyle || 'solid',
+    imageHeight: Number(platformSettings.hero?.verticalsImageHeight) || 420,
+  }
   const seo = platformSettings.seo || {}
   const seoDescription =
     seo.description ||
@@ -42,17 +61,26 @@ const ContainerHome = () => {
 
   return (
     <>
-      <HeaderHome />
+      <MarketplaceShowcase />
 
-      <PageShell>
-        <Space direction="vertical" size={36} style={{ width: '100%' }}>
-          <section>
+      {verticalsEnabled &&
+        (verticalsLayout === 'showcase' ? (
+          <VerticalShowcase
+            config={verticalsConfig}
+            title={verticalsTitle}
+            subtitle={verticalsSubtitle}
+          />
+        ) : (
+          <section style={{ maxWidth: 1180, margin: '0 auto', paddingTop: 36 }}>
             <Typography.Paragraph style={{ margin: '0 0 6px', color: '#6b7280' }}>
               {verticalsSubtitle}
             </Typography.Paragraph>
-            <VerticalsSlider />
+            <VerticalsSlider title={verticalsTitle} />
           </section>
+        ))}
 
+      <PageShell>
+        <Space direction="vertical" size={36} style={{ width: '100%' }}>
           <NewProductsSection />
 
           <NewsletterSignup source="marketplace" />

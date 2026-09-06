@@ -5,7 +5,23 @@ import { platformService } from '../../services/platformService'
 export const DEFAULT_PLATFORM_SETTINGS = Object.freeze({
   name: 'Cooqys',
   logo: '',
+  navigation: {
+    backgroundColor: '#ffffff',
+    textColor: '#111111',
+    transparentOnHome: true,
+  },
   hero: {
+    showcaseEnabled: false,
+    showcaseContentType: 'products',
+    slideImages: [],
+    slideFrameStyle: 'solid',
+    featuredProducts: [],
+    productCtaLabel: 'Ver producto',
+    backgroundType: 'color',
+    backgroundColor: '#f6f1ea',
+    backgroundPosition: 'center',
+    overlayEnabled: true,
+    overlayOpacity: 0.35,
     eyebrow: 'Marketplace multi-vertical',
     title: 'Compra por verticales seleccionadas.',
     subtitle:
@@ -13,6 +29,18 @@ export const DEFAULT_PLATFORM_SETTINGS = Object.freeze({
     primaryCtaLabel: 'Explorar productos',
     secondaryCtaLabel: 'Ver verticales',
     verticalsSubtitle: 'Cada vertical agrupa tiendas y categorias relacionadas.',
+    verticalsEnabled: true,
+    verticalsLayout: 'showcase',
+    verticalsTitle: 'Verticales destacadas',
+    verticalsImageSide: 'right',
+    verticalsBackgroundType: 'color',
+    verticalsBackgroundColor: '#f7f4ef',
+    verticalsBackgroundImage: '',
+    verticalsBackgroundPosition: 'center',
+    verticalsOverlayEnabled: false,
+    verticalsOverlayOpacity: 0.35,
+    verticalsFrameStyle: 'solid',
+    verticalsImageHeight: 420,
     backgroundImage: '',
   },
   footer: {
@@ -29,6 +57,10 @@ export const DEFAULT_PLATFORM_SETTINGS = Object.freeze({
 export const mergePlatformSettings = settings => ({
   ...DEFAULT_PLATFORM_SETTINGS,
   ...(settings || {}),
+  navigation: {
+    ...DEFAULT_PLATFORM_SETTINGS.navigation,
+    ...(settings?.navigation || {}),
+  },
   hero: {
     ...DEFAULT_PLATFORM_SETTINGS.hero,
     ...(settings?.hero || {}),

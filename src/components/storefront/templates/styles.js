@@ -180,6 +180,7 @@ export const HeroMedia = styled.div`
 `
 
 export const HeroImageFrame = styled.div`
+  position: relative;
   aspect-ratio: ${({ $heroStyle }) => ($heroStyle === 'split' ? '5 / 6' : '4 / 3')};
   overflow: hidden;
   border-radius: ${({ theme }) => Math.max(theme.borderRadius || 8, 8)}px;
