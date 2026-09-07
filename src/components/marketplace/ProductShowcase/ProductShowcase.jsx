@@ -525,7 +525,7 @@ const ProductShowcase = ({
     : ''
   const detailPath = getProductPath
     ? getProductPath(slide)
-    : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: slide._id })
+    : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: slide?._id })
   const price = Number(
     slide?.selectedItem?.price ||
     slide?.minPrice ||
