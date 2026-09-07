@@ -125,14 +125,16 @@ const Inner = styled.div`
   margin: 0 auto;
   padding: 112px max(24px, calc((100vw - 1320px) / 2)) 112px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  grid-template-areas: 'copy visual';
+  grid-template-columns: ${({ $empty }) =>
+    $empty ? 'minmax(0, 1fr)' : 'minmax(0, 1fr) minmax(0, 1.05fr)'};
+  grid-template-areas: ${({ $empty }) => ($empty ? "'copy'" : "'copy visual'")};
   align-items: center;
   gap: clamp(24px, 5vw, 84px);
 
   @media (max-width: 860px) {
     grid-template-columns: 1fr;
-    grid-template-areas: 'visual' 'copy';
+    grid-template-areas: ${({ $empty }) =>
+      $empty ? "'copy'" : "'visual' 'copy'"};
     gap: 20px;
     padding: 96px 20px 96px;
   }
@@ -462,6 +464,7 @@ const ProductShowcase = ({
   brandCopy = {},
   getProductPath,
   frameStyle = 'solid',
+  allowEmpty = false,
   className,
 }) => {
   const normalized = useMemo(() => normalizeConfig(config), [config])
@@ -515,7 +518,7 @@ const ProductShowcase = ({
     return () => window.clearTimeout(timer)
   }, [previous])
 
-  if (!normalized.enabled || !total) return null
+  if (!normalized.enabled || (!total && !allowEmpty)) return null
 
   const imageUrl = slide?.image
     ? getUploadUrl(UPLOAD_ROUTES.products.images, slide.image)
@@ -582,7 +585,11 @@ const ProductShowcase = ({
 
       {darkText && <Halo aria-hidden="true" />}
 
-      <Inner onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      <Inner
+        $empty={allowEmpty && total === 0}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <Copy key={`copy-${slide?._id || slide?.image}`}>
           {isBrand ? (
             <>
@@ -661,6 +668,7 @@ const ProductShowcase = ({
           )}
         </Copy>
 
+        {total > 0 && (
         <Visual>
           <StageFrame $frameStyle={frameStyle}>
             {previous !== null &&
@@ -694,6 +702,7 @@ const ProductShowcase = ({
             )}
           </StageFrame>
         </Visual>
+        )}
       </Inner>
 
       {total > 0 && (

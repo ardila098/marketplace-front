@@ -23,7 +23,7 @@ const VerticalFeaturedShowcase = ({ dataVertical, featured = [], verticalId }) =
     [featured]
   )
 
-  if (!dataVertical?.showcaseEnabled || !productImages.length) return null
+  if (!dataVertical?.showcaseEnabled) return null
 
   const bannerUrl = getUploadUrl(
     UPLOAD_ROUTES.verticals.banners,
@@ -42,6 +42,7 @@ const VerticalFeaturedShowcase = ({ dataVertical, featured = [], verticalId }) =
       mode="brand"
       images={productImages}
       frameStyle={frameStyle}
+      allowEmpty
       config={{
         enabled: true,
         background: backgroundType === 'image' && backgroundImage

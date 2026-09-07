@@ -121,17 +121,11 @@ const ContainerVertical = () => {
           >
             <Spin />
           </div>
-        ) : verticalFeatured.length ? (
+        ) : (
           <VerticalFeaturedShowcase
             dataVertical={dataVertical}
             featured={verticalFeatured}
             verticalId={id}
-          />
-        ) : (
-          <VerticalHeader
-            dataVertical={dataVertical}
-            loadingProducts={loading}
-            productsCount={data?.length}
           />
         )
       ) : (
