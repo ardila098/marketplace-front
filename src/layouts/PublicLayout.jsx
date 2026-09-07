@@ -99,10 +99,13 @@ const PublicLayout = () => {
   const logoUrl = getUploadUrl(UPLOAD_ROUTES.platform.logos, platformSettings.logo)
   const navigation = platformSettings.navigation || {}
   const isCustomDomainHome = location.pathname === '/' && currentStore && resolutionMode === 'host'
+  const isVerticalCover = /^\/vertical\/(?!products(?:\/|$))[^/]+$/.test(
+    location.pathname
+  )
   const isOverlayNav =
     !currentStore &&
-    location.pathname === '/' &&
-    navigation.transparentOnHome === true
+    navigation.transparentOnHome === true &&
+    (location.pathname === '/' || isVerticalCover)
 
   useEffect(() => {
     if (!isOverlayNav) {

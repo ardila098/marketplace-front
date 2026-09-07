@@ -5,6 +5,7 @@ import {
   Form,
   Input,
   Row,
+  Segmented,
   Select,
   Slider,
   Space,
@@ -47,6 +48,7 @@ const AdminSettingsPage = () => {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [activeSection, setActiveSection] = useState('brand')
 
   useEffect(() => {
     let mounted = true
@@ -98,8 +100,36 @@ const AdminSettingsPage = () => {
           </Typography.Paragraph>
         </div>
 
+        <Segmented
+          block
+          value={activeSection}
+          onChange={setActiveSection}
+          options={[
+            { label: 'Marca y navegacion', value: 'brand' },
+            { label: 'Vista inicial y verticales', value: 'home' },
+            { label: 'SEO y footer', value: 'seo' },
+          ]}
+          style={{ marginBottom: 18 }}
+        />
+
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
-          <Card title="Marca" style={{ marginBottom: 18 }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={saving}
+            disabled={uploading}
+            style={{ marginBottom: 18 }}
+          >
+            Guardar configuracion
+          </Button>
+
+          <Card
+            title="Marca"
+            style={{
+              marginBottom: 18,
+              display: activeSection === 'brand' ? undefined : 'none',
+            }}
+          >
             <Row gutter={20}>
               <Col xs={24} md={12}>
                 <Form.Item
@@ -124,7 +154,13 @@ const AdminSettingsPage = () => {
             </Row>
           </Card>
 
-          <Card title="Navegacion" style={{ marginBottom: 18 }}>
+          <Card
+            title="Navegacion"
+            style={{
+              marginBottom: 18,
+              display: activeSection === 'brand' ? undefined : 'none',
+            }}
+          >
             <Row gutter={20}>
               <Col xs={24} md={12}>
                 <Form.Item
@@ -157,7 +193,13 @@ const AdminSettingsPage = () => {
             </Row>
           </Card>
 
-          <Card title="Portada" style={{ marginBottom: 18 }}>
+          <Card
+            title="Portada"
+            style={{
+              marginBottom: 18,
+              display: activeSection === 'home' ? undefined : 'none',
+            }}
+          >
             <Row gutter={20}>
               <Col span={24}>
                 <Typography.Text strong style={{ display: 'block', marginBottom: 4 }}>
@@ -483,7 +525,13 @@ const AdminSettingsPage = () => {
             </Row>
           </Card>
 
-          <Card title="SEO" style={{ marginBottom: 18 }}>
+          <Card
+            title="SEO"
+            style={{
+              marginBottom: 18,
+              display: activeSection === 'seo' ? undefined : 'none',
+            }}
+          >
             <Row gutter={20}>
               <Col span={24}>
                 <Form.Item label="Titulo SEO" name={['seo', 'title']}>
@@ -514,7 +562,7 @@ const AdminSettingsPage = () => {
             </Row>
           </Card>
 
-          <Card title="Footer">
+          <Card title="Footer" style={{ display: activeSection === 'seo' ? undefined : 'none' }}>
             <Form.Item label="Descripcion del marketplace" name={['footer', 'description']}>
               <TextArea rows={3} />
             </Form.Item>

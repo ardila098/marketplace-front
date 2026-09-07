@@ -13,8 +13,8 @@ export const catalogService = {
     return normalizeListResponse(response)
   },
 
-  getFeatured: async () => {
-    const response = await DataService.get(API_ROUTES.catalogs.featured)
+  getFeatured: async (params = {}) => {
+    const response = await DataService.get(API_ROUTES.catalogs.featured, params)
     return normalizeListResponse(response)
   },
 

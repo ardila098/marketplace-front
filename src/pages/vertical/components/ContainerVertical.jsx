@@ -1,5 +1,5 @@
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { Button, Space } from 'antd'
+import { Button, Space, Spin } from 'antd'
 import { useCallback, useEffect, useState } from 'react'
 import CategorySlider from '../../../components/sliders/categorySlider/CategorySlider'
 import { buildRoute, ROUTES } from '../../../constants/routes'
@@ -9,8 +9,10 @@ import { useSeoMeta } from '../../../hooks/useSeoMeta'
 import useCatalog from '../../../hooks/useCatalog'
 import useVerticals from '../../../hooks/useVerticals'
 import { categoryService } from '../../../services/categoryService'
+import { catalogService } from '../../../services/catalogService'
 import { PageContainer } from '../../itemDetails/styles/styles'
 import VerticalHeader from './VerticalHeader'
+import VerticalFeaturedShowcase from './VerticalFeaturedShowcase'
 import ContainerItemsList from '../../items/components/ContainerItemsList'
 
 const ContainerVertical = () => {
@@ -19,6 +21,8 @@ const ContainerVertical = () => {
   const [searchParams] = useSearchParams()
   const selectedCategory = searchParams.get('category') || ''
   const [categories, setCategories] = useState([])
+  const [verticalFeatured, setVerticalFeatured] = useState([])
+  const [featuredLoading, setFeaturedLoading] = useState(false)
   const { data, getVerticalCatalog, loading } = useCatalog()
   const { dataVertical, getVertical } = useVerticals()
   const productsPath = buildRoute(ROUTES.VERTICAL_PRODUCTS, { id })
@@ -74,13 +78,69 @@ const ContainerVertical = () => {
     loadCategories()
   }, [getVertical, id, loadCategories])
 
+  useEffect(() => {
+    const canShowcase = dataVertical?.showcaseEnabled === true
+
+    if (!id || !canShowcase) {
+      setVerticalFeatured([])
+      setFeaturedLoading(false)
+      return
+    }
+
+    let active = true
+    setFeaturedLoading(true)
+
+    catalogService
+      .getFeatured({ vertical: id })
+      .then(response => {
+        if (active) setVerticalFeatured(response.data || [])
+      })
+      .catch(() => {
+        if (active) setVerticalFeatured([])
+      })
+      .finally(() => {
+        if (active) setFeaturedLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [dataVertical?.showcaseEnabled, id])
+
   return (
     <>
-      <VerticalHeader
-        dataVertical={dataVertical}
-        loadingProducts={loading}
-        productsCount={data?.length}
-      />
+      {dataVertical?.showcaseEnabled === true ? (
+        featuredLoading ? (
+          <div
+            style={{
+              minHeight: 520,
+              display: 'grid',
+              placeItems: 'center',
+              background: '#f6f1ea',
+            }}
+          >
+            <Spin />
+          </div>
+        ) : verticalFeatured.length ? (
+          <VerticalFeaturedShowcase
+            dataVertical={dataVertical}
+            featured={verticalFeatured}
+            verticalId={id}
+          />
+        ) : (
+          <VerticalHeader
+            dataVertical={dataVertical}
+            loadingProducts={loading}
+            productsCount={data?.length}
+          />
+        )
+      ) : (
+        <VerticalHeader
+          dataVertical={dataVertical}
+          loadingProducts={loading}
+          productsCount={data?.length}
+        />
+      )}
 
       <PageContainer>
         <Space size={12} wrap style={{ marginBottom: 28 }}>
@@ -104,6 +164,7 @@ const ContainerVertical = () => {
 
         <ContainerItemsList
           data={data}
+          loading={loading}
           getProductPath={product => buildRoute(ROUTES.VERTICAL_SCOPED_PRODUCT_DETAIL, {
             verticalId: id,
             id: product._id,

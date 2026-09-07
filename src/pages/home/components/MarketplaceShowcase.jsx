@@ -1,3 +1,4 @@
+import { Spin } from 'antd'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -12,6 +13,7 @@ const MarketplaceShowcase = () => {
   const platformSettings = useSelector(selectPlatformSettings)
   const hero = platformSettings.hero || {}
   const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
   const enabled = hero.showcaseEnabled === true
   const contentMode = hero.showcaseContentType || 'products'
   const isBrand = contentMode === 'brand'
@@ -19,8 +21,11 @@ const MarketplaceShowcase = () => {
   const loadFeatured = useCallback(async () => {
     if (!enabled || isBrand) {
       setProducts([])
+      setLoading(false)
       return
     }
+
+    setLoading(true)
 
     try {
       const response = await catalogService.getFeatured()
@@ -28,6 +33,8 @@ const MarketplaceShowcase = () => {
     } catch (error) {
       console.error('No se pudieron cargar los productos del showcase', error)
       setProducts([])
+    } finally {
+      setLoading(false)
     }
   }, [enabled, isBrand])
 
@@ -90,7 +97,26 @@ const MarketplaceShowcase = () => {
 
   const hasSlides = isBrand ? slideImages.length > 0 : products.length > 0
 
-  if (!enabled || !hasSlides) {
+  if (!enabled) {
+    return <HeaderHome />
+  }
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'grid',
+          placeItems: 'center',
+          background: hero.backgroundColor || '#f6f1ea',
+        }}
+      >
+        <Spin size="large" />
+      </div>
+    )
+  }
+
+  if (!hasSlides) {
     return <HeaderHome />
   }
 

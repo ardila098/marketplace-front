@@ -4,6 +4,8 @@ import {
   Input,
   Modal,
   Popconfirm,
+  Select,
+  Slider,
   Space,
   Switch,
   Table,
@@ -16,6 +18,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import ImageUploadField from '../../components/uploads/ImageUploadField/ImageUploadField'
 import { getUploadUrl, UPLOAD_FOLDERS, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
+import FeaturedProductsPicker from './components/FeaturedProductsPicker'
 import { useDebouncedValue } from '../../hooks/useDebouncedValue'
 import { verticalsServices } from '../../services/verticalsServices'
 import {
@@ -39,6 +42,15 @@ const getVerticalPayload = values => ({
   icon: values.icon || '',
   banner: values.banner || '',
   sortOrder: values.sortOrder || 0,
+  showcaseEnabled: values.showcaseEnabled === true,
+  featuredProducts: values.featuredProducts || [],
+  showcaseBackgroundType: values.showcaseBackgroundType || 'color',
+  showcaseBackgroundColor: values.showcaseBackgroundColor || '#f6f1ea',
+  showcaseBackgroundImage: values.showcaseBackgroundImage || '',
+  showcaseBackgroundPosition: values.showcaseBackgroundPosition || 'center',
+  showcaseOverlayEnabled: values.showcaseOverlayEnabled === true,
+  showcaseOverlayOpacity: Number(values.showcaseOverlayOpacity) || 0.45,
+  showcaseFrameStyle: values.showcaseFrameStyle || 'transparent',
   isActive: values.isActive !== false,
 })
 
@@ -97,6 +109,15 @@ const AdminVerticalsPage = () => {
       icon: '',
       banner: '',
       sortOrder: 0,
+      showcaseEnabled: false,
+      featuredProducts: [],
+      showcaseBackgroundType: 'color',
+      showcaseBackgroundColor: '#f6f1ea',
+      showcaseBackgroundImage: '',
+      showcaseBackgroundPosition: 'center',
+      showcaseOverlayEnabled: false,
+      showcaseOverlayOpacity: 0.45,
+      showcaseFrameStyle: 'transparent',
       isActive: true,
     })
     setUploadingFields({})
@@ -112,6 +133,15 @@ const AdminVerticalsPage = () => {
       icon: vertical.icon || '',
       banner: vertical.banner || '',
       sortOrder: vertical.sortOrder || 0,
+      showcaseEnabled: vertical.showcaseEnabled === true,
+      featuredProducts: vertical.featuredProducts || [],
+      showcaseBackgroundType: vertical.showcaseBackgroundType || 'color',
+      showcaseBackgroundColor: vertical.showcaseBackgroundColor || '#f6f1ea',
+      showcaseBackgroundImage: vertical.showcaseBackgroundImage || '',
+      showcaseBackgroundPosition: vertical.showcaseBackgroundPosition || 'center',
+      showcaseOverlayEnabled: vertical.showcaseOverlayEnabled === true,
+      showcaseOverlayOpacity: Number(vertical.showcaseOverlayOpacity) || 0.45,
+      showcaseFrameStyle: vertical.showcaseFrameStyle || 'transparent',
       isActive: vertical.isActive !== false,
     })
     setUploadingFields({})
@@ -330,6 +360,96 @@ const AdminVerticalsPage = () => {
               onUploadingChange={uploading => setFieldUploading('banner', uploading)}
             />
           </FieldGrid>
+
+          <Form.Item
+            label="Mostrar showcase en la portada de la vertical"
+            name="showcaseEnabled"
+            valuePropName="checked"
+            extra="Al activarlo, la portada de esta vertical usara un slider con los productos seleccionados."
+          >
+            <Switch />
+          </Form.Item>
+
+          <Form.Item
+            label="Productos del slider de la vertical"
+            name="featuredProducts"
+            extra="Elige solo productos de esta vertical. Se mostraran con su imagen base en el showcase."
+          >
+            <FeaturedProductsPicker />
+          </Form.Item>
+
+          <Form.Item
+            label="Tipo de fondo del showcase"
+            name="showcaseBackgroundType"
+          >
+            <Select
+              options={[
+                { label: 'Color solido', value: 'color' },
+                { label: 'Imagen', value: 'image' },
+              ]}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Color de fondo del showcase"
+            name="showcaseBackgroundColor"
+          >
+            <Input type="color" style={{ width: '100%', height: 42, padding: 4 }} />
+          </Form.Item>
+
+          <ImageUploadField
+            label="Imagen de fondo del showcase"
+            name="showcaseBackgroundImage"
+            folder={UPLOAD_FOLDERS.verticals.banners}
+            uploadRoute={UPLOAD_ROUTES.verticals.banners}
+            maxCount={1}
+            multiple={false}
+            disabled={saving}
+            onUploadingChange={uploading => setFieldUploading('showcaseBackgroundImage', uploading)}
+          />
+
+          <Form.Item
+            label="Posicion de la imagen de fondo"
+            name="showcaseBackgroundPosition"
+          >
+            <Select
+              options={[
+                { label: 'Centro', value: 'center' },
+                { label: 'Superior', value: 'top' },
+                { label: 'Inferior', value: 'bottom' },
+                { label: 'Izquierda', value: 'left' },
+                { label: 'Derecha', value: 'right' },
+              ]}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Overlay sobre el fondo"
+            name="showcaseOverlayEnabled"
+            valuePropName="checked"
+          >
+            <Switch />
+          </Form.Item>
+
+          <Form.Item
+            label="Opacidad del overlay"
+            name="showcaseOverlayOpacity"
+          >
+            <Slider min={0} max={0.85} step={0.05} />
+          </Form.Item>
+
+          <Form.Item
+            label="Estilo del contenedor del slider"
+            name="showcaseFrameStyle"
+          >
+            <Select
+              options={[
+                { label: 'Transparente', value: 'transparent' },
+                { label: 'Efecto cristal', value: 'glass' },
+                { label: 'Solido', value: 'solid' },
+              ]}
+            />
+          </Form.Item>
 
           <Form.Item label="Orden" name="sortOrder">
             <FullWidthInputNumber min={0} />

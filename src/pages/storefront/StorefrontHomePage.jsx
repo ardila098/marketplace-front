@@ -32,6 +32,7 @@ const StorefrontHomePage = () => {
   const [experiences, setExperiences] = useState([])
   const [experiencesLoading, setExperiencesLoading] = useState(false)
   const [featuredProducts, setFeaturedProducts] = useState([])
+  const [featuredLoading, setFeaturedLoading] = useState(true)
   const productsPath =
     resolutionMode === 'host'
       ? '/products'
@@ -59,6 +60,7 @@ const StorefrontHomePage = () => {
     isAgencyStore || isExperienceStore ? null : activeStoreSlug
   )
   const storefront = store?.storefront || {}
+  const heroStyle = storefront.heroStyle
   const storeDescription =
     storefront.seoDescription || store?.description || `${store?.name || 'Tienda'} en Cooqys`
   const storeImage = storefront.socialImage
@@ -105,12 +107,19 @@ const StorefrontHomePage = () => {
   }, [activeStoreSlug, isAgencyStore])
 
   useEffect(() => {
-    if (isAgencyStore || isExperienceStore || !activeStoreSlug) {
+    if (
+      isAgencyStore ||
+      isExperienceStore ||
+      !activeStoreSlug ||
+      heroStyle !== 'showcase'
+    ) {
       setFeaturedProducts([])
+      setFeaturedLoading(false)
       return
     }
 
     let active = true
+    setFeaturedLoading(true)
 
     storeService
       .getProducts(activeStoreSlug, { featured: 'true', limit: 12 })
@@ -120,11 +129,14 @@ const StorefrontHomePage = () => {
       .catch(() => {
         if (active) setFeaturedProducts([])
       })
+      .finally(() => {
+        if (active) setFeaturedLoading(false)
+      })
 
     return () => {
       active = false
     }
-  }, [activeStoreSlug, isAgencyStore, isExperienceStore])
+  }, [activeStoreSlug, heroStyle, isAgencyStore, isExperienceStore])
 
   useEffect(() => {
     if (!isExperienceStore || !activeStoreSlug) {
@@ -264,6 +276,7 @@ const StorefrontHomePage = () => {
       activeStoreSlug={activeStoreSlug}
       categories={categories}
       categoriesPath={categoriesPath}
+      featuredLoading={featuredLoading}
       loading={loading}
       outletPath={outletPath}
       featuredProducts={featuredProducts}
