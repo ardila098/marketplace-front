@@ -15,7 +15,7 @@ const getProductPreviewImage = product => {
     )
 }
 
-const ProductsTable = ({ handleEdit, productModals, tableData, handleCreate, getProducts }) => {
+const ProductsTable = ({ handleEdit, productModals, tableData, handleCreate, getProducts, onDelete }) => {
     const navigate = useNavigate()
 
 
@@ -84,8 +84,9 @@ const ProductsTable = ({ handleEdit, productModals, tableData, handleCreate, get
                         onAddInventoryItem={() => productModals.openInventoryModal(record)}
                         onAddReference={() => productModals.openReferenceModal(record)}
                         onManage={() => navigate(`/seller/products/${record._id}/manage`)}
+                        onDelete={onDelete}
                         deleteTitle="Eliminar producto"
-                        deleteDescription="¿Seguro que deseas eliminar este producto?"
+                        deleteDescription="El producto quedara deshabilitado y dejara de mostrarse en tu tienda."
                     />
                 )
             },

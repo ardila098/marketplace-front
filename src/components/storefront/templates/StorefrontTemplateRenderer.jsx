@@ -14,6 +14,7 @@ import {
 } from '../../../constants/storefrontTemplates'
 import { UPLOAD_ROUTES, getUploadUrl } from '../../../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'
+import ProductShowcase from '../../marketplace/ProductShowcase/ProductShowcase'
 import {
   HeroActions,
   HeroButton,
@@ -213,46 +214,80 @@ const StorefrontTemplateRenderer = ({
   const heroTitle = store?.name || 'Tienda'
   const heroDescription = store?.description || 'Encuentra productos seleccionados para comprar rapido y seguro.'
   const hasProductsSection = sections.showFeaturedProducts
+  const showPremiumCover = heroStyle === 'showcase' && showcaseSlides.length > 0
 
   return (
     <StorefrontCanvas $template={template}>
-      <TemplateHero $template={template} $heroStyle={heroStyle} $heroImage={storeImage}>
-        <HeroContent>
-          <HeroEyebrow $heroStyle={heroStyle}>{heroEyebrow}</HeroEyebrow>
-          <HeroTitle $template={template} $heroStyle={heroStyle}>{heroTitle}</HeroTitle>
-          <HeroDescription $heroStyle={heroStyle}>{heroDescription}</HeroDescription>
+      {showPremiumCover ? (
+        <ProductShowcase
+          mode="brand"
+          images={showcaseSlides}
+          frameStyle="transparent"
+          config={{
+            enabled: true,
+            ctaLabel: translate('storefront.shopNow'),
+            background: storeImage
+              ? {
+                  type: 'image',
+                  image: storeImage,
+                  position: 'center',
+                  overlayEnabled: true,
+                  overlayOpacity: 0.45,
+                }
+              : {
+                  type: 'color',
+                  color: store?.storefront?.theme?.backgroundColor || '#ffffff',
+                },
+          }}
+          brandCopy={{
+            eyebrow: heroEyebrow,
+            title: heroTitle,
+            subtitle: heroDescription,
+            primaryLabel: translate('storefront.shopNow'),
+            secondaryLabel: translate('storefront.viewOutlet'),
+            primaryPath: productsPath,
+            secondaryPath: outletPath,
+          }}
+        />
+      ) : (
+        <TemplateHero $template={template} $heroStyle={heroStyle} $heroImage={storeImage}>
+          <HeroContent>
+            <HeroEyebrow $heroStyle={heroStyle}>{heroEyebrow}</HeroEyebrow>
+            <HeroTitle $template={template} $heroStyle={heroStyle}>{heroTitle}</HeroTitle>
+            <HeroDescription $heroStyle={heroStyle}>{heroDescription}</HeroDescription>
 
-          <HeroActions>
-            <Link to={productsPath}>
-              <HeroButton type="primary" size="large">
-                {translate('storefront.shopNow')}
-              </HeroButton>
-            </Link>
-            <Link to={outletPath}>
-              <HeroButton size="large">
-                {translate('storefront.viewOutlet')}
-              </HeroButton>
-            </Link>
-          </HeroActions>
-        </HeroContent>
+            <HeroActions>
+              <Link to={productsPath}>
+                <HeroButton type="primary" size="large">
+                  {translate('storefront.shopNow')}
+                </HeroButton>
+              </Link>
+              <Link to={outletPath}>
+                <HeroButton size="large">
+                  {translate('storefront.viewOutlet')}
+                </HeroButton>
+              </Link>
+            </HeroActions>
+          </HeroContent>
 
-        {heroStyle !== 'background' && (
-          <HeroMedia>
-            <StoreHeroSlider
-              images={heroStyle === 'showcase' ? showcaseSlides : heroSlides}
-              template={template}
-              heroStyle={heroStyle}
-              title={heroTitle}
-            />
-            {(logoUrl || store?.name) && (
-              <HeroLogoBadge $heroStyle={heroStyle}>
-                {logoUrl && <HeroLogo src={logoUrl} alt={store?.name || 'Logo'} />}
-                <HeroLogoText>{store?.name || 'Tienda'}</HeroLogoText>
-              </HeroLogoBadge>
-            )}
-          </HeroMedia>
-        )}
-      </TemplateHero>
+          {heroStyle !== 'background' && (
+            <HeroMedia>
+              <StoreHeroSlider
+                images={heroSlides}
+                template={template}
+                heroStyle={heroStyle}
+                title={heroTitle}
+              />
+              {(logoUrl || store?.name) && (
+                <HeroLogoBadge $heroStyle={heroStyle}>
+                  {logoUrl && <HeroLogo src={logoUrl} alt={store?.name || 'Logo'} />}
+                  <HeroLogoText>{store?.name || 'Tienda'}</HeroLogoText>
+                </HeroLogoBadge>
+              )}
+            </HeroMedia>
+          )}
+        </TemplateHero>
+      )}
 
       {sections.showTrustStrip && <StorefrontTrustStrip />}
 

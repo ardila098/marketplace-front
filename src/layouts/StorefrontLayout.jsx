@@ -1,8 +1,8 @@
 import { Button, Drawer, Layout, Space } from 'antd'
-import { useState } from 'react'
-import { Outlet, Link, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Outlet, Link, useLocation, useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import styled, { ThemeProvider } from 'styled-components'
+import styled, { css, ThemeProvider } from 'styled-components'
 import { Menu as MenuIcon } from 'lucide-react'
 import CartDrawer from '../components/cart/CartDrawer'
 import SiteFooter from '../components/layout/SiteFooter'
@@ -24,15 +24,30 @@ const StorefrontShell = styled(Layout)`
 
 const HeaderBar = styled(Header)`
   min-height: 68px;
-  background: ${({ theme }) => `${theme.surfaceColor || '#fff'}30`};
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  ${({ $overlayNav, $scrolled, theme }) => (
+    $overlayNav
+      ? css`
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          background: ${$scrolled ? `${theme.surfaceColor || '#fff'}ee` : 'transparent'};
+          border-bottom: ${$scrolled ? '1px solid rgba(0,0,0,.08)' : '0'};
+          backdrop-filter: ${$scrolled ? 'blur(14px)' : 'none'};
+          transition: background 240ms ease, border-color 240ms ease;
+        `
+      : css`
+          position: sticky;
+          top: 0;
+          background: ${`${theme.surfaceColor || '#fff'}30`};
+          border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        `
+  )}
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 18px;
   padding: 0 max(20px, calc((100vw - 1180px) / 2));
-  position: sticky;
-  top: 0;
   z-index: 20;
 
   @media (max-width: 768px) {
@@ -126,7 +141,9 @@ const DrawerContent = styled.div`
 const StorefrontLayout = () => {
   const { translate } = useDictionaryTranslation()
   const { storeSlug } = useParams()
+  const location = useLocation()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const { currentStore: store, resolutionMode } = useSelector(state => state.storefront)
   useStorefrontTracking(store?.storefront?.tracking)
   const activeStoreSlug = storeSlug || store?.slug
@@ -156,9 +173,27 @@ const StorefrontLayout = () => {
         : '/outlet'
   const storeTheme = buildStoreTheme(store)
   const logoUrl = getUploadUrl(UPLOAD_ROUTES.stores.logos, store?.logo)
+  const isHome = location.pathname === homePath
+  const overlayNav =
+    isHome && store?.storefront?.heroStyle === 'showcase'
   const isAgencyStore = isAgencyBusiness(store?.businessType)
   const isExperienceStore = isExperienceBusiness(store?.businessType)
   const isNonCommerceStore = isAgencyStore || isExperienceStore
+
+  useEffect(() => {
+    if (!overlayNav) {
+      setScrolled(false)
+      return undefined
+    }
+
+    const handleScroll = () => setScrolled(window.scrollY > 24)
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [overlayNav])
+
   const navLinks = isAgencyStore
     ? [
         { to: homePath, label: translate('home') },
@@ -179,7 +214,7 @@ const StorefrontLayout = () => {
   return (
     <ThemeProvider theme={storeTheme}>
       <StorefrontShell>
-        <HeaderBar>
+        <HeaderBar $overlayNav={overlayNav} $scrolled={scrolled}>
           <MobileMenuButton
             aria-label={translate('menu')}
             icon={<MenuIcon size={18} />}
