@@ -15,6 +15,7 @@ import { getUploadUrl, UPLOAD_ROUTES } from '../../constants/uploadRoutes'
 import { useSeoMeta } from '../../hooks/useSeoMeta'
 import { agencyItemService } from '../../services/agencyItemService'
 import { experienceService } from '../../services/experienceService'
+import { storeService } from '../../services/storeService'
 import { PageShell } from '../../styles/layoutStyles'
 import useStoreCategories from './hooks/useStoreCategories'
 import useStoreProducts from './hooks/useStoreProducts'
@@ -30,6 +31,7 @@ const StorefrontHomePage = () => {
   const [agencyLoading, setAgencyLoading] = useState(false)
   const [experiences, setExperiences] = useState([])
   const [experiencesLoading, setExperiencesLoading] = useState(false)
+  const [featuredProducts, setFeaturedProducts] = useState([])
   const productsPath =
     resolutionMode === 'host'
       ? '/products'
@@ -101,6 +103,28 @@ const StorefrontHomePage = () => {
       .catch(() => setAgencyItems([]))
       .finally(() => setAgencyLoading(false))
   }, [activeStoreSlug, isAgencyStore])
+
+  useEffect(() => {
+    if (isAgencyStore || isExperienceStore || !activeStoreSlug) {
+      setFeaturedProducts([])
+      return
+    }
+
+    let active = true
+
+    storeService
+      .getProducts(activeStoreSlug, { featured: 'true', limit: 12 })
+      .then(response => {
+        if (active) setFeaturedProducts(response.data || [])
+      })
+      .catch(() => {
+        if (active) setFeaturedProducts([])
+      })
+
+    return () => {
+      active = false
+    }
+  }, [activeStoreSlug, isAgencyStore, isExperienceStore])
 
   useEffect(() => {
     if (!isExperienceStore || !activeStoreSlug) {
@@ -242,6 +266,7 @@ const StorefrontHomePage = () => {
       categoriesPath={categoriesPath}
       loading={loading}
       outletPath={outletPath}
+      featuredProducts={featuredProducts}
       products={products}
       productsPath={productsPath}
       store={store}

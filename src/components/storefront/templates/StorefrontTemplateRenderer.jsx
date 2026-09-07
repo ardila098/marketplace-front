@@ -176,6 +176,7 @@ const StorefrontTemplateRenderer = ({
   activeStoreSlug,
   categories = [],
   categoriesPath,
+  featuredProducts = [],
   loading = false,
   outletPath,
   products = [],
@@ -201,27 +202,34 @@ const StorefrontTemplateRenderer = ({
       .filter(Boolean)
       .map(image => getUploadUrl(UPLOAD_ROUTES.products.images, image)),
   ].filter(Boolean).slice(0, 6)
-  const featuredSlides = products
-    .filter(product => product.isFeatured === true)
+  const featuredSlides = featuredProducts
     .map(getProductImage)
     .filter(Boolean)
     .map(image => getUploadUrl(UPLOAD_ROUTES.products.images, image))
     .slice(0, 6)
-  const showcaseSlides = featuredSlides.length ? featuredSlides : heroSlides
   const heroEyebrow = template === STOREFRONT_TEMPLATES.EDITORIAL_CLEAN.value
     ? 'Seleccion curada'
     : translate('storefront.officialStore')
   const heroTitle = store?.name || 'Tienda'
   const heroDescription = store?.description || 'Encuentra productos seleccionados para comprar rapido y seguro.'
   const hasProductsSection = sections.showFeaturedProducts
-  const showPremiumCover = heroStyle === 'showcase' && showcaseSlides.length > 0
+  const showPremiumCover = heroStyle === 'showcase' && featuredSlides.length > 0
+  const resolvedHeroStyle = showPremiumCover
+    ? 'showcase'
+    : heroStyle === 'showcase'
+      ? 'image_panel'
+      : heroStyle
+  const fallbackSliderImages =
+    heroStyle === 'showcase'
+      ? [storeImage].filter(Boolean)
+      : heroSlides
 
   return (
     <StorefrontCanvas $template={template}>
       {showPremiumCover ? (
         <ProductShowcase
           mode="brand"
-          images={showcaseSlides}
+          images={featuredSlides}
           frameStyle="transparent"
           config={{
             enabled: true,
@@ -250,11 +258,11 @@ const StorefrontTemplateRenderer = ({
           }}
         />
       ) : (
-        <TemplateHero $template={template} $heroStyle={heroStyle} $heroImage={storeImage}>
+        <TemplateHero $template={template} $heroStyle={resolvedHeroStyle} $heroImage={storeImage}>
           <HeroContent>
-            <HeroEyebrow $heroStyle={heroStyle}>{heroEyebrow}</HeroEyebrow>
-            <HeroTitle $template={template} $heroStyle={heroStyle}>{heroTitle}</HeroTitle>
-            <HeroDescription $heroStyle={heroStyle}>{heroDescription}</HeroDescription>
+            <HeroEyebrow $heroStyle={resolvedHeroStyle}>{heroEyebrow}</HeroEyebrow>
+            <HeroTitle $template={template} $heroStyle={resolvedHeroStyle}>{heroTitle}</HeroTitle>
+            <HeroDescription $heroStyle={resolvedHeroStyle}>{heroDescription}</HeroDescription>
 
             <HeroActions>
               <Link to={productsPath}>
@@ -270,16 +278,16 @@ const StorefrontTemplateRenderer = ({
             </HeroActions>
           </HeroContent>
 
-          {heroStyle !== 'background' && (
+          {resolvedHeroStyle !== 'background' && (
             <HeroMedia>
               <StoreHeroSlider
-                images={heroSlides}
+                images={fallbackSliderImages}
                 template={template}
-                heroStyle={heroStyle}
+                heroStyle={resolvedHeroStyle}
                 title={heroTitle}
               />
               {(logoUrl || store?.name) && (
-                <HeroLogoBadge $heroStyle={heroStyle}>
+                <HeroLogoBadge $heroStyle={resolvedHeroStyle}>
                   {logoUrl && <HeroLogo src={logoUrl} alt={store?.name || 'Logo'} />}
                   <HeroLogoText>{store?.name || 'Tienda'}</HeroLogoText>
                 </HeroLogoBadge>
