@@ -90,7 +90,7 @@ export const esDictionary = {
   'auth.signIn': 'Ingresar',
   'auth.registerSuccess': 'Cuenta creada correctamente',
   'auth.registerError': 'No se pudo crear la cuenta',
-  'auth.loginError': 'No se pudo iniciar sesion',
+  'auth.loginError': 'Correo o contrasena incorrectos',
   'auth.haveAccount': 'Ya tienes cuenta?',
   'auth.noAccount': 'No tienes cuenta?',
 

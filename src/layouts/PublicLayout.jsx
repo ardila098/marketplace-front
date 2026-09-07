@@ -153,7 +153,7 @@ const PublicLayout = () => {
           )}
         </Brand>
         <ResponsivePublicMenu />
-        <UserActions />
+        <UserActions showLoginLinks={false} />
       </HeaderBar>
       <Content>
         <Outlet />

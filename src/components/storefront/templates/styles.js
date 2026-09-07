@@ -66,6 +66,13 @@ export const TemplateHero = styled.section`
     gap: 56px;
   `}
 
+  ${({ $heroStyle }) => $heroStyle === 'showcase' && css`
+    width: min(1280px, calc(100% - 32px));
+    grid-template-columns: minmax(0, 0.8fr) minmax(380px, 1fr);
+    gap: 48px;
+    background: transparent;
+  `}
+
   ${({ $heroStyle, $heroImage }) => $heroStyle === 'glass' && css`
     width: min(1200px, calc(100% - 24px));
     margin-top: 24px;
@@ -201,6 +208,11 @@ export const HeroImageFrame = styled.div`
     box-shadow:
       16px 16px 38px rgba(89, 99, 117, 0.14),
       -12px -12px 28px rgba(255, 255, 255, 0.64);
+  `}
+
+  ${({ $heroStyle }) => $heroStyle === 'showcase' && css`
+    background: transparent;
+    box-shadow: none;
   `}
 `
 

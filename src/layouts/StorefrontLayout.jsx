@@ -203,14 +203,14 @@ const StorefrontLayout = () => {
             {!isNonCommerceStore && (
               <StorefrontSearchDrawer storeSlug={activeStoreSlug} resolutionMode={resolutionMode} />
             )}
-            <UserActions showCart={!isNonCommerceStore} />
+            <UserActions showCart={!isNonCommerceStore} showLoginLinks={false} />
           </DesktopNav>
 
           <MobileActions size={4}>
             {!isNonCommerceStore && (
               <StorefrontSearchDrawer storeSlug={activeStoreSlug} resolutionMode={resolutionMode} />
             )}
-            <UserActions compact showAccount={false} showCart={!isNonCommerceStore} />
+            <UserActions compact showAccount={false} showCart={!isNonCommerceStore} showLoginLinks={false} />
           </MobileActions>
         </HeaderBar>
 
@@ -227,7 +227,7 @@ const StorefrontLayout = () => {
                 {item.label}
               </Link>
             ))}
-            <UserActions compact={false} showAccount showCart={!isNonCommerceStore} />
+            <UserActions compact={false} showAccount showCart={!isNonCommerceStore} showLoginLinks={false} />
           </DrawerContent>
         </Drawer>
 

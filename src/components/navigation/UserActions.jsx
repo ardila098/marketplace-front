@@ -19,7 +19,12 @@ const dashboardByRole = {
   [ROLES.COURIER.value]: ROUTES.COURIER_SHIPMENTS,
 }
 
-const UserActions = ({ compact = false, showAccount = true, showCart = true }) => {
+const UserActions = ({
+  compact = false,
+  showAccount = true,
+  showCart = true,
+  showLoginLinks = true,
+}) => {
   const dispatch = useDispatch()
   const cartCount = useSelector(selectCartCount)
   const { user, role } = useAuth()
@@ -62,7 +67,7 @@ const UserActions = ({ compact = false, showAccount = true, showCart = true }) =
         <Dropdown menu={{ items: menuItems }} trigger={['click']}>
           <Avatar icon={<User size={18} />} style={{ cursor: 'pointer' }} />
         </Dropdown>
-      ) : showAccount ? (
+      ) : showAccount && showLoginLinks ? (
         <Space>
           <Link to={ROUTES.LOGIN}>Ingresar</Link>
           <Link to={ROUTES.REGISTER}>

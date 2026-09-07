@@ -90,7 +90,7 @@ export const enDictionary = {
   'auth.signIn': 'Sign in',
   'auth.registerSuccess': 'Account created successfully',
   'auth.registerError': 'Account could not be created',
-  'auth.loginError': 'Could not sign in',
+  'auth.loginError': 'Incorrect email or password',
   'auth.haveAccount': 'Already have an account?',
   'auth.noAccount': 'Do not have an account?',
 

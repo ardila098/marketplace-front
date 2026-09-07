@@ -134,6 +134,7 @@ const StoreHeroSlider = ({ images, template, heroStyle, title }) => {
             style={{
               position: 'absolute',
               inset: 0,
+              objectFit: heroStyle === 'showcase' ? 'contain' : 'cover',
               opacity: index === active ? 1 : 0,
               transition: 'opacity 0.7s ease',
             }}
@@ -199,6 +200,13 @@ const StorefrontTemplateRenderer = ({
       .filter(Boolean)
       .map(image => getUploadUrl(UPLOAD_ROUTES.products.images, image)),
   ].filter(Boolean).slice(0, 6)
+  const featuredSlides = products
+    .filter(product => product.isFeatured === true)
+    .map(getProductImage)
+    .filter(Boolean)
+    .map(image => getUploadUrl(UPLOAD_ROUTES.products.images, image))
+    .slice(0, 6)
+  const showcaseSlides = featuredSlides.length ? featuredSlides : heroSlides
   const heroEyebrow = template === STOREFRONT_TEMPLATES.EDITORIAL_CLEAN.value
     ? 'Seleccion curada'
     : translate('storefront.officialStore')
@@ -231,7 +239,7 @@ const StorefrontTemplateRenderer = ({
         {heroStyle !== 'background' && (
           <HeroMedia>
             <StoreHeroSlider
-              images={heroSlides}
+              images={heroStyle === 'showcase' ? showcaseSlides : heroSlides}
               template={template}
               heroStyle={heroStyle}
               title={heroTitle}

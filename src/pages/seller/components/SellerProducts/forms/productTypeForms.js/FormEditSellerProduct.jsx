@@ -69,6 +69,7 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
       ...data,
       vertical: data?.vertical?._id || data?.vertical,
       isNewArrival: data?.isNewArrival ?? data?.isNew ?? false,
+      isFeatured: data?.isFeatured === true,
       category: data?.category?._id || data?.category,
       storeCategory: data?.storeCategory?._id || data?.storeCategory || undefined,
       seo: {
@@ -201,6 +202,17 @@ const FormEditSellerProduct = ({ loading = false, data, onSubmit, onCancel }) =>
 
         <Col xs={24} md={12}>
           <Form.Item label={translate('products.form.newProduct')} name="isNewArrival" valuePropName="checked">
+            <Switch />
+          </Form.Item>
+        </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item
+            label="Destacado en la portada de mi tienda"
+            name="isFeatured"
+            valuePropName="checked"
+            extra="Si se activa, su imagen principal aparecera en el slider de la portada."
+          >
             <Switch />
           </Form.Item>
         </Col>

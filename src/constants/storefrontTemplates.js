@@ -44,6 +44,11 @@ export const STOREFRONT_HERO_STYLES = Object.freeze({
     label: 'Glass premium',
     description: 'Portada con capas translucidas y sensacion moderna.',
   },
+  SHOWCASE: {
+    value: 'showcase',
+    label: 'Showcase de productos destacados',
+    description: 'Slider automatico con las imagenes de productos marcados como destacados.',
+  },
 })
 
 export const STOREFRONT_PRODUCT_CARD_STYLES = Object.freeze({
