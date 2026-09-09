@@ -6,11 +6,15 @@ import ProductShowcase from '../../../components/marketplace/ProductShowcase/Pro
 import { ROUTES } from '../../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 import { catalogService } from '../../../services/catalogService'
-import { selectPlatformSettings } from '../../../store/slices/platformSlice'
+import {
+  selectPlatformSettings,
+  selectPlatformSettingsLoaded,
+} from '../../../store/slices/platformSlice'
 import HeaderHome from './HeaderHome'
 
 const MarketplaceShowcase = () => {
   const platformSettings = useSelector(selectPlatformSettings)
+  const platformSettingsLoaded = useSelector(selectPlatformSettingsLoaded)
   const hero = platformSettings.hero || {}
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -96,6 +100,21 @@ const MarketplaceShowcase = () => {
   )
 
   const hasSlides = isBrand ? slideImages.length > 0 : products.length > 0
+
+  if (!platformSettingsLoaded) {
+    return (
+      <div
+        style={{
+          minHeight: '100vh',
+          display: 'grid',
+          placeItems: 'center',
+          background: hero.backgroundColor || '#f6f1ea',
+        }}
+      >
+        <Spin size="large" />
+      </div>
+    )
+  }
 
   if (!enabled) {
     return <HeaderHome />
