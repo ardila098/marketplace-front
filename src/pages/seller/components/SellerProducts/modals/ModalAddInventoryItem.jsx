@@ -3,7 +3,6 @@ import {
   Button,
   Col,
   Form,
-  Input,
   InputNumber,
   Modal,
   Row,
@@ -31,9 +30,15 @@ const ModalAddInventoryItem = ({
       form.setFieldsValue({
         referenceId: inventoryItem?.referenceId || undefined,
         partId: inventoryItem?.partId || undefined,
-        size: inventoryItem?.attributes?.find(
+        sizes: inventoryItem?.attributes?.find(
           attribute => String(attribute.labelSnapshot).toLowerCase() === 'talla'
-        )?.valueSnapshot || '',
+        )?.valueSnapshot
+          ? [
+              inventoryItem.attributes.find(
+                attribute => String(attribute.labelSnapshot).toLowerCase() === 'talla'
+              ).valueSnapshot,
+            ]
+          : [],
         stock: inventoryItem?.stock || 0,
         lowStockThreshold: inventoryItem?.lowStockThreshold || 0,
         isActive: inventoryItem?.isActive !== false,
@@ -52,12 +57,15 @@ const ModalAddInventoryItem = ({
         partId: values.partId,
         stock: values.stock || 0,
         lowStockThreshold: values.lowStockThreshold || 0,
-        attributes: [
-          {
-            labelSnapshot: 'Talla',
-            valueSnapshot: values.size,
-          },
-        ],
+        attributes: isEditing && values.sizes?.[0]
+          ? [
+              {
+                labelSnapshot: 'Talla',
+                valueSnapshot: values.sizes[0],
+              },
+            ]
+          : [],
+        sizes: isEditing ? undefined : values.sizes || [],
         images: [],
         isActive: values.isActive !== false,
       },
@@ -118,11 +126,17 @@ const ModalAddInventoryItem = ({
 
           <Col xs={24} md={12}>
             <Form.Item
-              label="Talla"
-              name="size"
-              rules={[{ required: true, message: 'La talla es obligatoria' }]}
+              label={isEditing ? 'Talla' : 'Tallas'}
+              name="sizes"
+              rules={[{ required: true, message: 'Agrega al menos una talla' }]}
             >
-              <Input placeholder="Ej: S, M, XL, 34B" />
+              <Select
+                mode="tags"
+                tokenSeparators={[',', ';']}
+                placeholder={isEditing ? 'Ej: M' : 'Escribe una talla y presiona Enter. Ej: S, M, XL'}
+                open={false}
+                suffixIcon={null}
+              />
             </Form.Item>
           </Col>
 
