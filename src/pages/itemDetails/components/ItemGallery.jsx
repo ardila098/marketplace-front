@@ -6,10 +6,15 @@ import GalleryThumbsList from './GalleryThumbsList'
 
 import { GalleryWrapper, MainImageBox, MainImage } from '../styles/styles'
 
-const ItemGallery = ({ item }) => {
+const ItemGallery = ({ item, fallbackImages = [] }) => {
   const [selectedImage, setSelectedImage] = useState(null)
 
-  const images = useMemo(() => item?.images || [], [item])
+  const images = useMemo(() => {
+    if (Array.isArray(item?.images) && item.images.length) return item.images
+    if (item?.image) return [item.image]
+
+    return fallbackImages || []
+  }, [fallbackImages, item])
 
   useEffect(() => {
     setSelectedImage(images[0] || null)

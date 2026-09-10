@@ -213,34 +213,37 @@ const StorefrontTemplateRenderer = ({
   const heroTitle = store?.name || 'Tienda'
   const heroDescription = store?.description || 'Encuentra productos seleccionados para comprar rapido y seguro.'
   const hasProductsSection = sections.showFeaturedProducts
-  const showPremiumCover = heroStyle === 'showcase' && featuredSlides.length > 0
-  const resolvedHeroStyle = showPremiumCover
-    ? 'showcase'
-    : heroStyle === 'showcase'
-      ? 'image_panel'
-      : heroStyle
-  const fallbackSliderImages =
-    heroStyle === 'showcase'
-      ? [storeImage].filter(Boolean)
-      : heroSlides
+  const showPremiumCover = heroStyle === 'showcase'
+  const showcaseImages =
+    storefront.showShowcaseSlider === false ? [] : featuredSlides
+  const showcaseBackground = getUploadUrl(
+    UPLOAD_ROUTES.stores.banners,
+    storefront.showcaseBackgroundImage
+  ) || storeImage
+  const resolvedHeroStyle = heroStyle
+  const fallbackSliderImages = heroSlides
 
   return (
     <StorefrontCanvas $template={template}>
       {showPremiumCover ? (
         <ProductShowcase
           mode="brand"
-          images={featuredSlides}
+          images={showcaseImages}
           frameStyle="transparent"
+          allowEmpty
           config={{
             enabled: true,
             ctaLabel: translate('storefront.shopNow'),
-            background: storeImage
+            background: showcaseBackground
               ? {
                   type: 'image',
-                  image: storeImage,
-                  position: 'center',
-                  overlayEnabled: true,
-                  overlayOpacity: 0.45,
+                  image: showcaseBackground,
+                  position: storefront.showcaseBackgroundPosition || 'center',
+                  overlayEnabled: storefront.showcaseOverlayEnabled !== false,
+                  overlayOpacity:
+                    storefront.showcaseOverlayOpacity !== undefined
+                      ? Number(storefront.showcaseOverlayOpacity)
+                      : 0.45,
                 }
               : {
                   type: 'color',

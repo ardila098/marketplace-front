@@ -81,7 +81,10 @@ const ItemDetailsContainer = () => {
       <Spin spinning={isLoading}>
         <ProductLayout style={{ marginTop: 20 }}>
           <GalleryColumn>
-            <ItemGallery item={purchase.selectedReference || dataItem} />
+            <ItemGallery
+              item={purchase.selectedReference || dataItem}
+              fallbackImages={dataItem?.images || []}
+            />
             <TrustBadges />
           </GalleryColumn>
 

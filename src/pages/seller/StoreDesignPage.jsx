@@ -76,6 +76,14 @@ const getFormValues = store => {
     ...theme,
     template: storefront.template || DEFAULT_TEMPLATE,
     heroStyle: storefront.heroStyle || STOREFRONT_STYLE_DEFAULTS.heroStyle,
+    showShowcaseSlider: storefront.showShowcaseSlider !== false,
+    showcaseBackgroundImage: storefront.showcaseBackgroundImage || '',
+    showcaseBackgroundPosition: storefront.showcaseBackgroundPosition || 'center',
+    showcaseOverlayEnabled: storefront.showcaseOverlayEnabled !== false,
+    showcaseOverlayOpacity:
+      storefront.showcaseOverlayOpacity !== undefined
+        ? Number(storefront.showcaseOverlayOpacity)
+        : 0.45,
     productCardStyle: storefront.productCardStyle || STOREFRONT_STYLE_DEFAULTS.productCardStyle,
     categorySliderStyle:
       storefront.categorySliderStyle || STOREFRONT_STYLE_DEFAULTS.categorySliderStyle,
@@ -175,6 +183,11 @@ const StoreDesignPage = () => {
       const response = await storeService.updateStorefront(store._id, {
         template: values.template,
         heroStyle: values.heroStyle,
+        showShowcaseSlider: values.showShowcaseSlider !== false,
+        showcaseBackgroundImage: values.showcaseBackgroundImage || '',
+        showcaseBackgroundPosition: values.showcaseBackgroundPosition || 'center',
+        showcaseOverlayEnabled: values.showcaseOverlayEnabled !== false,
+        showcaseOverlayOpacity: Number(values.showcaseOverlayOpacity) || 0.45,
         productCardStyle: values.productCardStyle,
         categorySliderStyle: values.categorySliderStyle,
         productDetailLayout: values.productDetailLayout,
@@ -237,6 +250,60 @@ const StoreDesignPage = () => {
                   <Col xs={24} sm={12}>
                     <Form.Item label="Portada" name="heroStyle">
                       <Select options={STOREFRONT_HERO_STYLE_OPTIONS} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item
+                      label="Mostrar slider de productos destacados"
+                      name="showShowcaseSlider"
+                      valuePropName="checked"
+                      extra="Aplica cuando la portada es Showcase de productos destacados."
+                    >
+                      <Switch />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24}>
+                    <ImageUploadField
+                      label="Imagen de fondo del showcase"
+                      name="showcaseBackgroundImage"
+                      folder={UPLOAD_FOLDERS.stores.banners}
+                      uploadRoute={UPLOAD_ROUTES.stores.banners}
+                      maxCount={1}
+                      multiple={false}
+                      disabled={saving}
+                    />
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item
+                      label="Posicion de la imagen de fondo"
+                      name="showcaseBackgroundPosition"
+                    >
+                      <Select
+                        options={[
+                          { label: 'Centro', value: 'center' },
+                          { label: 'Superior', value: 'top' },
+                          { label: 'Inferior', value: 'bottom' },
+                          { label: 'Izquierda', value: 'left' },
+                          { label: 'Derecha', value: 'right' },
+                        ]}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item
+                      label="Overlay sobre la imagen"
+                      name="showcaseOverlayEnabled"
+                      valuePropName="checked"
+                    >
+                      <Switch />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item
+                      label="Opacidad del overlay"
+                      name="showcaseOverlayOpacity"
+                    >
+                      <FullWidthInputNumber min={0} max={0.85} step={0.05} />
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12}>
