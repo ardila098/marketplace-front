@@ -69,6 +69,9 @@ const ContainerHome = () => {
             config={verticalsConfig}
             title={verticalsTitle}
             subtitle={verticalsSubtitle}
+            autoplaySeconds={
+              Number(platformSettings.hero?.verticalsAutoplaySeconds) || 6
+            }
           />
         ) : (
           <section style={{ maxWidth: 1180, margin: '0 auto', paddingTop: 36 }}>

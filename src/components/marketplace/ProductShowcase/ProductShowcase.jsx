@@ -20,7 +20,6 @@ import { buildRoute, ROUTES } from '../../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 import { currency } from '../../../utils/formatters'
 
-const AUTO_PLAY_MS = 6500
 const CROSSFADE_MS = 720
 
 const DEFAULT_BACKGROUND = {
@@ -465,6 +464,7 @@ const ProductShowcase = ({
   getProductPath,
   frameStyle = 'solid',
   allowEmpty = false,
+  autoplaySeconds = 6,
   className,
 }) => {
   const normalized = useMemo(() => normalizeConfig(config), [config])
@@ -501,12 +501,13 @@ const ProductShowcase = ({
   useEffect(() => {
     if (total < 2 || paused) return undefined
 
+    const delay = Math.max(Number(autoplaySeconds) || 6, 2) * 1000
     const timer = window.setInterval(() => {
       goTo(activeIndex + 1)
-    }, AUTO_PLAY_MS)
+    }, delay)
 
     return () => window.clearInterval(timer)
-  }, [activeIndex, goTo, paused, total])
+  }, [activeIndex, autoplaySeconds, goTo, paused, total])
 
   useEffect(() => {
     if (previous === null) return undefined

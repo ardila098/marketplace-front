@@ -41,6 +41,9 @@ export const DEFAULT_PLATFORM_SETTINGS = Object.freeze({
     verticalsOverlayOpacity: 0.35,
     verticalsFrameStyle: 'solid',
     verticalsImageHeight: 420,
+    showcaseAutoplaySeconds: 6,
+    verticalsAutoplaySeconds: 6,
+    relatedAutoplaySeconds: 5,
     backgroundImage: '',
   },
   footer: {

@@ -1,7 +1,14 @@
 import PropTypes from 'prop-types'
 import CardCarouselITem from './CardCarouselITem'
 
-const ContainerItemsSlider = ({ cardStyle = 'classic', data, getProductPath, storeSlug, title }) => {
+const ContainerItemsSlider = ({
+  autoplaySeconds = 5,
+  cardStyle = 'classic',
+  data,
+  getProductPath,
+  storeSlug,
+  title,
+}) => {
   return (
     <>
       <CardCarouselITem
@@ -10,6 +17,7 @@ const ContainerItemsSlider = ({ cardStyle = 'classic', data, getProductPath, sto
         storeSlug={storeSlug}
         getProductPath={getProductPath}
         cardStyle={cardStyle}
+        autoplaySeconds={autoplaySeconds}
       />
     </>
   )
@@ -23,4 +31,5 @@ ContainerItemsSlider.propTypes = {
   title: PropTypes.string,
   getProductPath: PropTypes.func,
   cardStyle: PropTypes.string,
+  autoplaySeconds: PropTypes.number,
 }

@@ -16,7 +16,6 @@ import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'
 import useVerticals from '../../../hooks/useVerticals'
 
-const AUTO_PLAY_MS = 6000
 const CROSSFADE_MS = 720
 
 const stageIn = keyframes`
@@ -267,6 +266,7 @@ const VerticalShowcase = ({
   config = {},
   title = 'Verticales destacadas',
   subtitle = '',
+  autoplaySeconds = 6,
 }) => {
   const { translate } = useDictionaryTranslation()
   const navigate = useNavigate()
@@ -307,12 +307,13 @@ const VerticalShowcase = ({
   useEffect(() => {
     if (total < 2 || paused) return undefined
 
+    const delay = Math.max(Number(autoplaySeconds) || 6, 2) * 1000
     const timer = window.setInterval(() => {
       goTo(activeIndex + 1)
-    }, AUTO_PLAY_MS)
+    }, delay)
 
     return () => window.clearInterval(timer)
-  }, [activeIndex, goTo, paused, total])
+  }, [activeIndex, autoplaySeconds, goTo, paused, total])
 
   useEffect(() => {
     if (previous === null) return undefined

@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import ContainerItemsSlider from '../../../components/sliders/itemsSlider/components/ContainerItemsSlider'
 import { buildRoute, ROUTES } from '../../../constants/routes'
 import { useDictionaryTranslation } from '../../../hooks/useDictionaryTranslation'
+import { selectPlatformSettings } from '../../../store/slices/platformSlice'
 
 const getProductKeys = product => {
   return [product?._id, product?.id, product?.slug, product?.productId]
@@ -13,6 +15,9 @@ const getProductKeys = product => {
 
 const RelatedItems = ({ cardStyle = 'classic', currentProduct, data = [], storeSlug, verticalId }) => {
   const { translate } = useDictionaryTranslation()
+  const platformSettings = useSelector(selectPlatformSettings)
+  const autoplaySeconds =
+    Number(platformSettings.hero?.relatedAutoplaySeconds) || 5
   const { verticalId: routeVerticalId } = useParams()
   const activeVerticalId = verticalId || routeVerticalId
   const currentProductKeys = useMemo(() => new Set(getProductKeys(currentProduct)), [currentProduct])
@@ -40,6 +45,7 @@ const RelatedItems = ({ cardStyle = 'classic', currentProduct, data = [], storeS
         storeSlug={storeSlug}
         getProductPath={getProductPath}
         cardStyle={cardStyle}
+        autoplaySeconds={autoplaySeconds}
       />
     </>
   )

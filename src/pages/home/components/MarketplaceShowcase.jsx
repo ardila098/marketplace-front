@@ -147,6 +147,7 @@ const MarketplaceShowcase = () => {
       config={showcaseConfig}
       brandCopy={brandCopy}
       frameStyle={hero.slideFrameStyle || 'solid'}
+      autoplaySeconds={Number(hero.showcaseAutoplaySeconds) || 6}
     />
   )
 }

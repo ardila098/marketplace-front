@@ -231,6 +231,7 @@ const StorefrontTemplateRenderer = ({
           images={showcaseImages}
           frameStyle="transparent"
           allowEmpty
+          autoplaySeconds={Number(storefront.showcaseAutoplaySeconds) || 6}
           config={{
             enabled: true,
             ctaLabel: translate('storefront.shopNow'),

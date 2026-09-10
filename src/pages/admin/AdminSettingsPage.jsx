@@ -335,6 +335,22 @@ const AdminSettingsPage = () => {
                   <Slider min={0} max={0.85} step={0.05} />
                 </Form.Item>
               </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Segundos entre productos del showcase"
+                  name={['hero', 'showcaseAutoplaySeconds']}
+                >
+                  <Slider min={2} max={30} step={1} />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Segundos del slider de productos relacionados"
+                  name={['hero', 'relatedAutoplaySeconds']}
+                >
+                  <Slider min={2} max={30} step={1} />
+                </Form.Item>
+              </Col>
               <Col xs={24} md={12}>
                 <Form.Item label="Texto superior" name={['hero', 'eyebrow']}>
                   <Input placeholder="Marketplace multi-vertical" />
@@ -520,6 +536,14 @@ const AdminSettingsPage = () => {
                   name={['hero', 'verticalsOverlayOpacity']}
                 >
                   <Slider min={0} max={0.85} step={0.05} />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Segundos entre verticales del showcase"
+                  name={['hero', 'verticalsAutoplaySeconds']}
+                >
+                  <Slider min={2} max={30} step={1} />
                 </Form.Item>
               </Col>
             </Row>

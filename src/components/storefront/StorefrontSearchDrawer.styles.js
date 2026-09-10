@@ -35,8 +35,34 @@ export const SearchStack = styled.div`
 export const SearchInput = styled(Input.Search)`
   .ant-input-affix-wrapper,
   .ant-input-search-button {
-    min-height: 44px;
-    border-radius: 8px;
+    min-height: 50px;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .ant-input-affix-wrapper {
+    border-radius: 999px 0 0 999px !important;
+    background: #f4f5f7;
+    padding-inline: 18px;
+  }
+
+  .ant-input-search-button {
+    border-radius: 0 999px 999px 0 !important;
+    background: #111111 !important;
+    color: #ffffff !important;
+  }
+
+  .ant-input-affix-wrapper-focused,
+  .ant-input-affix-wrapper:focus,
+  .ant-input-affix-wrapper:focus-within {
+    border: 0 !important;
+    box-shadow: none !important;
+    background: #eef0f3;
+  }
+
+  .ant-input {
+    background: transparent;
+    box-shadow: none !important;
   }
 `
 
@@ -52,15 +78,16 @@ export const CategoryRail = styled.div`
   }
 `
 
-export const CategoryPill = styled(Link)`
+export const CategoryPill = styled.button`
   flex: 0 0 auto;
   padding: 8px 12px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid ${({ $active }) => ($active ? '#111111' : '#e5e7eb')};
   border-radius: 999px;
-  background: #ffffff;
-  color: #111827;
+  background: ${({ $active }) => ($active ? '#111111' : '#ffffff')};
+  color: ${({ $active }) => ($active ? '#ffffff' : '#111827')};
   font-size: 13px;
   font-weight: 700;
+  cursor: pointer;
   text-decoration: none;
   transition:
     border-color 160ms ease,
@@ -68,15 +95,20 @@ export const CategoryPill = styled(Link)`
 
   &:hover {
     border-color: #111827;
-    color: #111827;
+    color: ${({ $active }) => ($active ? '#ffffff' : '#111827')};
     transform: translateY(-1px);
   }
 `
 
 export const ResultsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
 `
 
 export const ResultLink = styled(Link)`
