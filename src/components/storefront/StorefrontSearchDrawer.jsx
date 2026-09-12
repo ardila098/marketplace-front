@@ -52,8 +52,8 @@ const StorefrontSearchDrawer = ({ storeSlug, resolutionMode }) => {
 
       <SearchDrawerPanel
         title={translate('catalog.searchInStore')}
-        placement="top"
-        size="default"
+        placement="bottom"
+        height="88vh"
         open={open}
         onClose={() => setOpen(false)}
       >

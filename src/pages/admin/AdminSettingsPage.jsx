@@ -190,6 +190,15 @@ const AdminSettingsPage = () => {
                   <Input type="color" style={{ width: '100%', height: 42, padding: 4 }} />
                 </Form.Item>
               </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Tamano del logo en el navbar"
+                  name={['navigation', 'logoSize']}
+                  extra="Aplica al logo en desktop y movil."
+                >
+                  <Slider min={20} max={80} step={2} />
+                </Form.Item>
+              </Col>
             </Row>
           </Card>
 

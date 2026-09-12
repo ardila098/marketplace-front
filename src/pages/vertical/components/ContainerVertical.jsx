@@ -125,7 +125,6 @@ const ContainerVertical = () => {
           <VerticalFeaturedShowcase
             dataVertical={dataVertical}
             featured={verticalFeatured}
-            verticalId={id}
           />
         )
       ) : (

@@ -1,45 +1,26 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { CarouselItem, CarouselWrapper, Section, Title } from '../styles'
 import ProductCard from '../../../products/ProductCard'
 
-const getCarouselSettings = (items, autoplaySeconds) => ({
-  dots: items > 2,
+const getVisibleSlides = width => {
+  if (width <= 768) return 2
+  if (width <= 1200) return 3
+
+  return 4
+}
+
+const getCarouselSettings = (items, autoplaySeconds, visibleSlides) => ({
+  dots: items > visibleSlides,
   arrows: false,
   draggable: true,
   swipeToSlide: true,
   pauseOnHover: true,
   autoplay: items > 1,
   autoplaySpeed: Math.max(Number(autoplaySeconds) || 5, 2) * 1000,
-  infinite: items > 4,
-  slidesToShow: Math.min(items, 4),
+  infinite: items > visibleSlides,
+  slidesToShow: Math.min(items, visibleSlides),
   slidesToScroll: 1,
-  responsive: [
-    {
-      breakpoint: 1200,
-      settings: {
-        slidesToShow: Math.min(items, 3),
-        infinite: items > 3,
-        dots: items > 3,
-      },
-    },
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 2,
-        infinite: items > 2,
-        dots: items > 2,
-      },
-    },
-    {
-      breakpoint: 576,
-      settings: {
-        slidesToShow: Math.min(items, 2),
-        infinite: items > 2,
-        dots: items > 2,
-      },
-    },
-  ],
 })
 
 const CardCarouselITem = ({
@@ -50,9 +31,22 @@ const CardCarouselITem = ({
   storeSlug,
   title,
 }) => {
+  const [visibleSlides, setVisibleSlides] = useState(() =>
+    getVisibleSlides(typeof window === 'undefined' ? 1440 : window.innerWidth)
+  )
+
+  useEffect(() => {
+    const handleResize = () => setVisibleSlides(getVisibleSlides(window.innerWidth))
+
+    window.addEventListener('resize', handleResize)
+    handleResize()
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
   const carouselSettings = useMemo(
-    () => getCarouselSettings(items.length, autoplaySeconds),
-    [autoplaySeconds, items.length]
+    () => getCarouselSettings(items.length, autoplaySeconds, visibleSlides),
+    [autoplaySeconds, items.length, visibleSlides]
   )
 
   if (!items.length) return null

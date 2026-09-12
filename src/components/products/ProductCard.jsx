@@ -10,7 +10,7 @@ import {
   ProductImageLink,
   ProductCardWrapper,
   ImageWrap,
-  ProductImage,
+  ImageLayer,
   ProductInfo,
   ProductName,
   ProductMeta,
@@ -42,6 +42,7 @@ const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) 
   }, [product])
   const defaultSelectedItem = product.selectedItem || previews[0] || product
   const [selectedItemId, setSelectedItemId] = useState(getItemId(defaultSelectedItem))
+  const [paused, setPaused] = useState(false)
 
   useEffect(() => {
     setSelectedItemId(getItemId(defaultSelectedItem))
@@ -52,6 +53,15 @@ const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) 
   const selectedItemLabel = getItemLabel(selectedItem)
   const shouldShowItemLabel = selectedItemLabel && selectedItemLabel !== product.name
   const mainImage = getImage(selectedItem) || getImage(product) || getImage(product?.variants?.[0])
+  const previewImages = useMemo(() => {
+    const images = [
+      ...previews.map(getImage),
+      getImage(product),
+      getImage(product?.variants?.[0]),
+    ].filter(Boolean)
+
+    return [...new Set(images)].slice(0, 6)
+  }, [previews, product])
   const price = selectedItem?.price || product.minPrice || product.variants?.[0]?.price || product.price || 0
   const compareAtPrice = selectedItem?.compareAtPrice || product.compareAtPrice || 0
   const discountPercentage = compareAtPrice > price
@@ -66,16 +76,39 @@ const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) 
         })
     : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id }))
 
+  useEffect(() => {
+    if (paused || previews.length < 2) return undefined
+
+    const timer = window.setInterval(() => {
+      setSelectedItemId(currentId => {
+        const currentIndex = previews.findIndex(item => getItemId(item) === currentId)
+        const nextIndex = currentIndex < 0 ? 0 : (currentIndex + 1) % previews.length
+
+        return getItemId(previews[nextIndex])
+      })
+    }, 4000)
+
+    return () => window.clearInterval(timer)
+  }, [paused, previews])
+
   return (
     <ProductCardWrapper hoverable bordered={false} $variant={cardStyle}>
       <ProductImageLink to={targetRoute} aria-label={`Ver detalle de ${product.name}`}>
-        <ImageWrap $variant={cardStyle}>
+        <ImageWrap
+          $variant={cardStyle}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
           {product.isNew && <NewBadge>{translate('new')}</NewBadge>}
-          {mainImage ? (
-            <ProductImage
-              src={getUploadUrl(UPLOAD_ROUTES.products.images, mainImage)}
-              alt={product.name}
-            />
+          {previewImages.length ? (
+            previewImages.map(image => (
+              <ImageLayer
+                key={image}
+                $active={image === mainImage}
+                src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
+                alt={product.name}
+              />
+            ))
           ) : (
             <ImagePlaceholder>{product.name?.charAt(0) || 'P'}</ImagePlaceholder>
           )}

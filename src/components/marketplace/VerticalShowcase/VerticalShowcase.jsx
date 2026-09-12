@@ -386,7 +386,16 @@ const VerticalShowcase = ({
           )}
         </Info>
 
-        <Visual $imageSide={imageSide}>
+        <Visual
+          $imageSide={imageSide}
+          onClick={openVertical}
+          role="button"
+          tabIndex={0}
+          onKeyDown={event => {
+            if (event.key === 'Enter' || event.key === ' ') openVertical()
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           <Frame $frameStyle={frameStyle} $imageHeight={imageHeight}>
             {previous !== null &&
               previous !== activeIndex &&

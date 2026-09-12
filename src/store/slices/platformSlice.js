@@ -8,6 +8,7 @@ export const DEFAULT_PLATFORM_SETTINGS = Object.freeze({
   navigation: {
     backgroundColor: '#ffffff',
     textColor: '#111111',
+    logoSize: 38,
     transparentOnHome: true,
   },
   hero: {

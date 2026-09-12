@@ -2,11 +2,32 @@ import { Button, Drawer, Grid, Menu } from 'antd'
 import { Menu as MenuIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import styled from 'styled-components'
 import { publicMenu } from '../../constants/menu'
 import { buildRoute, ROUTES } from '../../constants/routes'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 
 const { useBreakpoint } = Grid
+
+const MenuTrigger = styled(Button)`
+  && {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    color: inherit;
+    padding: 0;
+  }
+
+  &&:hover {
+    background: transparent;
+    color: inherit;
+  }
+`
 
 const ResponsivePublicMenu = () => {
   const screens = useBreakpoint()
@@ -54,7 +75,7 @@ const ResponsivePublicMenu = () => {
 
   return (
     <>
-      <Button icon={<MenuIcon size={18} />} onClick={() => setOpen(true)} />
+      <MenuTrigger icon={<MenuIcon size={20} />} onClick={() => setOpen(true)} />
       <Drawer title={translate('menu')} open={open} onClose={() => setOpen(false)} placement="left">
         <Menu
           mode="inline"

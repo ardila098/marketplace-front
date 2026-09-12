@@ -1,10 +1,9 @@
 import { useMemo } from 'react'
 
 import ProductShowcase from '../../../components/marketplace/ProductShowcase/ProductShowcase'
-import { buildRoute, ROUTES } from '../../../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../../../constants/uploadRoutes'
 
-const VerticalFeaturedShowcase = ({ dataVertical, featured = [], verticalId }) => {
+const VerticalFeaturedShowcase = ({ dataVertical, featured = [] }) => {
   const productImages = useMemo(
     () =>
       featured
@@ -62,12 +61,8 @@ const VerticalFeaturedShowcase = ({ dataVertical, featured = [], verticalId }) =
         eyebrow: 'Vertical',
         title: dataVertical.name,
         subtitle: dataVertical.description || '',
-        primaryLabel: 'Explorar productos',
-        secondaryLabel: 'Ver verticales',
-        primaryPath: verticalId
-          ? buildRoute(ROUTES.VERTICAL_PRODUCTS, { id: verticalId })
-          : ROUTES.MARKETPLACE,
-        secondaryPath: ROUTES.VERTICALS,
+        primaryLabel: '',
+        secondaryLabel: '',
       }}
     />
   )

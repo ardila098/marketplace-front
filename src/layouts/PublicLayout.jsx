@@ -7,6 +7,7 @@ import CartDrawer from '../components/cart/CartDrawer'
 import SiteFooter from '../components/layout/SiteFooter'
 import ResponsivePublicMenu from '../components/navigation/ResponsivePublicMenu'
 import UserActions from '../components/navigation/UserActions'
+import MarketplaceSearchDrawer from '../components/search/MarketplaceSearchDrawer'
 import { ROUTES } from '../constants/routes'
 import { getUploadUrl, UPLOAD_ROUTES } from '../constants/uploadRoutes'
 import { selectPlatformSettings } from '../store/slices/platformSlice'
@@ -68,7 +69,7 @@ const HeaderBar = styled(Header)`
   z-index: 50;
 
   @media (max-width: 768px) {
-    grid-template-columns: auto auto 1fr;
+    grid-template-columns: 44px 1fr auto;
     gap: 12px;
   }
 `
@@ -91,6 +92,39 @@ const BrandLogo = styled.img`
   object-fit: contain;
 `
 
+const HeaderLeft = styled.div`
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    grid-column: 2;
+    justify-self: center;
+  }
+`
+
+const HeaderCenter = styled.div`
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+    justify-content: flex-start;
+  }
+`
+
+const HeaderRight = styled.div`
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  justify-self: end;
+`
+
 const PublicLayout = () => {
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
@@ -102,6 +136,9 @@ const PublicLayout = () => {
   const isVerticalCover = /^\/vertical\/(?!products(?:\/|$))[^/]+$/.test(
     location.pathname
   )
+  const searchVerticalId =
+    location.pathname.match(/^\/vertical\/(?!products(?:\/|$))([^/]+)(?:\/|$)/)?.[1] ||
+    undefined
   const isOverlayNav =
     !currentStore &&
     navigation.transparentOnHome === true &&
@@ -148,15 +185,29 @@ const PublicLayout = () => {
         $backgroundColor={navigation.backgroundColor}
         $textColor={navigation.textColor}
       >
-        <Brand to={ROUTES.HOME}>
-          {logoUrl ? (
-            <BrandLogo src={logoUrl} alt={platformSettings.name || 'Marketplace'} />
-          ) : (
-            platformSettings.name || 'Marketplace'
-          )}
-        </Brand>
-        <ResponsivePublicMenu />
-        <UserActions showLoginLinks={false} />
+        <HeaderLeft>
+          <Brand to={ROUTES.HOME}>
+            {logoUrl ? (
+              <BrandLogo
+                src={logoUrl}
+                alt={platformSettings.name || 'Marketplace'}
+                style={{
+                  height: Number(navigation.logoSize) || 38,
+                  maxHeight: Number(navigation.logoSize) || 38,
+                }}
+              />
+            ) : (
+              platformSettings.name || 'Marketplace'
+            )}
+          </Brand>
+        </HeaderLeft>
+        <HeaderCenter>
+          <ResponsivePublicMenu />
+        </HeaderCenter>
+        <HeaderRight>
+          <MarketplaceSearchDrawer verticalId={searchVerticalId} />
+          <UserActions showLoginLinks={false} />
+        </HeaderRight>
       </HeaderBar>
       <Content>
         <Outlet />

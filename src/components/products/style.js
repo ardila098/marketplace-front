@@ -87,6 +87,17 @@ export const ProductImage = styled.img`
   display: block;
 `
 
+export const ImageLayer = styled.img`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: ${({ $active }) => ($active ? 1 : 0)};
+  transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+`
+
 export const NewBadge = styled.span`
   position: absolute;
   left: 10px;

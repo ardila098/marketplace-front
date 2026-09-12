@@ -14,6 +14,11 @@ export const SearchTrigger = styled(Button)`
 `
 
 export const SearchDrawerPanel = styled(Drawer)`
+  .ant-drawer-content {
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+  }
+
   .ant-drawer-header {
     border-bottom: 1px solid #eef0f3;
   }
