@@ -42,7 +42,8 @@ const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) 
   }, [product])
   const defaultSelectedItem = product.selectedItem || previews[0] || product
   const [selectedItemId, setSelectedItemId] = useState(getItemId(defaultSelectedItem))
-  const [paused, setPaused] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   useEffect(() => {
     setSelectedItemId(getItemId(defaultSelectedItem))
@@ -52,16 +53,17 @@ const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) 
   const selectedItemKey = getItemId(selectedItem)
   const selectedItemLabel = getItemLabel(selectedItem)
   const shouldShowItemLabel = selectedItemLabel && selectedItemLabel !== product.name
-  const mainImage = getImage(selectedItem) || getImage(product) || getImage(product?.variants?.[0])
-  const previewImages = useMemo(() => {
-    const images = [
-      ...previews.map(getImage),
-      getImage(product),
-      getImage(product?.variants?.[0]),
-    ].filter(Boolean)
+  const selectedImages = useMemo(() => {
+    const itemImages = Array.isArray(selectedItem?.images) ? selectedItem.images : []
+    const productImages = Array.isArray(product?.images) && product.images.length
+      ? product.images
+      : [getImage(product)].filter(Boolean)
+    const images = itemImages.length
+      ? itemImages
+      : [getImage(selectedItem), ...productImages].filter(Boolean)
 
     return [...new Set(images)].slice(0, 6)
-  }, [previews, product])
+  }, [product, selectedItem])
   const price = selectedItem?.price || product.minPrice || product.variants?.[0]?.price || product.price || 0
   const compareAtPrice = selectedItem?.compareAtPrice || product.compareAtPrice || 0
   const discountPercentage = compareAtPrice > price
@@ -77,34 +79,38 @@ const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) 
     : buildRoute(ROUTES.VERTICAL_PRODUCT_DETAIL, { id: product._id }))
 
   useEffect(() => {
-    if (paused || previews.length < 2) return undefined
+    setActiveImageIndex(0)
+  }, [selectedItemKey])
+
+  useEffect(() => {
+    if (!hovered || selectedImages.length < 2) {
+      setActiveImageIndex(0)
+      return undefined
+    }
 
     const timer = window.setInterval(() => {
-      setSelectedItemId(currentId => {
-        const currentIndex = previews.findIndex(item => getItemId(item) === currentId)
-        const nextIndex = currentIndex < 0 ? 0 : (currentIndex + 1) % previews.length
-
-        return getItemId(previews[nextIndex])
-      })
+      setActiveImageIndex(current =>
+        (current + 1) % selectedImages.length
+      )
     }, 4000)
 
     return () => window.clearInterval(timer)
-  }, [paused, previews])
+  }, [hovered, selectedImages])
 
   return (
     <ProductCardWrapper hoverable bordered={false} $variant={cardStyle}>
       <ProductImageLink to={targetRoute} aria-label={`Ver detalle de ${product.name}`}>
         <ImageWrap
           $variant={cardStyle}
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
         >
           {product.isNew && <NewBadge>{translate('new')}</NewBadge>}
-          {previewImages.length ? (
-            previewImages.map(image => (
+          {selectedImages.length ? (
+            selectedImages.map((image, index) => (
               <ImageLayer
                 key={image}
-                $active={image === mainImage}
+                $active={index === activeImageIndex}
                 src={getUploadUrl(UPLOAD_ROUTES.products.images, image)}
                 alt={product.name}
               />
