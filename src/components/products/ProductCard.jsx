@@ -5,6 +5,7 @@ import { currency } from '../../utils/formatters'
 import { useSelector } from 'react-redux'
 import { useDictionaryTranslation } from '../../hooks/useDictionaryTranslation'
 import { getItemLabel } from '../../helpers/catalogProduct'
+import { selectPlatformSettings } from '../../store/slices/platformSlice'
 
 import {
   ProductImageLink,
@@ -37,6 +38,9 @@ const getItemId = item => {
 const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) => {
   const { translate } = useDictionaryTranslation()
   const resolutionMode = useSelector(state => state.storefront.resolutionMode)
+  const platformSettings = useSelector(selectPlatformSettings)
+  const cardAutoplaySeconds =
+    Number(platformSettings.hero?.cardAutoplaySeconds) || 2
   const previews = useMemo(() => {
     return (product.itemsPreview || product.variants || []).slice(0, 5)
   }, [product])
@@ -88,14 +92,15 @@ const ProductCard = ({ product, storeSlug, detailPath, cardStyle = 'classic' }) 
       return undefined
     }
 
+    const delay = Math.max(cardAutoplaySeconds, 0.5) * 1000
     const timer = window.setInterval(() => {
       setActiveImageIndex(current =>
         (current + 1) % selectedImages.length
       )
-    }, 4000)
+    }, delay)
 
     return () => window.clearInterval(timer)
-  }, [hovered, selectedImages])
+  }, [cardAutoplaySeconds, hovered, selectedImages])
 
   return (
     <ProductCardWrapper hoverable bordered={false} $variant={cardStyle}>

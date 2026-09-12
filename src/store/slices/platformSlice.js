@@ -42,9 +42,10 @@ export const DEFAULT_PLATFORM_SETTINGS = Object.freeze({
     verticalsOverlayOpacity: 0.35,
     verticalsFrameStyle: 'solid',
     verticalsImageHeight: 420,
-    showcaseAutoplaySeconds: 6,
-    verticalsAutoplaySeconds: 6,
-    relatedAutoplaySeconds: 5,
+    showcaseAutoplaySeconds: 0.8,
+    verticalsAutoplaySeconds: 0.8,
+    relatedAutoplaySeconds: 3,
+    cardAutoplaySeconds: 2,
     backgroundImage: '',
   },
   footer: {

@@ -69,8 +69,14 @@ const HeaderBar = styled(Header)`
   z-index: 50;
 
   @media (max-width: 768px) {
-    grid-template-columns: 44px 1fr auto;
-    gap: 12px;
+    height: 64px;
+    min-height: 64px;
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    grid-auto-flow: column;
+    grid-auto-rows: 1fr;
+    gap: 8px;
+    padding: 0 12px;
+    align-items: center;
   }
 `
 
@@ -90,6 +96,10 @@ const BrandLogo = styled.img`
   max-width: 138px;
   max-height: 38px;
   object-fit: contain;
+
+  @media (max-width: 768px) {
+    max-width: 108px;
+  }
 `
 
 const HeaderLeft = styled.div`
@@ -100,6 +110,8 @@ const HeaderLeft = styled.div`
   @media (max-width: 768px) {
     grid-column: 2;
     justify-self: center;
+    align-self: center;
+    min-width: 0;
   }
 `
 
@@ -113,6 +125,7 @@ const HeaderCenter = styled.div`
   @media (max-width: 768px) {
     grid-column: 1;
     justify-content: flex-start;
+    align-self: center;
   }
 `
 
@@ -123,6 +136,12 @@ const HeaderRight = styled.div`
   justify-content: flex-end;
   gap: 8px;
   justify-self: end;
+
+  @media (max-width: 768px) {
+    grid-column: 3;
+    gap: 4px;
+    align-self: center;
+  }
 `
 
 const PublicLayout = () => {

@@ -87,7 +87,7 @@ const getFormValues = store => {
     showcaseAutoplaySeconds:
       storefront.showcaseAutoplaySeconds !== undefined
         ? Number(storefront.showcaseAutoplaySeconds)
-        : 6,
+        : 0.8,
     productCardStyle: storefront.productCardStyle || STOREFRONT_STYLE_DEFAULTS.productCardStyle,
     categorySliderStyle:
       storefront.categorySliderStyle || STOREFRONT_STYLE_DEFAULTS.categorySliderStyle,
@@ -192,7 +192,7 @@ const StoreDesignPage = () => {
         showcaseBackgroundPosition: values.showcaseBackgroundPosition || 'center',
         showcaseOverlayEnabled: values.showcaseOverlayEnabled !== false,
         showcaseOverlayOpacity: Number(values.showcaseOverlayOpacity) || 0.45,
-        showcaseAutoplaySeconds: Number(values.showcaseAutoplaySeconds) || 6,
+        showcaseAutoplaySeconds: Number(values.showcaseAutoplaySeconds) || 0.8,
         productCardStyle: values.productCardStyle,
         categorySliderStyle: values.categorySliderStyle,
         productDetailLayout: values.productDetailLayout,
@@ -316,7 +316,7 @@ const StoreDesignPage = () => {
                       label="Segundos entre productos del slider"
                       name="showcaseAutoplaySeconds"
                     >
-                      <FullWidthInputNumber min={2} max={30} />
+                      <FullWidthInputNumber min={0.5} max={30} step={0.5} />
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12}>

@@ -349,7 +349,7 @@ const AdminSettingsPage = () => {
                   label="Segundos entre productos del showcase"
                   name={['hero', 'showcaseAutoplaySeconds']}
                 >
-                  <Slider min={2} max={30} step={1} />
+                  <Slider min={0.5} max={30} step={0.5} />
                 </Form.Item>
               </Col>
               <Col span={24}>
@@ -357,7 +357,15 @@ const AdminSettingsPage = () => {
                   label="Segundos del slider de productos relacionados"
                   name={['hero', 'relatedAutoplaySeconds']}
                 >
-                  <Slider min={2} max={30} step={1} />
+                  <Slider min={0.5} max={30} step={0.5} />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  label="Segundos del slider de imagenes en cada card"
+                  name={['hero', 'cardAutoplaySeconds']}
+                >
+                  <Slider min={0.5} max={30} step={0.5} />
                 </Form.Item>
               </Col>
               <Col xs={24} md={12}>
@@ -552,7 +560,7 @@ const AdminSettingsPage = () => {
                   label="Segundos entre verticales del showcase"
                   name={['hero', 'verticalsAutoplaySeconds']}
                 >
-                  <Slider min={2} max={30} step={1} />
+                  <Slider min={0.5} max={30} step={0.5} />
                 </Form.Item>
               </Col>
             </Row>

@@ -53,8 +53,15 @@ export const SearchInput = styled(Input.Search)`
 
   .ant-input-search-button {
     border-radius: 0 999px 999px 0 !important;
-    background: #111111 !important;
-    color: #ffffff !important;
+    background: #f4f5f7 !important;
+    color: #111111 !important;
+    border-left: 1px solid #e3e6ea !important;
+    box-shadow: none !important;
+  }
+
+  .ant-input-search-button:hover {
+    background: #eef0f3 !important;
+    color: #111111 !important;
   }
 
   .ant-input-affix-wrapper-focused,
